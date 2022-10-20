@@ -1,4 +1,5 @@
 #include "display.h"
+#include "smg.h"
 #include "cmd_link.h"
 #include "run.h"
 #include "key.h"
@@ -12,26 +13,20 @@
  * Function :
  * 
 *************************************************************/
-void DisplaySMG_LED(void)
+void Display_Temperature_Humidity_Value(void)
 {
    static uint8_t m,n,p,q;
     if(run_t.gPower_On==1){
 
-		//SMG_POWER_ON()	;
 
-
-		m = (run_t.gTimes_hours_temp /10) ;
+        m = (run_t.gTimes_hours_temp /10) ;
 		n=	(run_t.gTimes_hours_temp%10); 
 		p = (run_t.gTimes_minutes_temp /10);
 		q=  (run_t.gTimes_minutes_temp %10);
 
 
 
-		//TM1639_Write_4Bit_Data(m,n,p,q,0) ; //timer is default 12 hours "12:00"
-		panel_led_fun();//Display_Function_OnOff();
-		//KeyLed_Power_On();
-
-   }
+	}
 
 		   
 }

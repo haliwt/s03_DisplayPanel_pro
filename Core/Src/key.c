@@ -4,6 +4,130 @@
 
 
 
+key_types key_t;
+uint8_t KEY_Scan(void)
+{
+   uint8_t  reval = 0;
+  key_t.read = _KEY_ALL_OFF; //0xFF 
+  
+   if(POWER_KEY_VALUE() ==KEY_DOWN )// high level
+	{
+		key_t.read &= ~0x01; // 0xff & 0xfe =  0xFE
+	}
+
+    if(MODE_KEY_VALUE() ==KEY_DOWN )
+	{
+		key_t.read &= ~0x02; // 0xFf & 0xfd =  0xFD
+	}
+
+	
+	if(DEC_KEY_VALUE()  ==KEY_DOWN )
+	{
+		  key_t.read &= ~0x04; // 0xFf & 0xfB =  0xFB
+	}
+
+	
+	if(ADD_KEY_VALUE() ==KEY_DOWN )
+	  {
+		  key_t.read &= ~0x08; // 0x1f & 0xf7 =  0xF7
+	  }
+
+   
+
+ 
+	
+	
+	
+	switch(key_t.state )
+	{
+		case start:
+		{
+			if(key_t.read != _KEY_ALL_OFF)
+			{
+				key_t.buffer   = key_t.read; //??:key.buffer = 0xFE  POWER KEY 
+				key_t.state    = first;
+				key_t.on_time  = 0;
+				key_t.off_time = 0;
+                
+			}
+			break;
+		}
+		case first:
+		{
+			if(key_t.read == key_t.buffer) // adjust key be down ->continunce be pressed key
+			{
+				if(++key_t.on_time> 100) //1000  0.5us
+				{
+					key_t.value = key_t.buffer^_KEY_ALL_OFF; // key.value = 0xFE ^ 0xFF = 0x01
+					key_t.on_time = 0;                        //key .value = 0xEF ^ 0XFF = 0X10
+                   
+					key_t.state   = second;
+                   
+                    
+				}
+			}
+			else
+			{
+				key_t.state   = start;
+			}
+			break;
+		}
+		case second:
+		{
+			if(key_t.read == key_t.buffer) //again adjust key if be pressed down 
+			{
+				if(++key_t.on_time>6000)// 10000 long key be down
+				{
+					
+					key_t.value = key_t.value|0x80; //key.value = 0x01 | 0x80  =0x81  
+					key_t.on_time = 0;
+					key_t.state   = finish;
+                   
+				}
+			}
+			else if(key_t.read == _KEY_ALL_OFF)  // loose hand 
+				{
+					if(++key_t.off_time>10) //30 don't holding key dithering
+					{
+						key_t.value = key_t.buffer^_KEY_ALL_OFF; // key.value = 0x1E ^ 0x1f = 0x01
+						
+						key_t.state   = finish; // loose hand
+					}
+				}
+		   
+			break;
+		}
+		case finish:
+		{
+			
+			reval = key_t.value; // is short time  TIMER_KEY = 0x01  2. long times TIMER_KEY = 0X81
+			key_t.state   = end;
+         
+			break;
+		}
+		case end:
+		{
+			if(key_t.read == _KEY_ALL_OFF)
+			{
+				if(++key_t.off_time>10)//50 //100
+				{
+					key_t.state   = start;
+                  
+				}
+			}
+			break;
+		}
+		default:
+		{
+			key_t.state   = start;
+         
+			break;
+		}
+	}
+	return  reval;
+
+
+}
 
 
 /********************************************************************************************************
@@ -21,7 +145,7 @@ void SplitDispose_Key(uint8_t value)
     
     switch(value){
         
-       case 0x80: //Power On
+       case KEY_POWER: //Power On
         //   powerKey = powerKey ^ 0x01;
         //  if(powerKey ==1){
               run_t.wifiCmd[0]=0;
@@ -36,6 +160,7 @@ void SplitDispose_Key(uint8_t value)
 				  run_t.gPlasma=0;
 				  run_t.gDry =0;
 				  run_t.gWifi =0;
+				   
 	              // run_t.wifi_turn_off++;
 			  }
 			  else{
@@ -44,15 +169,14 @@ void SplitDispose_Key(uint8_t value)
 				    run_t.gFan_RunContinue=1;
 		            run_t.gPower_On=0;
 					run_t.fan_off_60s =0;
-		           //  run_t.wifi_turn_on++;
-		          //   Smg_AllOff();
+		           
               }
-        //  }
+       
          
        
         break;
        
-       case 0x40: //Mode On -> set time and timer 
+       case KEY_MODE: //Mode On -> set time and timer 
            if(run_t.gPower_On ==1){
 				
 			run_t.gKeyTimer_mode = run_t.gKeyTimer_mode ^ 0x01; //the same is "0",and differenct is "1"
@@ -73,7 +197,7 @@ void SplitDispose_Key(uint8_t value)
 		   
         break;
         
-        case 0x20: //CIN3 -> DEC KEY
+        case KEY_DEC: //CIN3 -> DEC KEY
              if(run_t.gPower_On ==1){
 			
 			 	 if(run_t.gKeyTimer_mode==1){//times, is timer is 
@@ -113,7 +237,7 @@ void SplitDispose_Key(uint8_t value)
              
          break;
         
-        case 0x10: //CIN2 ->ADD KEY
+        case KEY_ADD: //CIN2 ->ADD KEY
              if(run_t.gPower_On ==1){
 			 	  
 				if(run_t.gKeyTimer_mode==1){
@@ -153,117 +277,18 @@ void SplitDispose_Key(uint8_t value)
             
          break;
          
-         case 0x08: //CIN4 -> AI  KEY 
+         case KEY_LONG_POWER: // Open Wifi function to connect network
                if(run_t.gPower_On ==1){
                    
-                ai = ai ^ 0x01;
-				if(ai==1){
- 					run_t.gAi =1; //turon off AI mode
-					
-				}
-				else{ //turn on AI mode
-					run_t.gAi =0;
-                    run_t.gDry =0;
-                    run_t.gPlasma = 0;
-				    
-
-				}
-				run_t.dry_key =3;
-				run_t.ster_key =3;
-				
+                   run_t.gConnect_wifi_flag =1; //Wifi icon faster of blink.
               
-			    
-              }
+			    }
             
          break;
          
-         case 0x04: //CIN5  -> STERILIZATION KEY 
-             if(run_t.gPower_On ==1){
-			
-               plasma = plasma ^ 0x01;
-			   if(plasma ==1){  //turun off kill 
-			   	
-			       if(run_t.gPlasma ==1)
-				       run_t.gPlasma = 0;
-                   else
-                       run_t.gPlasma = 1;
-				   
-		       }
-			   else{
-			   	  if(run_t.gPlasma ==1)
-				       run_t.gPlasma = 0;
-                   else
-                       run_t.gPlasma = 1;
-			   	}
-               
-                if( run_t.gPlasma==1 && run_t.gDry ==1){
-			    	   run_t.gFan_RunContinue =1;
-					   run_t.fan_off_60s =0;
-		          }
-		          else run_t.gFan_RunContinue =0;
-
-			
-             
-             }
-            
-            
-         break;
+        
          
-         case 0x02: //CIN6  ->DRY KEY 
-               if(run_t.gPower_On ==1){
-		
-			    dry = dry^ 0x01;
-				if(dry==1){ //turn off the first be pressed 
-                   if(run_t.gDry== 1)
-				       run_t.gDry =0;
-                   else
-                       run_t.gDry =1;
-				  
-
-				}
-				else{ //the second be pressed key
-                    
-                   if(run_t.gDry== 1)
-				       run_t.gDry =0;
-                   else
-                       run_t.gDry =1;
-                    
-					
-				}
-			
-
-		           if( run_t.gPlasma==1 && run_t.gDry ==1){
-			    	   run_t.gFan_RunContinue =1;
-					   run_t.fan_off_60s =0;
-		            }
-		            else run_t.gFan_RunContinue =0;
-			   
-				 
-               }
-           
-             
-         break;
-         
-         case 0x01: //CIN7 -> wifi KEY
-             if(run_t.gPower_On ==1){
-			 
-
-				wifi = wifi ^ 0x01;
-				if(wifi==1){
- 					run_t.gWifi =1; //tunr off wifi
-					
-				}
-				else{
-					run_t.gWifi =0; //turn on wifi
-				   
-
-				}
-			
-			}
-                  
-          break;
-             
-         default :
+        default :
              
          
          break;
@@ -271,5 +296,22 @@ void SplitDispose_Key(uint8_t value)
       }
 
 }
+
+//ÖÐ¶Ï·þÎñ³ÌÐòÖÐÐèÒª×öµÄÊÂÇé
+//ÔÚHAL¿âÖÐËùÓÐµÄÍâ²¿ÖÐ¶Ï·þÎñº¯Êý¶¼»áµ÷ÓÃ´Ëº¯Êý
+//GPIO_Pin:ÖÐ¶ÏÒý½ÅºÅ
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+
+   do{
+   	
+        run_t.readKeyValue =  KEY_Scan();
+
+
+
+   	}while(VK36N4D_INT_VALUE()==KEY_DOWN);
+
+
+  }
 
 

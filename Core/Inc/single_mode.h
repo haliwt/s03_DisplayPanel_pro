@@ -11,6 +11,8 @@ extern void (*dispose_key)(uint8_t dsdat);
 void Single_RunMode(void);
 void Single_RunCmd(void);
 
+void Single_Analysis_KeyMode(void);
+
 
 void RunReference_Fun(void);
 

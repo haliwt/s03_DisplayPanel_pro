@@ -5,11 +5,11 @@
 
 void Display_DHT11_Value(void);
 
-void DisplaySMG_LED(void);
+void Display_Temperature_Humidity_Value(void);
 
 void DisplayTiming_KEY_Add_Subtract_Fun(void);
 
-void Display_GMT(void);
+
 
 
 

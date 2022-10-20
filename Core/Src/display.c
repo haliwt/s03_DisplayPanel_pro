@@ -1,5 +1,4 @@
 #include "display.h"
-#include "smg.h"
 #include "cmd_link.h"
 #include "run.h"
 #include "key.h"
@@ -13,7 +12,7 @@
  * Function :
  * 
 *************************************************************/
-void DisplaySMG_LED(void)
+void Display_Temperature_Humidity_Value(void)
 {
    static uint8_t m,n,p,q;
     if(run_t.gPower_On==1){

@@ -47,7 +47,7 @@ void Single_RunMode(void)
 					run_t.wifi_turn_on++; 
 				}
 			
-			DisplaySMG_LED();
+				Display_Temperature_Humidity_Value();
          
 		
          
@@ -99,6 +99,70 @@ void Single_RunMode(void)
      }
 	 
   }
+/*******************************************************************************
+	 * 
+	 * Function Name :void Single_KeyMode(void)
+	 * Function : analysis read key of value 
+	 * Input Reference:No
+	 * Return Reference :NO
+	 *
+*******************************************************************************/
+void Single_Analysis_KeyMode(void)
+{
+
+     static uint8_t keypower=0xff;
+	 switch(run_t.readKeyValue){
+
+       case KEY_POWER:
+	   	   
+          dispose_key(run_t.readKeyValue);// Run analysis key of value 
+          
+			    if(run_t.gPower_On == 1){
+			         SendData_PowerOff(1);
+					 
+			     }
+				else{
+					
+					SendData_PowerOff(0);
+					run_t.gFan_RunContinue=1; //WT.EDIT 2022.08.31
+					run_t.fan_off_60s = 0;
+					
+				}
+			
+				Display_Temperature_Humidity_Value();
+
+	    break;
+
+
+	   case KEY_LONG_POWER:
+
+	   break;
+
+	   case KEY_MODE:
+
+	   break;
+
+	   case KEY_DEC:
+
+	   break;
+
+	   case KEY_ADD:
+
+	   break;
+
+	   default :
+	   run_t.readKeyValue=0;
+
+
+	   break;
+
+
+
+
+
+	 }
+
+}
 /*******************************************************************************
 	 * 
 	 * Function Name :void RunReference_Fun(void)
@@ -350,7 +414,7 @@ static void Setup_Timer_Times(void)
 				    run_t.gTimes_hours_temp =0;
 				    }
 			   }
-               Display_GMT();
+             //  Display_GMT();
 		      }
          }
 

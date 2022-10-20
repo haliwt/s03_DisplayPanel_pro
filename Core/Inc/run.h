@@ -10,6 +10,7 @@ enum State{IDLE ,CODE, RUN};
 typedef struct __RUN{
 
    uint8_t keyValue;
+   uint8_t readKeyValue;
    uint8_t power_key;
    uint8_t gTemperature_timer_flag;
    uint8_t gPower_On;
@@ -47,6 +48,7 @@ typedef struct __RUN{
    
 
    uint8_t  gWifi;
+   uint8_t  gConnect_wifi_flag;
  
    uint8_t  dry_key;
    uint8_t  ster_key;

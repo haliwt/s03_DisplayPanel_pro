@@ -2,7 +2,7 @@
 #include "gpio.h"
 #include "cmd_link.h"
 #include "led.h"
-
+#include "display.h"
 #include "lcd.h"
 
 RUN_T run_t;
@@ -46,7 +46,7 @@ void Wifi_Receive_Cmd(uint8_t cmd)
 
 		      run_t.gPower_On =1;
 			 // SendData_PowerOff(1);
-			   DisplaySMG_LED();
+                 Display_Temperature_Humidity_Value();
                 run_t.wifi_turn_off ++;
 	     
               } 
@@ -65,7 +65,7 @@ void Wifi_Receive_Cmd(uint8_t cmd)
 					run_t.gFan_RunContinue=1; //WT.EDIT 2022.08.31
 					run_t.fan_off_60s = 0;
                    //  SendData_PowerOff(0);
-					 DisplaySMG_LED();
+					Display_Temperature_Humidity_Value();
                     run_t.wifi_turn_on ++;
                 }
 
@@ -229,7 +229,7 @@ void DisplayTimer_Timing(void)
 *******************************************************************************/
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  static uint8_t tm0,tm2,tm1;
+  static uint8_t tm0,tm2;
     
    if(htim->Instance==TIM3){
     

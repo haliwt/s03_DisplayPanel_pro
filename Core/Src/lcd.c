@@ -223,7 +223,7 @@ void DisplayPanel_Handler(void)
      TM1723_Write_Display_Data(0xC9,0x01+lcdNumber4_Low[3]+lcdNumber5_High[4]);//display digital '4,5'
 
 	 //T15
-      if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<21){
+      if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<20){
          TM1723_Write_Display_Data(0xCA,T15+lcdNumber5_Low[4]+lcdNumber6_High[5]);//display digital '5,6'
       }
 	  else if(lcd_t.gTimer_fan_10ms <10){
@@ -233,7 +233,7 @@ void DisplayPanel_Handler(void)
 	 TM1723_Write_Display_Data(0xCB,0x01+lcdNumber6_Low[5]+lcdNumber7_High[9]);//display "t,c"
 
     //T14
-	 if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<21){
+	 if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<20){
 	      TM1723_Write_Display_Data(0xCC,lcdNumber7_Low[9]+lcdNumber8_High[7]);//display "t,c
 
 	 }
@@ -241,7 +241,7 @@ void DisplayPanel_Handler(void)
   			TM1723_Write_Display_Data(0xCC,T14+lcdNumber7_Low[9]+lcdNumber8_High[7]);//display "t,c
 	  }
      //T13
-	 if(lcd_t.gTimer_fan_10ms>9 && lcd_t.gTimer_fan_10ms<21){
+	 if(lcd_t.gTimer_fan_10ms>9 && lcd_t.gTimer_fan_10ms<20){
 				TM1723_Write_Display_Data(0xCE,T13+lcdNumber8_Low[7]+0xE0);//display "t,c"
 	  }
 	  else if(lcd_t.gTimer_fan_10ms <10){
@@ -249,7 +249,7 @@ void DisplayPanel_Handler(void)
 
 	  }
 	  //T11
-      if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<21){
+      if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<20){
               TM1723_Write_Display_Data(0xCF,T11+T16);//
       }
 	  else if(lcd_t.gTimer_fan_10ms <10){

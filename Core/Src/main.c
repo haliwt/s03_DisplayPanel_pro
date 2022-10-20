@@ -21,10 +21,14 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "display.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
+#include "single_mode.h"
+#include "key.h"
+#include "cmd_link.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -93,7 +97,9 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_TIM_Base_Start_IT(&htim14);
   /* USER CODE END 2 */
-   
+   Single_Add_RunCmd(DisplayTiming_KEY_Add_Subtract_Fun);
+   Single_SendBuzzer_RunCmd(SendData_Buzzer);
+   SplitDispose_Key_RunCmd(SplitDispose_Key);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -101,6 +107,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	//Single_RunMode();
+	// Single_RunCmd();
        TM1723_POWER_ON();
 	LCD_BACK_LIGHT_ON()	;
     DisplayPanel_Handler();
