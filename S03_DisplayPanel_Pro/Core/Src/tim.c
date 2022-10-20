@@ -21,7 +21,7 @@
 #include "tim.h"
 
 /* USER CODE BEGIN 0 */
- uint8_t tim3,tim14;
+
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim3;
@@ -163,20 +163,18 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 }
 
 /* USER CODE BEGIN 1 */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  
-    
-  if(htim->Instance==TIM3)
-  {
-    tim3++;
-  }
-  if(htim->Instance==TIM14)
-  {
-     tim14++;
-  
-  }
-
-
-}
+//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+//{
+//  
+//    
+//  if(htim->Instance==TIM3)
+//  {
+//    tim3++;
+//  }
+//  if(htim->Instance==TIM14)
+//  {
+//     tim14++;
+//  
+//  }
+//}
 /* USER CODE END 1 */
