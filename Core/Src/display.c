@@ -26,20 +26,20 @@ void Display_Temperature_Humidity_Value(void)
 		p = (run_t.gTimes_minutes_temp /10);
 		q=  (run_t.gTimes_minutes_temp %10);
 
-        lcdNumber5_Low[m];
-        lcdNumber5_High[m];
 
-		lcdNumber6_Low[n];
-		lcdNumber6_High[n] ;
-		
+		 lcd_t.number5_high = m;
+		 lcd_t.number5_low = m;
 
-		lcdNumber7_Low[p];
-		lcdNumber7_High[p];
+		  lcd_t.number6_high = n;
+		 lcd_t.number6_low = n;
 
-		lcdNumber8_Low[q];
-		lcdNumber8_High[q];
+		  lcd_t.number7_high = p;
+		 lcd_t.number7_low = p;
 
-		DisplayPanel_Handler();
+		  lcd_t.number8_high = q;
+		 lcd_t.number8_low = q;
+
+		 DisplayPanel_Ref_Handler();
 		
 
    }
