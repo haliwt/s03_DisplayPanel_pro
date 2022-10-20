@@ -36,7 +36,16 @@
 
 #define TWO_DOT_Symbol           0x01       //addr 0xCB
 
-#define FLABELLUM_T10             
+#define T10                      0x08     //addr 0xCF
+#define T11                      0x04      //addr 0xCF
+#define T12                      0x02      //addr 0xCF
+#define T16                      0x01     //addr 0xCF
+
+#define T13                      0x01      //addr 0xCE
+#define T14                      0x01      //addr 0xCC
+#define T15                      0x01      //addr 0xCA
+
+
 
 const uint8_t lcdNumber1_Low[]={0x0A,0x0A,0x06,0x0E,0x0E,0x0C,0x0C,0x0A,0x0E,0x0E,0x00};
 
@@ -177,42 +186,6 @@ static void TM1723_Write_Display_Data(uint8_t addr,uint8_t dat)
 
 }
 
-
-/*************************************************************************
- 	*
- 	* Function Name:void Display_Name_Temperature(void)
- 	* Function :lcd display 'temperature'
- 	* Input Ref:NO
- 	* Return Ref:NO
- 	* 
-*************************************************************************/ 
-void Display_Blank_Wifi(void)
-{
-     TIM1723_Write_Cmd(0x00);
-	 TIM1723_Write_Cmd(0x40);
-	 TIM1723_Write_Cmd(0x44);
-
-    TM1723_Write_Display_Data(0xC2,lcdNumber1_High[6]+0x0F);//display digital "88"
-
-    
-    TM1723_Write_Display_Data(0xC3,lcdNumber1_Low[6]+AI_Symbol+lcdNumber2_High[1]);//display digital "88"
-   
-	 TM1723_Write_Display_Data(0xC4,0x01+lcdNumber2_Low[1]+lcdNumber3_High[2]);//display "t,c"
-     TM1723_Write_Display_Data(0xC5,WIFI_Symbol+lcdNumber3_Low[2] + lcdNumber4_High[3]); //Wifi
-    
-     TM1723_Write_Display_Data(0xC9,0x01+lcdNumber4_Low[3]+lcdNumber5_High[4]);//display digital "88"
-     TM1723_Write_Display_Data(0xCA,0x01+lcdNumber5_Low[4]+lcdNumber6_High[5]);//display digital "88"
-     
-	 TM1723_Write_Display_Data(0xCB,0x01+lcdNumber6_Low[5]+lcdNumber7_High[9]);//display "t,c"
-     TM1723_Write_Display_Data(0xCC,0x01+lcdNumber7_Low[9]+lcdNumber8_High[7]);//display "t,c"
-    
-     TM1723_Write_Display_Data(0xCE,0x1+lcdNumber8_Low[7]+0xE0);//display "t,c"
-     TM1723_Write_Display_Data(0xCF,0x0F);//display "t,c"
-
-	//open display
-	 TIM1723_Write_Cmd(0x94);//(0x9B);
-
-}
 /*************************************************************************
  	*
  	* Function Name:void Display_Name_Humidity(void)
@@ -247,14 +220,20 @@ void DisplayPanel_Handler(void)
         lcd_t.gTimer_wifi_500ms =0;
      }
     
-     TM1723_Write_Display_Data(0xC9,0x01+lcdNumber4_Low[3]+lcdNumber5_High[4]);//display digital "88"
-     TM1723_Write_Display_Data(0xCA,0x01+lcdNumber5_Low[4]+lcdNumber6_High[5]);//display digital "88"
+     TM1723_Write_Display_Data(0xC9,0x01+lcdNumber4_Low[3]+lcdNumber5_High[4]);//display digital '4,5'
+     
+     TM1723_Write_Display_Data(0xCA,T15+lcdNumber5_Low[4]+lcdNumber6_High[5]);//display digital '5,6'
      
 	 TM1723_Write_Display_Data(0xCB,0x01+lcdNumber6_Low[5]+lcdNumber7_High[9]);//display "t,c"
-     TM1723_Write_Display_Data(0xCC,0x01+lcdNumber7_Low[9]+lcdNumber8_High[7]);//display "t,c"
+
+
+	 
+     TM1723_Write_Display_Data(0xCC,T14+lcdNumber7_Low[9]+lcdNumber8_High[7]);//display "t,c
     
-     TM1723_Write_Display_Data(0xCE,0x1+lcdNumber8_Low[7]+0xE0);//display "t,c"
-     TM1723_Write_Display_Data(0xCF,0x0F);//display "t,c"
+
+	 TM1723_Write_Display_Data(0xCE,T13+lcdNumber8_Low[7]+0xE0);//display "t,c"
+	 
+     TM1723_Write_Display_Data(0xCF,T16+T12+T11+T10);//
 
 	//open display
 	 TIM1723_Write_Cmd(0x94);//(0x9B);
