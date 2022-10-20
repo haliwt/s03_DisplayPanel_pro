@@ -134,19 +134,38 @@ void Single_Analysis_KeyMode(void)
 	    break;
 
 
-	   case KEY_LONG_POWER:
+	   case KEY_LONG_POWER: //connect to network
+
+	         if(run_t.gPower_On ==1){
+                 run_t.wifi_connect_label =1;
+
+			 }
 
 	   break;
 
 	   case KEY_MODE:
+	   	   
+			dispose_key(run_t.readKeyValue);//displaySmg_led_fun(run_t.keyValue);//Display_Smg_RunMode(run_t.keyValue );
+			single_add_fun();//DisplayTiming_KEY_Add_Subtract_Fun();
+			single_buzzer_fun();//SendData_Buzzer();
 
 	   break;
 
 	   case KEY_DEC:
+	   
+	          dispose_key(run_t.readKeyValue);//Display_Smg_RunMode(run_t.keyValue );
+	        
+		      single_buzzer_fun();//SendData_Buzzer();
+	          single_add_fun();//DisplayTiming_KEY_Add_Subtract_Fun();
+	          
 
 	   break;
 
 	   case KEY_ADD:
+	   	      dispose_key(run_t.readKeyValue);//Display_Smg_RunMode(run_t.keyValue );
+		      single_buzzer_fun();//SendData_Buzzer();
+	          single_add_fun();//DisplayTiming_KEY_Add_Subtract_Fun();
+			
 
 	   break;
 
@@ -161,6 +180,7 @@ void Single_Analysis_KeyMode(void)
 
 
 	 }
+	 RunReference_Fun();
 
 }
 /*******************************************************************************
@@ -232,7 +252,9 @@ void RunReference_Fun(void)
 	      //single_add_fun();//DisplayTiming_KEY_Add_Subtract_Fun();
 		
          /// Display_DHT11_Value();
-          if(run_t.gTimer_Cmd ==1)DisplayTimer_Timing();
+          if(run_t.gTimer_Cmd ==1){
+		  	DisplayTimer_Timing();
+          }
           else 
               single_add_fun();
 

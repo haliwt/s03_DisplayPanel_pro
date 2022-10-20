@@ -4,6 +4,7 @@
 #include "key.h"
 #include "led.h"
 #include "single_mode.h"
+#include "lcd.h"
 
 
 /*************************************************************
@@ -14,22 +15,32 @@
 *************************************************************/
 void Display_Temperature_Humidity_Value(void)
 {
-   static uint8_t m,n,p,q;
+     static uint8_t m,n,p,q;
     if(run_t.gPower_On==1){
 
-		//SMG_POWER_ON()	;
+		
+		panel_led_fun();
 
-
-		m = (run_t.gTimes_hours_temp /10) ;
+	    m = (run_t.gTimes_hours_temp /10) ;
 		n=	(run_t.gTimes_hours_temp%10); 
 		p = (run_t.gTimes_minutes_temp /10);
 		q=  (run_t.gTimes_minutes_temp %10);
 
+        lcdNumber5_Low[m];
+        lcdNumber5_High[m];
 
+		lcdNumber6_Low[n];
+		lcdNumber6_High[n] ;
+		
 
-		//TM1639_Write_4Bit_Data(m,n,p,q,0) ; //timer is default 12 hours "12:00"
-		panel_led_fun();//Display_Function_OnOff();
-		//KeyLed_Power_On();
+		lcdNumber7_Low[p];
+		lcdNumber7_High[p];
+
+		lcdNumber8_Low[q];
+		lcdNumber8_High[q];
+
+		DisplayPanel_Handler();
+		
 
    }
 
@@ -65,21 +76,6 @@ void Display_DHT11_Value(void)
 
       // TM1639_Write_2bit_TempData(temp1,temp2);
       // TM1639_Write_2bit_HumData(hum1,hum2);
-      break;
-
-      case WIFI_INFO:
-
-//	    if(run_t.gWifi ==0 ){
-//			run_t.single_data=0;
-//
-//        if(run_t.gInputCmd[0] == 0x55 && run_t.gInputCmd[1]==0xaa){
-//             run_t.wifi_connect_flag =1;
-//
-//	    } 
-//	    else if(run_t.gInputCmd[0] == 0x55 && run_t.gInputCmd[1]==0x00){
-//	    	   run_t.wifi_connect_flag = 0;
-//	    }
-//	   }
       break;
 
       case WIFI_TIME: //time and temperature
@@ -235,16 +231,5 @@ void DisplayTiming_KEY_Add_Subtract_Fun(void)
 	}
 }
 
-void Display_GMT(void)
-{ 
-    static uint8_t m,n,p,q;
-	m = run_t.gTimes_hours_temp /10 %10;
-	n=	run_t.gTimes_hours_temp%10; 
-	p = run_t.gTimes_minutes_temp /10 %10;
-	q=  run_t.gTimes_minutes_temp %10;
-	//TM1639_Write_4Bit_Data(m,n,p,q,0) ; //timer is default 12 hours "12:00"
-
-
-}
 
 

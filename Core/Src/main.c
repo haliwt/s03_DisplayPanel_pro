@@ -29,6 +29,7 @@
 #include "single_mode.h"
 #include "key.h"
 #include "cmd_link.h"
+#include "led.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -100,6 +101,7 @@ int main(void)
    Single_Add_RunCmd(DisplayTiming_KEY_Add_Subtract_Fun);
    Single_SendBuzzer_RunCmd(SendData_Buzzer);
    SplitDispose_Key_RunCmd(SplitDispose_Key);
+   PowerOn_LcdLed_OnOff(Lcd_PowerOn_Fun);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -107,11 +109,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	//Single_RunMode();
-	// Single_RunCmd();
-       TM1723_POWER_ON();
-	LCD_BACK_LIGHT_ON()	;
-    DisplayPanel_Handler();
+	Single_Analysis_KeyMode();
+	Single_RunCmd();
+//       TM1723_POWER_ON();
+//	LCD_BACK_LIGHT_ON()	;
+//    DisplayPanel_Handler();
   }
   /* USER CODE END 3 */
 }

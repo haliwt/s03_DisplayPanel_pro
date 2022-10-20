@@ -48,7 +48,7 @@ typedef struct __RUN{
    
 
    uint8_t  gWifi;
-   uint8_t  gConnect_wifi_flag;
+
  
    uint8_t  dry_key;
    uint8_t  ster_key;
@@ -68,6 +68,7 @@ typedef struct __RUN{
    uint8_t wifi_turn_on;
    uint8_t wifi_turn_off;
    uint8_t wifi_connect_flag;
+   uint8_t wifi_connect_label;
 
  
    

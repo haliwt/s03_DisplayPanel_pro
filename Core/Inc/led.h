@@ -16,12 +16,10 @@ extern void (*panel_led_fun)(void);
 
 
 void Breath_Led(void);
+void Lcd_PowerOn_Fun(void);
 
 
-
-void ALL_LED_Off(void);
-
-
+void PowerOn_LcdLed_OnOff(void(* lcdled_turnon_handler)(void));
 
 
 

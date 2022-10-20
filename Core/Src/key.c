@@ -280,7 +280,7 @@ void SplitDispose_Key(uint8_t value)
          case KEY_LONG_POWER: // Open Wifi function to connect network
                if(run_t.gPower_On ==1){
                    
-                   run_t.gConnect_wifi_flag =1; //Wifi icon faster of blink.
+                   run_t.wifi_connect_label =1; //Wifi icon faster of blink.
               
 			    }
             
