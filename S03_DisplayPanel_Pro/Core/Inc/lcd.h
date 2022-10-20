@@ -73,6 +73,7 @@ typedef struct _LCD_Ref{
      uint8_t wifi_glint_flag;
 
 	 uint8_t gTimer_wifi_500ms;
+	 uint8_t gTimer_fan_10ms;
 
 
 }lcd_ref;
