@@ -5,10 +5,10 @@
 
 #define INT_KEY_VALUE()              HAL_GPIO_ReadPin(TOUCH_KEY_INT_GPIO_Port ,TOUCH_KEY_INT_Pin)//
 
-#define POWER_KEY_VALUE()            HAL_GPIO_ReadPin(KEY_POWER_GPIO_Port ,KEY_POWER_Pin)
-#define MODE_KEY_VALUE()             HAL_GPIO_ReadPin(KEY_MODE_GPIO_Port,KEY_MODE_Pin)
-#define DEC_KEY_VALUE()              HAL_GPIO_ReadPin(KEY_DEC_GPIO_Port,KEY_DEC_Pin)
-#define ADD_KEY_VALUE()              HAL_GPIO_ReadPin(KEY_ADD_GPIO_Port,KEY_ADD_Pin)
+#define POWER_KEY_VALUE            HAL_GPIO_ReadPin(KEY_POWER_GPIO_Port ,KEY_POWER_Pin)
+#define MODE_KEY_VALUE             HAL_GPIO_ReadPin(KEY_MODE_GPIO_Port,KEY_MODE_Pin)
+#define DEC_KEY_VALUE              HAL_GPIO_ReadPin(KEY_DEC_GPIO_Port,KEY_DEC_Pin)
+#define ADD_KEY_VALUE              HAL_GPIO_ReadPin(KEY_ADD_GPIO_Port,KEY_ADD_Pin)
 
 #define VK36N4D_INT_VALUE()          HAL_GPIO_ReadPin(VK36N4D_INT_GPIO_Port,VK36N4D_INT_Pin) 
 
@@ -30,6 +30,10 @@
 #define		_KEY_CONT_3_DEC    	         0x84    //?????? ?????
 #define		_KEY_CONT_4_ADD     	     0x88    //??? --?????
 
+#define KEY0_PRES 	0x01
+#define KEY1_PRES	0x02
+#define KEY2_PRES	0x04
+#define WKUP_PRES   0x08
 
 
 

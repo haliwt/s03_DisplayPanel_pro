@@ -82,19 +82,19 @@ void Error_Handler(void);
 #define KEY_POWER_GPIO_Port 				GPIOB
 
 #define KEY_MODE_Pin 						GPIO_PIN_10
-#define KEY_MODE_GPIO_Port GPIOB
+#define KEY_MODE_GPIO_Port   				GPIOB
 
-#define KEY_ADD_Pin GPIO_PIN_11
-#define KEY_ADD_GPIO_Port GPIOB
+#define KEY_ADD_Pin 						GPIO_PIN_11
+#define KEY_ADD_GPIO_Port 					GPIOB
 
-#define KEY_DEC_Pin GPIO_PIN_12
-#define KEY_DEC_GPIO_Port GPIOB
+#define KEY_DEC_Pin 						GPIO_PIN_12
+#define KEY_DEC_GPIO_Port 					GPIOB
 
-#define LED_POWER_Pin GPIO_PIN_6
-#define LED_POWER_GPIO_Port GPIOC
+#define LED_POWER_Pin 						GPIO_PIN_6
+#define LED_POWER_GPIO_Port 				GPIOC
 
-#define BACK_LIGHT_Pin GPIO_PIN_9
-#define BACK_LIGHT_GPIO_Port GPIOB
+#define BACK_LIGHT_Pin 						GPIO_PIN_9
+#define BACK_LIGHT_GPIO_Port 				GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

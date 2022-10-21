@@ -231,6 +231,14 @@ void DisplayTiming_KEY_Add_Subtract_Fun(void)
 			n=	run_t.dispTime_hours %10;
 		
 	      // TM1639_Write_4Bit_Data(0,0,m,n,1) ; // timer   mode  "H0: xx"
+	      //hours
+				 lcd_t.number5_high = m;
+				 lcd_t.number5_low = m;
+
+				  lcd_t.number6_high = n;
+				 lcd_t.number6_low = n;
+	      
+	      DisplayPanel_Ref_Handler();
 		
 	 }
 	
@@ -250,6 +258,19 @@ void DisplayTiming_KEY_Add_Subtract_Fun(void)
 				   q=  run_t. dispTime_minute %10;
 				}
 			  //  TM1639_Write_4Bit_Data(m,n,p,q,0) ; //timer is default 12 hours "12:00"
+			   //hours
+				 lcd_t.number5_high = m;
+				 lcd_t.number5_low = m;
+
+				  lcd_t.number6_high = n;
+				 lcd_t.number6_low = n;
+				  //minutes 
+				 lcd_t.number7_high = p;
+				 lcd_t.number7_low = p;
+
+				  lcd_t.number8_high = q;
+				 lcd_t.number8_low = q;
+			   DisplayPanel_Ref_Handler();
 
 	}
 	else{
@@ -262,6 +283,19 @@ void DisplayTiming_KEY_Add_Subtract_Fun(void)
 						p = run_t.gTimes_minutes_temp /10 %10;
 						q=  run_t.gTimes_minutes_temp %10;
 						//TM1639_Write_4Bit_Data(m,n,p,q,0) ; //timer is default 12 hours "12:00"
+                        //hours
+						 lcd_t.number5_high = m;
+						 lcd_t.number5_low = m;
+
+						  lcd_t.number6_high = n;
+						 lcd_t.number6_low = n;
+						  //minutes 
+						 lcd_t.number7_high = p;
+						 lcd_t.number7_low = p;
+
+						  lcd_t.number8_high = q;
+						 lcd_t.number8_low = q;
+						 DisplayPanel_Ref_Handler();
 				
 	}
     else if(run_t.Timer_mode_flag !=1 ||  run_t.temperature_set_flag  ==1){ //Temperature of setup auto shut off machine
@@ -270,6 +304,15 @@ void DisplayTiming_KEY_Add_Subtract_Fun(void)
 	                     temp2 = run_t.gTemperature%10;
 					    
 				//	TM1639_Write_4Bit_TemperatureData(temp1,temp2); //WT.EDIT 2022.09.01
+                     //temperature 
+					 lcd_t.number1_high = temp1;
+					 lcd_t.number1_low = temp1;
+
+					  lcd_t.number2_high = temp2;
+					 lcd_t.number2_low = temp2;
+
+
+				DisplayPanel_Ref_Handler();
                     run_t.temperature_flag =0;
 	 }
     }  

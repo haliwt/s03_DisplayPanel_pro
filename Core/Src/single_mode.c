@@ -27,9 +27,9 @@ static void Setup_Timer_Times(void);
 void Single_RunMode(void)
 {
    
-        if(POWER_KEY_VALUE()  ==KEY_DOWN ){ //power on KEY
+        if(POWER_KEY_VALUE ==KEY_DOWN ){ //power on KEY
           HAL_Delay(10);
-		 while(POWER_KEY_VALUE()  ==KEY_DOWN);
+		 while(POWER_KEY_VALUE  ==KEY_DOWN);
 
         run_t.keyValue= 0x80;
 		dispose_key(run_t.keyValue);// key handler 
@@ -52,10 +52,10 @@ void Single_RunMode(void)
 		
          
      }
-     else if(MODE_KEY_VALUE()==KEY_DOWN){ //Mode key 
+     else if(MODE_KEY_VALUE==KEY_DOWN){ //Mode key 
 	 	    
 	     	 HAL_Delay(10);
-	         while(MODE_KEY_VALUE()==KEY_DOWN);
+	         while(MODE_KEY_VALUE==KEY_DOWN);
 	 	  
 			run_t.keyValue= 0x40;
 			dispose_key(run_t.keyValue);//displaySmg_led_fun(run_t.keyValue);//Display_Smg_RunMode(run_t.keyValue );
@@ -65,10 +65,10 @@ void Single_RunMode(void)
 		
 		  
      }
-     else if(DEC_KEY_VALUE()==KEY_DOWN){ //"-" KEY
+     else if(DEC_KEY_VALUE==KEY_DOWN){ //"-" KEY
 	 	
 		  HAL_Delay(10);
-	 	if(DEC_KEY_VALUE()==KEY_DOWN);
+	 	if(DEC_KEY_VALUE==KEY_DOWN);
 			  
 	          run_t.keyValue= 0x20; //
 	          dispose_key(run_t.keyValue);//Display_Smg_RunMode(run_t.keyValue );
@@ -80,10 +80,10 @@ void Single_RunMode(void)
 		  
 		 
 	}
-     else if(ADD_KEY_VALUE()==KEY_DOWN){ //"+" KEY
+     else if(ADD_KEY_VALUE==KEY_DOWN){ //"+" KEY
 	 	 HAL_Delay(10);
 
-		  if(ADD_KEY_VALUE()==KEY_DOWN);
+		  if(ADD_KEY_VALUE==KEY_DOWN);
 		  	 
 	     	  run_t.keyValue= 0x10;
 	          dispose_key(run_t.keyValue);//Display_Smg_RunMode(run_t.keyValue );
@@ -240,7 +240,7 @@ void RunReference_Fun(void)
 
 	
     /******************timer timing *****************************/
-    Setup_Timer_Times();
+   // Setup_Timer_Times();
 
 	
     /*-----------------display temperature and humidity------------------*/

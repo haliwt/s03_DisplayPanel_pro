@@ -217,6 +217,23 @@ void DisplayTimer_Timing(void)
 				p = run_t. dispTime_minute /10;
 				q=  run_t. dispTime_minute %10;
 			   // TM1639_Write_4Bit_Data(m,n,p,q,0) ; //timer is default 12 hours "12:00"
+			   //hours
+		 lcd_t.number5_high = m;
+		 lcd_t.number5_low = m;
+
+		  lcd_t.number6_high = n;
+		 lcd_t.number6_low = n;
+
+		 //minutes 
+		 lcd_t.number7_high = p;
+		 lcd_t.number7_low = p;
+
+		  lcd_t.number8_high = q;
+		 lcd_t.number8_low = q;
+
+		 DisplayPanel_Ref_Handler();
+		
+			   
 
   }
 }

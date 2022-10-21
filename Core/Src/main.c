@@ -30,6 +30,7 @@
 #include "key.h"
 #include "cmd_link.h"
 #include "led.h"
+#include "run.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,10 +108,11 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+           
     /* USER CODE BEGIN 3 */
+    run_t.readKeyValue = KEY_Scan();
 	Single_Analysis_KeyMode();
-	Single_RunCmd();
+	//Single_RunCmd();
 //       TM1723_POWER_ON();
 //	LCD_BACK_LIGHT_ON()	;
 //    DisplayPanel_Handler();
