@@ -26,14 +26,15 @@ void Display_Temperature_Humidity_Value(void)
 		p = (run_t.gTimes_minutes_temp /10);
 		q=  (run_t.gTimes_minutes_temp %10);
 
-
+        //hours
 		 lcd_t.number5_high = m;
 		 lcd_t.number5_low = m;
 
 		  lcd_t.number6_high = n;
 		 lcd_t.number6_low = n;
 
-		  lcd_t.number7_high = p;
+		 //minutes 
+		 lcd_t.number7_high = p;
 		 lcd_t.number7_low = p;
 
 		  lcd_t.number8_high = q;
@@ -74,8 +75,22 @@ void Display_DHT11_Value(void)
         temp1 = run_t.gReal_humtemp[1]/10 %10;  // temperature
         temp2 = run_t.gReal_humtemp[1]%10;
 
-      // TM1639_Write_2bit_TempData(temp1,temp2);
-      // TM1639_Write_2bit_HumData(hum1,hum2);
+         //temperature 
+		 lcd_t.number1_high = temp1;
+		 lcd_t.number1_low = temp1;
+
+		  lcd_t.number2_high = temp2;
+		 lcd_t.number2_low = temp2;
+
+		 //humidity
+		 
+		 lcd_t.number3_high = hum1;
+		 lcd_t.number3_low = hum1;
+		 
+		 lcd_t.number4_high = hum2;
+		 lcd_t.number4_low = hum2;
+
+		 DisplayPanel_Ref_Handler();
       break;
 
       case WIFI_TIME: //time and temperature
@@ -120,7 +135,22 @@ void Display_DHT11_Value(void)
 				   p = run_t. dispTime_minute /10 %10;
 				   q=  run_t. dispTime_minute %10;
 				}
-			    //TM1639_Write_4Bit_Data(m,n,p,q,0) ; //timer is default 12 hours "12:00"
+
+                //hours
+				 lcd_t.number5_high = m;
+				 lcd_t.number5_low = m;
+
+				  lcd_t.number6_high = n;
+				 lcd_t.number6_low = n;
+
+				 //minutes 
+				 lcd_t.number7_high = p;
+				 lcd_t.number7_low = p;
+
+				  lcd_t.number8_high = q;
+				 lcd_t.number8_low = q;
+						
+			   DisplayPanel_Ref_Handler();
            
         } 
 
@@ -143,8 +173,23 @@ void Display_DHT11_Value(void)
 
 		   	      temp1 = run_t.gTemperature/10 %10;
 	              temp2 = run_t.gTemperature%10;
+
+				   //temperature 
+					 lcd_t.number1_high = temp1;
+					 lcd_t.number1_low = temp1;
+
+					  lcd_t.number2_high = temp2;
+					 lcd_t.number2_low = temp2;
+
+//					 //humidity
+//					 
+//					 lcd_t.number3_high = hum1;
+//					 lcd_t.number3_low = hum1;
+//					 
+//					 lcd_t.number4_high = hum2;
+//					 lcd_t.number4_low = hum2;
 					    
-				 //  TM1639_Write_4Bit_TemperatureData(temp1,temp2); //WT.EDIT 2022.09.01
+				  DisplayPanel_Ref_Handler();
                     
          }
       break;
