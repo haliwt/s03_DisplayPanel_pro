@@ -80,7 +80,7 @@ uint8_t KEY_Scan(void);
 
 
 uint8_t  KEY_GPIO_Scan(uint8_t mode);
-void JP_KEY(void);
+
 void WaitingPowerOn_Fun(void);
 
 #endif 

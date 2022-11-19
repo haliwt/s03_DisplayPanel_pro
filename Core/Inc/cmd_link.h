@@ -21,7 +21,7 @@ void SendData_Set_Timer(uint8_t hdata);
 void SendData_Buzzer(void);
 
 void SendData_AI(uint8_t dat);
-void Decode_Function(void);
+
 
 
 #endif 

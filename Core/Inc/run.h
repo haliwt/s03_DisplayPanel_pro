@@ -39,10 +39,11 @@ typedef struct __RUN{
    
    uint8_t  gTimer_Cmd;
    uint8_t  gPlasma;
-   uint8_t  gPlasma_flag;
+
    uint8_t  gDry;
-   uint8_t  gDry_flag;
+
    uint8_t  gAi;
+   uint8_t  gBug;
   
    uint8_t  gTimes_minutes_temp;
    
@@ -50,8 +51,7 @@ typedef struct __RUN{
    uint8_t  gWifi;
 
  
-   uint8_t  dry_key;
-   uint8_t  ster_key;
+
 
   
 
@@ -78,7 +78,7 @@ typedef struct __RUN{
    uint8_t temperature_set_flag;
 
    uint8_t gTimer_1hour;
-   uint8_t test_flag;
+   uint8_t rx_temphum_flag;
 	
   
    

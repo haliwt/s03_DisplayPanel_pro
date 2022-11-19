@@ -93,7 +93,7 @@ void Display_DHT11_Value(void)
 		 DisplayPanel_Ref_Handler();
       break;
 
-      case WIFI_TIME: //time and temperature
+      case WIFI_TIME: //GMT time 
           if((run_t.wifi_connect_flag ==1) && (run_t.gWifi ==0)){
 		  	run_t.single_data=0;
 		  	
@@ -106,14 +106,13 @@ void Display_DHT11_Value(void)
 
 	             
 	               run_t.wifisetTime[0]= run_t.gInputCmd[0];
-			        run_t.dispTime_hours=run_t.wifisetTime[0];
+			       run_t.dispTime_hours=run_t.wifisetTime[0];
 			 
-			       run_t.dispTime_minute = 0;
+			      run_t.dispTime_minute = 0;
 
 	              run_t.gTimer_Cmd=1;	 
 			    
 			      run_t.gTimer_setup_zero=0;
-			      //run_t.gTimer_Counter=0;
 		       	}
 			}
           else{
@@ -155,6 +154,7 @@ void Display_DHT11_Value(void)
         } 
 
       break;
+
          
       case  WIFI_TEMP:
            if((run_t.wifi_connect_flag ==1) && (run_t.gWifi ==0)){
@@ -193,6 +193,11 @@ void Display_DHT11_Value(void)
                     
          }
       break;
+
+	  case WIFI_CMD:
+                  
+
+	  break;
 
 	  
      

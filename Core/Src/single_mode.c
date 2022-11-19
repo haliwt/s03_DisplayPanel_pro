@@ -34,8 +34,7 @@ void Scan_KeyModel(void)
           HAL_Delay(10);
 		 while(POWER_KEY_VALUE()  ==KEY_DOWN);
 
-
-           run_t.wifiCmd[0]=0;
+             run_t.wifiCmd[0]=0;//rx wifi command 
 			  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
 			  	  run_t.gTimes_hours_temp=12;
 	              run_t.gPower_On=1;
@@ -47,8 +46,9 @@ void Scan_KeyModel(void)
 				  run_t.gPlasma=0;
 				  run_t.gDry =0;
 				  run_t.gWifi =0;
-				   
-	              // run_t.wifi_turn_off++;
+				   SendData_PowerOff(1);
+				   single_buzzer_fun();//SendData_Buzzer();
+	             
 			  }
 			  else{
                   
@@ -56,6 +56,8 @@ void Scan_KeyModel(void)
 				    run_t.gFan_RunContinue=1;
 		            run_t.gPower_On=0;
 					run_t.fan_off_60s =0;
+					SendData_PowerOff(0);
+					single_buzzer_fun();//SendData_Buzzer();
 		           
               }
 
@@ -80,6 +82,7 @@ void Scan_KeyModel(void)
 			   run_t.temperature_flag =1;
 			 
             }
+			single_buzzer_fun();//SendData_Buzzer();
            
 	     }
 		
@@ -89,6 +92,7 @@ void Scan_KeyModel(void)
 	 	
 		  HAL_Delay(10);
 	 	if(DEC_KEY_VALUE()==KEY_DOWN);
+		if(run_t.gPower_On ==1){
 		 if(run_t.gKeyTimer_mode==1){//times, is timer is 
                     
 			 	     run_t.dispTime_hours--;
@@ -117,8 +121,8 @@ void Scan_KeyModel(void)
 				        run_t.gTimer_key_60s=0;
 						run_t.gTimer_set_temperature=0;
 				 }
-              
-				
+              single_buzzer_fun();//SendData_Buzzer();
+			}	
 		
              
      }  
@@ -161,8 +165,8 @@ void Scan_KeyModel(void)
 						run_t.gTimer_set_temperature=0;
 					
 				 }
-
-             }
+				single_buzzer_fun();//SendData_Buzzer();
+            }
 			
 	}
 	
@@ -174,11 +178,12 @@ static void RunKeyOrder_Handler(void)
 {
 	if(run_t.gPower_On ==1 ){
 
-   		 Lcd_PowerOn_Fun();
-		 DisplayPanel_Ref_Handler();
-         SendData_PowerOff(1);
-
-		}
+        
+	 Lcd_PowerOn_Fun();
+	 DisplayPanel_Ref_Handler();
+     SendData_PowerOff(1);
+         
+	 }
 
 }
 
@@ -205,6 +210,24 @@ void RunCommand_Handler(void)
 	      Breath_Led();
 		  Power_Off();
      }
+}
+
+/**********************************************************************************************************
+**
+*Function Name:static void notifyStatusToHost(uint8_t lightNum,uint8_t filterNum,uint8_t unionNum)
+*Function : 
+*Input Ref:lightNum--LED ,filterNum -filter number, unionNum - smart menu number
+*Return Ref:NO
+*
+*********************************************************************************************************/
+void Decode_Function(void)
+{
+   if(run_t.decodeFlag ==1){
+   
+       run_t.decodeFlag =0;
+       
+       Display_DHT11_Value();
+    }
 }
 
 /****************************************************************

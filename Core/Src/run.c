@@ -17,8 +17,8 @@ void Power_Off(void);
 /**********************************************************************
 *
 *Functin Name: void Wifi_Receive_Cmd(uint8_t cmd)
-*Function : Timer of key be pressed handle
-*Input Ref:  key of value
+*Function :  wifi recieve data
+*Input Ref:  receive wifi send order
 *Return Ref: NO
 *
 **********************************************************************/
@@ -29,7 +29,7 @@ void Wifi_Receive_Cmd(uint8_t cmd)
       switch(cmd){
 
 
-		   case 0x80:
+		   case 0x80: //turn on 
 		 	
             if(wifip != run_t.wifi_turn_on){
                   wifip = run_t.wifi_turn_on;
@@ -40,99 +40,108 @@ void Wifi_Receive_Cmd(uint8_t cmd)
 			  run_t.gFan_RunContinue=0;
 			 
 			  run_t.gAi =0; //WT.EDIT 2022.09.01
-			  run_t.gPlasma=0;
-			  run_t.gDry =0;
 			  run_t.gWifi =0;
 
+			  run_t.gDry =0;
+			  run_t.gPlasma=0;
+              run_t.gBug =0;
 		      run_t.gPower_On =1;
-			 // SendData_PowerOff(1);
-                 Display_Temperature_Humidity_Value();
+			
+              //   Display_Temperature_Humidity_Value();
                 run_t.wifi_turn_off ++;
 	     
               } 
 
 	         break;
 
-			 case 0x81:
+			 case 0x81: //turn off 
                 
-				if(wifipn != run_t.wifi_turn_off){
+			 if(wifipn != run_t.wifi_turn_off){
                     wifipn = run_t.wifi_turn_off;
 			    run_t.gFan_RunContinue=1;
 	            run_t.gPower_On=0;
 				run_t.fan_off_60s =0;
-	           //  Smg_AllOff();
-
-					run_t.gFan_RunContinue=1; //WT.EDIT 2022.08.31
-					run_t.fan_off_60s = 0;
-                   //  SendData_PowerOff(0);
-					Display_Temperature_Humidity_Value();
-                    run_t.wifi_turn_on ++;
-                }
+	            run_t.gFan_RunContinue=1; //WT.EDIT 2022.08.31
+				run_t.fan_off_60s = 0;
+                Display_Temperature_Humidity_Value();
+                 run_t.wifi_turn_on ++;
+               }
 
 			 break;
 
-			 case 0x08 : //AI turn on
+			 case 0x08 : //AI turn on -> AI icon display 
                  if(run_t.gPower_On ==1){
-                    run_t.gAi =0;
-                    run_t.gDry =0;
-                    run_t.gPlasma = 0;
-				   
-                 }	
+				        run_t.gAi =0; //0-> has ,1->no gAi
+                   
+				 }	
 
 			 break;
 
-			 case 0x18:
+			 case 0x18: //icon don't display 
                  if(run_t.gPower_On ==1){
-			 	   run_t.gAi =1; //turon off AI mode
+				 	
+			 	      run_t.gAi =1; //turon off AI mode
+			 	   
                  }
              break;
 
 			 case 0x04: //kill turn on
                  if(run_t.gPower_On ==1){
-			     run_t.gPlasma = 0;
-			     run_t.ster_key =2;
-			     run_t.gFan_RunContinue =0;
+			
+			        run_t.gPlasma = 0;
+			        run_t.gFan_RunContinue =0;
                  }
 			 break;
 
 			 case 0x14: //kill turn off
                  if(run_t.gPower_On ==1){
 			 	  run_t.gPlasma =1;
-				   run_t.ster_key=1;
-				   
-				   if(run_t.gDry==1){
-			    	   run_t.gFan_RunContinue =1;
-					   run_t.fan_off_60s =0;
-		            }
-		            else run_t.gFan_RunContinue =0;
+				  run_t.gAi =1;
+		          run_t.gFan_RunContinue =0;
                 }
 			 break;
 
 			 case 0x02://dry turn on
                  if(run_t.gPower_On ==1){
 			        run_t.gDry =0;
-					run_t.dry_key =2;
                     run_t.gFan_RunContinue =0;
                  }
 
 			 break;
 
-			 case 0x12:
+			 case 0x12: //dry turn off
                  if(run_t.gPower_On ==1){
-			 	    run_t.gDry =1;
-					run_t.dry_key =1;
-
-				   if( run_t.gPlasma==1){
-			    	   run_t.gFan_RunContinue =1;
-					   run_t.fan_off_60s =0;
-		            }
-		            else run_t.gFan_RunContinue =0;
+			 	  
+					run_t.gDry=1;
+                    run_t.gAi =1;
+		            run_t.gFan_RunContinue =0;
 			 	}
 
 			 break;
 
+			 case 0x01:  //drive bug
+			   if(run_t.gPower_On ==1){
+							   
+				  run_t.gBug =0; //turn on 
+			
+				 run_t.gFan_RunContinue =0;
+			   }
 
-			 default :
+			 break;
+
+			 case 0x11: //drive bug turn off
+			 	
+			 if(run_t.gPower_On ==1){
+							   
+				 run_t.gBug=1;
+				 run_t.gAi =1;
+				 run_t.gFan_RunContinue =0;
+			  }
+
+			 break;
+
+
+	         default :
                   cmd =0;
 			 break;
 
