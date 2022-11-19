@@ -184,7 +184,7 @@ static void RunKeyOrder_Handler(void)
      SendData_PowerOff(1);
          
 	 }
-
+	 
 }
 
 /******************************************************************************
@@ -199,8 +199,8 @@ void RunCommand_Handler(void)
    if(run_t.gPower_On ==1 ){
         Decode_Function();
 		RunKeyOrder_Handler();
-
-     }
+   }
+  
     
    if(run_t.gWifi ==0) //wifi function turn 0n 
         Wifi_Receive_Cmd(run_t.wifiCmd[0]);

@@ -15,10 +15,7 @@ void (*panel_led_fun)(void);
 *******************************************************************************************/  
 void Breath_Led(void)
 {
-//    TURN_ON_LED() ;
-//	delay_ms(500);
-//	TURN_OFF_LED() ;
-//	delay_ms(500);
+
 
 	static uint32_t k;
    
@@ -75,7 +72,7 @@ void Lcd_PowerOff_Fun(void)
 	POWER_OFF_LED()  ;
 	LED_MODEL_OFF();
 	LCD_BACK_LIGHT_OFF();
-
+    TIM1723_Write_Cmd(0x80);//(0x94);//(0x9B);;
 
 
 }
