@@ -5,6 +5,7 @@
 #include "cmd_link.h"
 #include "led.h"
 #include "key.h"
+#include "lcd.h"
 
 
 
@@ -33,6 +34,7 @@ void Scan_KeyModel(void)
         if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
           HAL_Delay(10);
 		 while(POWER_KEY_VALUE()  ==KEY_DOWN);
+		  single_buzzer_fun();//SendData_Buzzer();
 
              run_t.wifiCmd[0]=0;//rx wifi command 
 			  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
@@ -47,17 +49,18 @@ void Scan_KeyModel(void)
 				  run_t.gDry =0;
 				  run_t.gWifi =0;
 				   SendData_PowerOff(1);
-				   single_buzzer_fun();//SendData_Buzzer();
+				  
 	             
 			  }
 			  else{
                   
-				  	run_t.power_key =2;
+
+					run_t.power_key =2;
 				    run_t.gFan_RunContinue=1;
 		            run_t.gPower_On=0;
 					run_t.fan_off_60s =0;
 					SendData_PowerOff(0);
-					single_buzzer_fun();//SendData_Buzzer();
+					
 		           
               }
 
@@ -176,12 +179,16 @@ void Scan_KeyModel(void)
 
 static void RunKeyOrder_Handler(void)
 {
-	if(run_t.gPower_On ==1 ){
+	static uint8_t powerOn=0xff;
+    if(run_t.gPower_On ==1 ){
 
-        
+//     if(powerOn != run_t.gPower_On){
+//         powerOn = run_t.gPower_On;
+//          SendData_PowerOff(1);
+//     }
 	 Lcd_PowerOn_Fun();
 	 DisplayPanel_Ref_Handler();
-     SendData_PowerOff(1);
+    
          
 	 }
 	 

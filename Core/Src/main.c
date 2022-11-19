@@ -95,12 +95,13 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM3_Init();
   delay_init(24);
-//  MX_TIM14_Init();
+
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim3);
- // HAL_TIM_Base_Start_IT(&htim14);
+  UART_Start_Receive_IT(&huart1,inputBuf,1);
   /* USER CODE END 2 */
+  
    Single_Add_RunCmd(DisplayTiming_KEY_Add_Subtract_Fun);
    Single_SendBuzzer_RunCmd(SendData_Buzzer);
    Panel_Led_OnOff_RunCmd(Panel_Led_OnOff_Function);
