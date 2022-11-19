@@ -2,6 +2,7 @@
 #include "usart.h"
 #include "gpio.h"
 #include "run.h"
+#include "display.h"
 
 
 volatile static uint8_t transOngoingFlag; //interrupt Transmit flag bit , 1---stop,0--run

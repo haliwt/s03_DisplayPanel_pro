@@ -116,6 +116,8 @@ void Power_Off(void);
 void DisplayTimer_Timing(void);
 
 void Wifi_Receive_Cmd(uint8_t cmd);
+void RunCommand_Handler(void);
+
 
 #endif 
 

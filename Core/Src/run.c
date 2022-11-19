@@ -237,6 +237,8 @@ void DisplayTimer_Timing(void)
 
   }
 }
+
+
 /*******************************************************************************
 	*
 	*Function Name:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
@@ -287,10 +289,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
    }
 	
    }
-    if(htim->Instance==TIM3){
-         tim14++;
-        
-    }
+
 
 }
 	

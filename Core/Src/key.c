@@ -2,6 +2,9 @@
 #include "gpio.h"
 #include "run.h"
 #include "delay.h"
+#include "led.h"
+#include "lcd.h"
+#include "cmd_link.h"
 
 
 key_types key_t;
@@ -10,19 +13,19 @@ uint8_t KEY_Scan(void)
    uint8_t  reval = 0;
   key_t.read = _KEY_ALL_OFF; //0xFF 
   
-   if(POWER_KEY_VALUE ==KEY_DOWN )// high level
+   if(POWER_KEY_VALUE() ==KEY_DOWN )// high level
 	{
 		key_t.read &= ~0x01; // 0xff & 0xfe =  0xFE
 	}
-    else if(MODE_KEY_VALUE ==KEY_DOWN )
+    else if(MODE_KEY_VALUE() ==KEY_DOWN )
 	{
 		key_t.read &= ~0x02; // 0xFf & 0xfd =  0xFD
 	}
-    else if(DEC_KEY_VALUE==KEY_DOWN )
+    else if(DEC_KEY_VALUE()==KEY_DOWN )
 	{
 		  key_t.read &= ~0x04; // 0xFf & 0xfB =  0xFB
 	}
-    else if(ADD_KEY_VALUE ==KEY_DOWN )
+    else if(ADD_KEY_VALUE() ==KEY_DOWN )
 	{
 		  key_t.read &= ~0x08; // 0x1f & 0xf7 =  0xF7
 	 }
@@ -47,7 +50,7 @@ uint8_t KEY_Scan(void)
 		{
 			if(key_t.read == key_t.buffer) // adjust key be down ->continunce be pressed key
 			{
-				if(++key_t.on_time> 800) //1000  0.5us
+				if(++key_t.on_time> 100) //1000  0.5us
 				{
 					key_t.value = key_t.buffer^_KEY_ALL_OFF; // key.value = 0xFE ^ 0xFF = 0x01
 					key_t.on_time = 0;                        //key .value = 0xEF ^ 0XFF = 0X10
@@ -78,7 +81,7 @@ uint8_t KEY_Scan(void)
 			}
 			else if(key_t.read == _KEY_ALL_OFF)  // loose hand 
 				{
-					if(++key_t.off_time>20) //30 don't holding key dithering
+					if(++key_t.off_time>50) //30 don't holding key dithering
 					{
 						key_t.value = key_t.buffer^_KEY_ALL_OFF; // key.value = 0x1E ^ 0x1f = 0x01
 						
@@ -100,7 +103,7 @@ uint8_t KEY_Scan(void)
 		{
 			if(key_t.read == _KEY_ALL_OFF)
 			{
-				if(++key_t.off_time>20)//50 //100
+				if(++key_t.off_time>5)//50 //100
 				{
 					key_t.state   = start;
                   
@@ -122,206 +125,124 @@ uint8_t KEY_Scan(void)
 
 //°´¼ü´¦Àíº¯Êý
 //·µ»Ø°´¼üÖµ
-//mode:0,²»Ö§³ÖÁ¬Ðø°´;1,Ö§³ÖÁ¬Ðø°´;
+//mode:0->don't continuce be pressed . 1->enable continuce be pressed
 //0£¬Ã»ÓÐÈÎºÎ°´¼ü°´ÏÂ
-//1£¬WKUP°´ÏÂ WK_UP
+//Enagle continuce be pressed: WK_UP
 //×¢Òâ´Ëº¯ÊýÓÐÏìÓ¦ÓÅÏÈ¼¶,KEY0>KEY1>KEY2>WK_UP!!
 uint8_t  KEY_GPIO_Scan(uint8_t mode)
 {
     static uint8_t key_up=1;     //release key flag
     if(mode==1)key_up=1;    // continuce to pressed
-    if(key_up&&(POWER_KEY_VALUE==1||MODE_KEY_VALUE==1||DEC_KEY_VALUE==1||ADD_KEY_VALUE==1))
+    if(key_up&&(POWER_KEY_VALUE()==1||MODE_KEY_VALUE()==1||DEC_KEY_VALUE()==1||ADD_KEY_VALUE()==1))
     {
         delay_ms(10);
         key_up=0;
-        if(POWER_KEY_VALUE==0)         return KEY0_PRES;
-        else if(MODE_KEY_VALUE==0)     return KEY1_PRES;
-        else if(DEC_KEY_VALUE==0)      return KEY2_PRES;
-        else if(ADD_KEY_VALUE==0)      return WKUP_PRES;          
-    }else if(POWER_KEY_VALUE==0&&MODE_KEY_VALUE==0&&DEC_KEY_VALUE==0&&ADD_KEY_VALUE==0)key_up=1;
+        if(POWER_KEY_VALUE()==0)         return KEY0_PRES;
+        else if(MODE_KEY_VALUE()==0)     return KEY1_PRES;
+        else if(DEC_KEY_VALUE()==0)      return KEY2_PRES;
+        else if(ADD_KEY_VALUE()==0)      return WKUP_PRES;          
+    }
+    else if(POWER_KEY_VALUE()==0&&MODE_KEY_VALUE()==0&&DEC_KEY_VALUE()==0&&ADD_KEY_VALUE()==0){
+        key_up=1;
+    }
     return 0;   //ÎÞ°´¼ü°´ÏÂ
 }
 
-/********************************************************************************************************
- 	*
- 	* Function Name:void SplitDispose_Key(uint8_t value)
- 	* Function : Touch key handler function 
- 	* Input Reference:NO
- 	* Return Reference:NO
- 	* 
-*********************************************************************************************************/
-void SplitDispose_Key(uint8_t value)
-{
-    static uint8_t plasma,wifi,dry,ai;
-	
-    
-    switch(value){
-        
-       case KEY_POWER: //Power On
-        //   powerKey = powerKey ^ 0x01;
-        //  if(powerKey ==1){
-              run_t.wifiCmd[0]=0;
-			  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
-			  	  run_t.gTimes_hours_temp=12;
-	              run_t.gPower_On=1;
-	          
-				  run_t.power_key =1;
-				  run_t.gFan_RunContinue=0;
-				 
-				  run_t.gAi =0; //WT.EDIT 2022.09.01
-				  run_t.gPlasma=0;
-				  run_t.gDry =0;
-				  run_t.gWifi =0;
-				   
-	              // run_t.wifi_turn_off++;
-			  }
-			  else{
-                  
-				  	run_t.power_key =2;
-				    run_t.gFan_RunContinue=1;
-		            run_t.gPower_On=0;
-					run_t.fan_off_60s =0;
-		           
-              }
-       
-         
-       
-        break;
-       
-       case KEY_MODE: //Mode On -> set time and timer 
-           if(run_t.gPower_On ==1){
-				
-			run_t.gKeyTimer_mode = run_t.gKeyTimer_mode ^ 0x01; //the same is "0",and differenct is "1"
 
-			if(run_t.gKeyTimer_mode == 1){
-                
-				run_t.gTimer_key_5s =0;
-				run_t.temperature_flag =0;
-		    }
-            else{
-               run_t.gKeyTimer_mode=0;
-			 
-			   run_t.temperature_flag =1;
-			 
-            }
-           
-	     }
-		   
-        break;
-        
-        case KEY_DEC: //CIN3 -> DEC KEY
-             if(run_t.gPower_On ==1){
-			
-			 	 if(run_t.gKeyTimer_mode==1){//times, is timer is 
-                    
-			 	     run_t.dispTime_hours--;
-				    if(run_t.dispTime_hours <0){
-						run_t.dispTime_hours=24;
-					}
-					
-					run_t.gTimer_key_5s=0;//run_t.gTimer_5s_start =1; //timer is 5s start be pressed key 
-				
-					
-					 run_t.temperature_flag =0;
-				 }
-				 else{ //setup temperature value 
-                    
-					 run_t.temperature_flag =1;
-				    //setup temperature of value,minimum 20,maximum 40
-					 run_t.gTemperature --;
-					 if(run_t.gTemperature<20) run_t.gTemperature=40;
-					  
-					  
-					   if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
-			            else run_t.temperature_set_flag=0;
-						
-					
-					    run_t.gTimer_key_4s=0;
-				        run_t.gTimer_key_60s=0;
-						run_t.gTimer_set_temperature=0;
-				 }
-              
-				
+
+
+
+/************************************************************************
+	*
+	*Function Name: void JP_KEY(void)
+	*Function : 
+	*Input Ref: NO
+	*Retrun Ref:NO
+	*
+************************************************************************/
+void JP_KEY(void)
+{
+
+    static uint8_t keypower;
+	if(POWER_KEY_VALUE() ==KEY_DOWN){
+
+		HAL_Delay(10);
+		while(POWER_KEY_VALUE()==KEY_DOWN);
+
+		run_t.keyValue= 0x80;
 		
-             
-             }
-           
-             
-         break;
-        
-        case KEY_ADD: //CIN2 ->ADD KEY
-             if(run_t.gPower_On ==1){
-			 	  
-				if(run_t.gKeyTimer_mode==1){
-                     run_t.gTimer_key_5s =0;
-				
-					 run_t.dispTime_hours++;
-				    if(run_t.dispTime_hours >24){
-						run_t.dispTime_hours=0;
-					}
-				
-					run_t.temperature_flag =0;
-					run_t.gTimer_key_5s =0;
-					
-					
-                    
-                    
-				 }
-				 else{
-				      run_t.temperature_flag =1;
-					  //setup temperature minimum 20, maximum 40
-				     run_t.gTemperature ++;
-                     if(run_t.gTemperature < 20)run_t.gTemperature= 20;
-					 else if(run_t.gTemperature >40) run_t.gTemperature=20;
-                     
-                      
-				     if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
-			            else run_t.temperature_set_flag=0;
 
+
+		
+			    if(run_t.gPower_On == 1){
+			         SendData_PowerOff(1);
+					 run_t.test_flag ++;
+			     }
+				else{
+					
+					SendData_PowerOff(0);
+					run_t.gFan_RunContinue=1; //WT.EDIT 2022.08.31
+					run_t.fan_off_60s = 0;
+					run_t.wifi_turn_on++; 
+				}
+
+		
+          POWER_ON_LED() ;
+	      Lcd_PowerOn_Fun();
+		  DisplayPanel_Ref_Handler();
+        
+		
+		
+	}
+	else if(MODE_KEY_VALUE() ==KEY_DOWN ){
+		   
+			HAL_Delay(10);
+			while(MODE_KEY_VALUE()==KEY_DOWN);
+
+			if(run_t.power_key ==1)
+			      Lcd_PowerOn_Fun();
 			
-				        run_t.gTimer_key_4s=0;
-						run_t.gTimer_key_60s=0;
-						run_t.gTimer_set_temperature=0;
-					
-				 }
+             run_t.keyValue= 0x20; //
+	        
+	        
+		      single_buzzer_fun();//SendData_Buzzer();
+	          single_add_fun();//DisplayTiming_KEY_Add_Subtract_Fun();
 
-             }
-            
-         break;
-         
-         case KEY_LONG_POWER: // Open Wifi function to connect network
-               if(run_t.gPower_On ==1){
-                   
-                   run_t.wifi_connect_label =1; //Wifi icon faster of blink.
-              
-			    }
-            
-         break;
-         
-        
-         
-        default :
-             
-         
-         break;
-        
-      }
 
+	}
+	else if(DEC_KEY_VALUE()==KEY_DOWN){ //"-"
+		    HAL_Delay(10);
+           while(DEC_KEY_VALUE()==KEY_DOWN);
+
+			  run_t.keyValue= 0x20; //
+	      
+	        
+		      single_buzzer_fun();//SendData_Buzzer();
+	          single_add_fun();//DisplayTiming_KEY_Add_Subtract_Fun();
+	   
+
+		
+	
+	}
+	else if(ADD_KEY_VALUE()==KEY_DOWN){ //"+"
+		
+           HAL_Delay(10);
+           while(ADD_KEY_VALUE()==KEY_DOWN);
+			run_t.keyValue= 0x10;
+	      
+		    single_buzzer_fun();//SendData_Buzzer();
+	        single_add_fun();//DisplayTiming_KEY_Add_Subtract_Fun();
+		
+
+	
+	}
+    else{
+    
+      DisplayPanel_Ref_Handler();
+    
+    
+    }
+	
 }
-
-//ÖÐ¶Ï·þÎñ³ÌÐòÖÐÐèÒª×öµÄÊÂÇé
-//ÔÚHAL¿âÖÐËùÓÐµÄÍâ²¿ÖÐ¶Ï·þÎñº¯Êý¶¼»áµ÷ÓÃ´Ëº¯Êý
-//GPIO_Pin:ÖÐ¶ÏÒý½ÅºÅ
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-
-//  do{
-
-//	run_t.readKeyValue = KEY_Scan();
-
-
-//  	}while(VK36N4D_INT_Pin==1);
-
- }
 
 

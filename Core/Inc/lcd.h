@@ -107,5 +107,8 @@ void DisplayPanel_Handler(void);
 
 void DisplayPanel_Ref_Handler(void);
 
+void TIM1723_Write_Cmd(uint8_t cmd);
+
+
 
 #endif 

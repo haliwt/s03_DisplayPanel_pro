@@ -5,16 +5,17 @@
 extern void (*single_ai_fun)(uint8_t cmd);
 extern void (*single_add_fun)(void);
 extern void (*sendAi_usart_fun)(uint8_t senddat);
-extern void (*dispose_key)(uint8_t dsdat);
 
 
-void Single_RunMode(void);
-void Single_RunCmd(void);
+void Scan_KeyModel(void);
 
-void Single_Analysis_KeyMode(void);
+void RunCommand_Handler(void);
 
 
-void RunReference_Fun(void);
+
+
+
+
 
 void Single_AI_RunCmd(void (*singlaieHandler)(uint8_t dat));
 

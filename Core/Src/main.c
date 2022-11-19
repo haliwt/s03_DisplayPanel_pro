@@ -31,6 +31,7 @@
 #include "cmd_link.h"
 #include "led.h"
 #include "run.h"
+#include "delay.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -93,29 +94,29 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM3_Init();
-  MX_TIM14_Init();
+  delay_init(24);
+//  MX_TIM14_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim3);
-  HAL_TIM_Base_Start_IT(&htim14);
+ // HAL_TIM_Base_Start_IT(&htim14);
   /* USER CODE END 2 */
    Single_Add_RunCmd(DisplayTiming_KEY_Add_Subtract_Fun);
    Single_SendBuzzer_RunCmd(SendData_Buzzer);
-   SplitDispose_Key_RunCmd(SplitDispose_Key);
-   PowerOn_LcdLed_OnOff(Lcd_PowerOn_Fun);
+   Panel_Led_OnOff_RunCmd(Panel_Led_OnOff_Function);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
   while (1)
   {
     /* USER CODE END WHILE */
            
     /* USER CODE BEGIN 3 */
-    run_t.readKeyValue = KEY_Scan();
-	Single_Analysis_KeyMode();
-	//Single_RunCmd();
-//       TM1723_POWER_ON();
-//	LCD_BACK_LIGHT_ON()	;
-//    DisplayPanel_Handler();
+
+
+	  Scan_KeyModel();
+      RunCommand_Handler();
+   
   }
   /* USER CODE END 3 */
 }

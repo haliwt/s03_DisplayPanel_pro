@@ -117,7 +117,7 @@ lcd_ref lcd_t;
 static void TM1723_Start(void);
 static void TM1723_Stop(void);
 static void TM1723_Write_OneByte(uint8_t data);
-static void TIM1723_Write_Cmd(uint8_t cmd);
+//static void TIM1723_Write_Cmd(uint8_t cmd);
 static void TM1723_Write_Display_Data(uint8_t addr,uint8_t dat);
 
 
@@ -168,7 +168,7 @@ static void TM1723_Write_OneByte(uint8_t data)
  }
 
 }
-static void TIM1723_Write_Cmd(uint8_t cmd)
+void TIM1723_Write_Cmd(uint8_t cmd)
 {
     TM1723_CLK_SetHigh();
 	TM1723_Start();

@@ -5,10 +5,13 @@
 
 #define INT_KEY_VALUE()              HAL_GPIO_ReadPin(TOUCH_KEY_INT_GPIO_Port ,TOUCH_KEY_INT_Pin)//
 
-#define POWER_KEY_VALUE            HAL_GPIO_ReadPin(KEY_POWER_GPIO_Port ,KEY_POWER_Pin)
-#define MODE_KEY_VALUE             HAL_GPIO_ReadPin(KEY_MODE_GPIO_Port,KEY_MODE_Pin)
-#define DEC_KEY_VALUE              HAL_GPIO_ReadPin(KEY_DEC_GPIO_Port,KEY_DEC_Pin)
-#define ADD_KEY_VALUE              HAL_GPIO_ReadPin(KEY_ADD_GPIO_Port,KEY_ADD_Pin)
+#define POWER_KEY_VALUE()            HAL_GPIO_ReadPin(KEY_POWER_GPIO_Port ,KEY_POWER_Pin)
+
+#define MODE_KEY_VALUE()             HAL_GPIO_ReadPin(KEY_MODE_GPIO_Port,KEY_MODE_Pin)
+
+
+#define DEC_KEY_VALUE()              HAL_GPIO_ReadPin(KEY_DEC_GPIO_Port,KEY_DEC_Pin)
+#define ADD_KEY_VALUE()              HAL_GPIO_ReadPin(KEY_ADD_GPIO_Port,KEY_ADD_Pin)
 
 #define VK36N4D_INT_VALUE()          HAL_GPIO_ReadPin(VK36N4D_INT_GPIO_Port,VK36N4D_INT_Pin) 
 
@@ -47,7 +50,7 @@ typedef enum
 
 typedef enum _key_value{
 
-  KEY_POWER= 0X01,KEY_MODE=0X02,KEY_DEC=0X04,KEY_ADD=0X08,KEY_LONG_POWER=0X81
+  KEY_POWER= 0X80,KEY_MODE=0X40,KEY_DEC=0X20,KEY_ADD=0X10,KEY_LONG_POWER=0X81
 
 }key_value;
 
@@ -73,8 +76,12 @@ typedef  struct  _state_
 
 
 void SplitDispose_Key(uint8_t value);
+uint8_t KEY_Scan(void);
 
 
+uint8_t  KEY_GPIO_Scan(uint8_t mode);
+void JP_KEY(void);
+void WaitingPowerOn_Fun(void);
 
 #endif 
 
