@@ -198,7 +198,7 @@ static void TM1723_Write_Display_Data(uint8_t addr,uint8_t dat)
  	* Return Ref:NO
  	* 
 *************************************************************************/ 
-void DisplayPanel_Handler(void)
+void DisplayPanel_TestHandler(void)
 {
      TIM1723_Write_Cmd(0x00);
 	 TIM1723_Write_Cmd(0x40);
@@ -274,9 +274,9 @@ void DisplayPanel_Ref_Handler(void)
 	 TIM1723_Write_Cmd(0x40);
 	 TIM1723_Write_Cmd(0x44);
 
-    TM1723_Write_Display_Data(0xC2,lcdNumber1_High[lcd_t.number1_high]+0x0F);//display digital "88"
+    TM1723_Write_Display_Data(0xC2,lcdNumber1_High[lcd_t.number1_high]+0x0F);//display digital "temperature"
 
-    
+    //T1->AI
     TM1723_Write_Display_Data(0xC3,lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high]);//display digital "88"
    
      
@@ -333,7 +333,7 @@ void DisplayPanel_Ref_Handler(void)
 	  else
 	  	   lcd_t.gTimer_fan_10ms=0;
 	//open display
-	 TIM1723_Write_Cmd(0x94);//(0x9B);
+	 TIM1723_Write_Cmd(0x95);//(0x94);//(0x9B);
 
 }
 

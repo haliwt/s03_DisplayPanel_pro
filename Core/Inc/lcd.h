@@ -103,7 +103,7 @@ typedef struct _LCD_Ref{
 
 extern lcd_ref lcd_t; 
 
-void DisplayPanel_Handler(void);
+void DisplayPanel_TestHandler(void);
 
 void DisplayPanel_Ref_Handler(void);
 

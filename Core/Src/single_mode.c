@@ -175,7 +175,7 @@ static void RunKeyOrder_Handler(void)
 	if(run_t.gPower_On ==1 ){
 
    		 Lcd_PowerOn_Fun();
-		 DisplayPanel_Handler();
+		 DisplayPanel_Ref_Handler();
          SendData_PowerOff(1);
 
 		}
