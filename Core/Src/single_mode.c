@@ -179,13 +179,10 @@ void Scan_KeyModel(void)
 
 static void RunKeyOrder_Handler(void)
 {
-	static uint8_t powerOn=0xff;
+	
     if(run_t.gPower_On ==1 ){
 
-//     if(powerOn != run_t.gPower_On){
-//         powerOn = run_t.gPower_On;
-//          SendData_PowerOff(1);
-//     }
+
 	 Lcd_PowerOn_Fun();
 	 DisplayPanel_Ref_Handler();
     

@@ -113,9 +113,7 @@ int main(void)
     /* USER CODE END WHILE */
            
     /* USER CODE BEGIN 3 */
-
-
-	  Scan_KeyModel();
+      Scan_KeyModel();
       RunCommand_Handler();
    
   }

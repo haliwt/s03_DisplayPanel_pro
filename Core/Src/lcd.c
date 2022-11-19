@@ -367,7 +367,7 @@ void DisplayPanel_Ref_Handler(void)
 	  else
 	  	   lcd_t.gTimer_fan_10ms=0;
 	//open display
-	 TIM1723_Write_Cmd(0x97);//(0x94);//(0x9B);
+	 TIM1723_Write_Cmd(0x95);//(0x94);//(0x9B);
 
 }
 
