@@ -110,12 +110,14 @@ void Scan_KeyModel(void)
 
 					 decade_hour = run_t.dispTime_hours / 10 %10;
 					 unit_hour = run_t.dispTime_hours % 10; //
-                       
-					 lcdNumber5_Low[decade_hour];  //
-					lcdNumber5_High[decade_hour];
+
+					 lcd_t.number5_low=decade_hour;
+                     lcd_t.number5_high =decade_hour;
+
+					 lcd_t.number6_low = unit_hour;
+					 lcd_t.number6_high = unit_hour;
 					
-					lcdNumber6_Low[unit_hour];
-					lcdNumber6_High[unit_hour];
+					
 						 
 					run_t.gTimer_key_5s=0;//run_t.gTimer_5s_start =1; //timer is 5s start be pressed key 
 				    run_t.temperature_flag =0;
@@ -163,11 +165,11 @@ void Scan_KeyModel(void)
 					run_t.temperature_flag =0;
 					run_t.gTimer_key_5s =0;
                     
-					lcdNumber5_Low[decade_hour];  //
-					lcdNumber5_High[decade_hour];
-					
-					lcdNumber6_Low[unit_hour];
-					lcdNumber6_High[unit_hour];
+					 lcd_t.number5_low=decade_hour;
+                     lcd_t.number5_high =decade_hour;
+
+					 lcd_t.number6_low = unit_hour;
+					 lcd_t.number6_high = unit_hour;
 					
                     
                     
