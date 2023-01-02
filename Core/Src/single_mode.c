@@ -64,6 +64,7 @@ void Scan_KeyModel(void)
 			  }
 			  else{
                   
+					run_t.gTiming_flag=0;
 
 					run_t.power_key =2;
 				    run_t.gFan_RunContinue=1;
