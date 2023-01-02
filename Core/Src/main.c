@@ -32,6 +32,7 @@
 #include "led.h"
 #include "run.h"
 #include "delay.h"
+#include "lcd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

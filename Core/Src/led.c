@@ -89,40 +89,7 @@ void Lcd_PowerOff_Fun(void)
 void Panel_Led_OnOff_Function(void)
 {
 	
-	 #if 0
-	  if(run_t.gAi==0){
-//		  AI_LED_OnOff(0)  ;
-//        DRY_LED_OnOff(0);
-//        STER_LED_OnOff(0);
-	  }
-	  else{
-	  	  if(run_t.gFan_RunContinue==1)
-	  	  	// AI_LED_OnOff(0)  ;
-	  	  else
-		    AI_LED_OnOff(1)  ;
-
-	  }
-	  
-     if(run_t.gAi == 1){ //WT.EDIT .2022.09.01
-		  if(run_t.gDry==0 )
-			  DRY_LED_OnOff(0);
-		  else 
-			 DRY_LED_OnOff(1);
-		 
-		  if(run_t.gPlasma==0)
-			STER_LED_OnOff(0); 
-		  else
-			 STER_LED_OnOff(1); 
-	 }
-
-
-    if(run_t.gWifi == 1){
-
-         LED_WIFI_OFF();
-
-	}
-	 
- #endif 
+ 
 }
 
 /*******************************************************************************************

@@ -94,6 +94,7 @@ typedef struct __RUN{
    uint8_t wifiCmd[2];
 
     int8_t dispTime_hours;
+	
     int8_t 	gTimes_hours_temp;
 
 
