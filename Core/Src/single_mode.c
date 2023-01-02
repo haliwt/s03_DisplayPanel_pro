@@ -11,6 +11,11 @@
 
 uint8_t decade_hour;
 uint8_t unit_hour;
+uint8_t decade_temp;
+uint8_t unit_temp;
+uint8_t decade_minute;
+uint8_t uint_minute;
+
 
 void (*single_ai_fun)(uint8_t cmd);
 void (*single_add_fun)(void);
@@ -19,6 +24,8 @@ void (*sendAi_usart_fun)(uint8_t senddat);
 
 
 static void RunKeyOrder_Handler(void);
+static void Timing_Handler(void);
+
 
 /*******************************************************************************
 	 * 
@@ -31,7 +38,7 @@ static void RunKeyOrder_Handler(void);
 void Scan_KeyModel(void)
 {
    
-     static uint8_t keypower;
+    
       //   decade_hour,unit_hour;
         if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
           HAL_Delay(20);
@@ -50,6 +57,7 @@ void Scan_KeyModel(void)
 				  run_t.gPlasma=0;
 				  run_t.gDry =0;
 				  run_t.gWifi =0;
+				  run_t.gTiming_flag=0;
 				   SendData_PowerOff(1);
 				  
 	             
@@ -104,7 +112,7 @@ void Scan_KeyModel(void)
 					
 
 					 if(run_t.dispTime_hours <0){
-                           run_t.dispTime_hours=24;
+                         run_t.dispTime_hours=24;
 
 					 }
 
@@ -117,7 +125,12 @@ void Scan_KeyModel(void)
 					 lcd_t.number6_low = unit_hour;
 					 lcd_t.number6_high = unit_hour;
 					
-					
+					if(run_t.dispTime_hours >0){
+						run_t.gTiming_flag =1;
+						run_t.gTimer_1_hour_counter=0;
+					    run_t.gTimer_minute_Counter=0;
+					}
+					else run_t.gTiming_flag =0;
 						 
 					run_t.gTimer_key_5s=0;//run_t.gTimer_5s_start =1; //timer is 5s start be pressed key 
 				    run_t.temperature_flag =0;
@@ -132,7 +145,16 @@ void Scan_KeyModel(void)
 					  
 					   if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
 			            else run_t.temperature_set_flag=0;
-						
+
+
+					 decade_temp =  run_t.gTemperature / 10 %10;
+					 unit_temp =  run_t.gTemperature % 10; //
+
+					 lcd_t.number5_low=decade_temp;
+                     lcd_t.number5_high =decade_temp;
+
+					 lcd_t.number6_low = unit_temp;
+					 lcd_t.number6_high = unit_temp;
 					
 					    run_t.gTimer_key_4s=0;
 				        run_t.gTimer_key_60s=0;
@@ -162,8 +184,7 @@ void Scan_KeyModel(void)
 					decade_hour = run_t.dispTime_hours / 10 %10;
 					 unit_hour = run_t.dispTime_hours % 10; //
 					 
-					run_t.temperature_flag =0;
-					run_t.gTimer_key_5s =0;
+					
                     
 					 lcd_t.number5_low=decade_hour;
                      lcd_t.number5_high =decade_hour;
@@ -171,19 +192,38 @@ void Scan_KeyModel(void)
 					 lcd_t.number6_low = unit_hour;
 					 lcd_t.number6_high = unit_hour;
 					
-                    
+                    if(run_t.dispTime_hours >0){
+						run_t.gTiming_flag =1;
+						run_t.gTimer_1_hour_counter=0;
+					    run_t.gTimer_minute_Counter=0;
+                    }
+					else run_t.gTiming_flag =0;
+
+					run_t.gTimer_key_5s=0;//run_t.gTimer_5s_start =1; //timer is 5s start be pressed key 
+				    run_t.temperature_flag =0;
+				
                     
 				 }
 				 else{ //temperature of value
 				      run_t.temperature_flag =1;
 					  //setup temperature minimum 20, maximum 40
 				     run_t.gTemperature ++;
-                     if(run_t.gTemperature < 20)run_t.gTemperature= 20;
-					 else if(run_t.gTemperature >40) run_t.gTemperature=20;
+                     if(run_t.gTemperature > 40)run_t.gTemperature= 20;
+					
                      
                       
 				     if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
 			            else run_t.temperature_set_flag=0;
+
+					 decade_temp =  run_t.gTemperature / 10 %10;
+					 unit_temp =  run_t.gTemperature % 10; //
+
+					 lcd_t.number5_low=decade_temp;
+                     lcd_t.number5_high =decade_temp;
+
+					 lcd_t.number6_low = unit_temp;
+					 lcd_t.number6_high = unit_temp;
+					
 
 			
 				        run_t.gTimer_key_4s=0;
@@ -199,6 +239,94 @@ void Scan_KeyModel(void)
     
 	 
   }
+/************************************************************************
+	*
+	*Function Name:static void Timing_Handler(void)
+	*
+	*
+	*
+	*
+************************************************************************/
+static void Timing_Handler(void)
+{
+   switch(run_t.gTiming_flag){
+
+    case 0:
+
+    break;
+
+	case 1://time timing is be setup 
+	   if(run_t.gTimer_minute_Counter >0){
+
+       
+		  	if(run_t.dispTime_minute ==0){
+			  run_t.dispTime_hours = run_t.dispTime_hours - 1;
+			  run_t.dispTime_minute = 59;
+			  if(run_t.dispTime_hours < 0){
+
+                  run_t.gTiming_flag = 2;
+				  run_t.dispTime_hours =0;
+			      run_t.gTiming_flag=0;
+				  run_t.dispTime_minute=0;
+
+			  }
+			  run_t.gTimer_minute_Counter=0;
+
+			  
+		  	}
+			else{
+			 
+			  run_t.dispTime_minute = run_t.dispTime_minute -1;
+
+			   run_t.gTimer_minute_Counter=0;
+
+
+			}
+
+			 decade_hour = run_t.dispTime_hours / 10 %10;
+			 unit_hour = run_t.dispTime_hours % 10; //
+
+			 decade_minute = run_t.dispTime_minute / 10 %10;
+			 uint_minute = run_t.dispTime_minute % 10; //
+					 
+			 lcd_t.number5_low=decade_hour;
+             lcd_t.number5_high =decade_hour;
+
+			 lcd_t.number6_low = unit_hour;
+			 lcd_t.number6_high = unit_hour;
+	   
+
+
+			lcd_t.number7_low = decade_minute;
+			lcd_t.number7_high = decade_minute;
+
+			lcd_t.number8_low = uint_minute;
+			lcd_t.number8_high = uint_minute;
+					 
+          }
+		  
+		 
+		
+	 
+
+	break;
+
+	case 2:
+		run_t.power_key =2;
+	    run_t.gFan_RunContinue=1;
+        run_t.gPower_On=0;
+		run_t.fan_off_60s =0;
+		SendData_PowerOff(0);
+					
+   break;
+
+
+
+   }
+
+
+
+}
 
 static void RunKeyOrder_Handler(void)
 {
@@ -207,6 +335,7 @@ static void RunKeyOrder_Handler(void)
 
 
 	 Lcd_PowerOn_Fun();
+	 Timing_Handler();
 	 DisplayPanel_Ref_Handler();
     
          

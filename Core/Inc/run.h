@@ -23,15 +23,14 @@ typedef struct __RUN{
    uint8_t gDht11_flag;
    uint8_t gTemperature;
  
-   uint8_t gTimer_Counter;
+   uint8_t gTimer_minute_Counter;
    
-  
-  
   uint8_t gTimer_setup_zero;
 
   uint8_t gFan_RunContinue;
 
   uint8_t temperature_flag;
+  uint8_t gTiming_flag;
   
    uint8_t usart_flag;
    uint8_t decodeFlag;
@@ -51,10 +50,6 @@ typedef struct __RUN{
    uint8_t  gWifi;
 
  
-
-
-  
-
    uint8_t  gTimer_fan_counter;
    uint8_t  gTimer_key_5s;
   

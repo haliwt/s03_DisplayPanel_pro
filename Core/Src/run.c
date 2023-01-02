@@ -283,7 +283,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	    if(tm2>59){//60s ->1 minute 
 	      tm2=0;
 		   run_t.gTimer_1_hour_counter++;
-		   run_t.gTimer_Counter ++;
+		   run_t.gTimer_minute_Counter ++;
 		 
 		  if(run_t.gTimer_1_hour_counter> 59){ // 1 hour
 	        run_t.gTimer_1_hour_counter=0;
