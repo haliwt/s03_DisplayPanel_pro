@@ -24,15 +24,12 @@ void Power_Off(void);
 **********************************************************************/
 void Wifi_Receive_Cmd(uint8_t cmd)
 {
-   static uint8_t wifip= 0xff,wifipn = 0xff;
-  
-      switch(cmd){
+	switch(cmd){
 
 
-		   case 0x80: //turn on 
+		   case WIFI_POWER_ON: //turn on 
 		 	
-            if(wifip != run_t.wifi_turn_on){
-                  wifip = run_t.wifi_turn_on;
+          
               run_t.gTimes_hours_temp=12;
               run_t.gPower_On=1;
           
@@ -47,71 +44,67 @@ void Wifi_Receive_Cmd(uint8_t cmd)
               run_t.gBug =0;
 		      run_t.gPower_On =1;
 			
-              //   Display_Temperature_Humidity_Value();
-                run_t.wifi_turn_off ++;
+               Display_Temperature_Humidity_Value();
+               run_t.wifi_turn_off ++;
 	     
-              } 
+              cmd=0xff;
 
 	         break;
 
-			 case 0x81: //turn off 
+			 case WIFI_POWER_OFF: //turn off 
                 
-			 if(wifipn != run_t.wifi_turn_off){
-                    wifipn = run_t.wifi_turn_off;
+			
 			    run_t.gFan_RunContinue=1;
 	            run_t.gPower_On=0;
 				run_t.fan_off_60s =0;
 	            run_t.gFan_RunContinue=1; //WT.EDIT 2022.08.31
 				run_t.fan_off_60s = 0;
-                Display_Temperature_Humidity_Value();
+                //Display_Temperature_Humidity_Value();
                  run_t.wifi_turn_on ++;
-               }
+               cmd=0xff;
 
 			 break;
 
-			 case 0x08 : //AI turn on -> AI icon display 
-                 if(run_t.gPower_On ==1){
-				        run_t.gAi =0; //0-> has ,1->no gAi
+			 case WIFI_MODE_1: //AI turn on -> AI icon display 
+                if(run_t.gPower_On==1)
+				      run_t.gAi =0; //0-> has ,1->no gAi
                    
-				 }	
-
-			 break;
-
-			 case 0x18: //icon don't display 
-                 if(run_t.gPower_On ==1){
-				 	
-			 	      run_t.gAi =1; //turon off AI mode
-			 	   
-                 }
+				 
              break;
 
-			 case 0x04: //kill turn on
-                 if(run_t.gPower_On ==1){
-			
-			        run_t.gPlasma = 0;
+			 case WIFI_MODE_2: //icon don't display 
+                 if(run_t.gPower_On==1)
+				 run_t.gAi =1; //turon off AI mode
+			 	   
+                 
+             break;
+
+			 case WIFI_KILL_ON: //kill turn on
+			  if(run_t.gPower_On==1){
+                    run_t.gPlasma = 0;
 			        run_t.gFan_RunContinue =0;
-                 }
+                } 
 			 break;
 
-			 case 0x14: //kill turn off
-                 if(run_t.gPower_On ==1){
+			 case WIFI_KILL_OFF: //kill turn off
+                if(run_t.gPower_On==1){
 			 	  run_t.gPlasma =1;
 				  run_t.gAi =1;
 		          run_t.gFan_RunContinue =0;
                 }
 			 break;
 
-			 case 0x02://dry turn on
-                 if(run_t.gPower_On ==1){
+			 case WIFI_PTC_ON://dry turn on
+                if(run_t.gPower_On==1){
 			        run_t.gDry =0;
                     run_t.gFan_RunContinue =0;
-                 }
-
+                 
+                }
 			 break;
 
-			 case 0x12: //dry turn off
-                 if(run_t.gPower_On ==1){
-			 	  
+			 case WIFI_PTC_OFF: //dry turn off
+               
+			 	if(run_t.gPower_On==1){
 					run_t.gDry=1;
                     run_t.gAi =1;
 		            run_t.gFan_RunContinue =0;
@@ -119,24 +112,29 @@ void Wifi_Receive_Cmd(uint8_t cmd)
 
 			 break;
 
-			 case 0x01:  //drive bug
-			   if(run_t.gPower_On ==1){
-							   
+			 case WIFI_SONIC_ON:  //drive bug
+		
+				 if(run_t.gPower_On==1){		   
 				  run_t.gBug =0; //turn on 
 			
 				 run_t.gFan_RunContinue =0;
-			   }
+			    }
 
 			 break;
 
-			 case 0x11: //drive bug turn off
-			 	
-			 if(run_t.gPower_On ==1){
-							   
-				 run_t.gBug=1;
-				 run_t.gAi =1;
-				 run_t.gFan_RunContinue =0;
-			  }
+			 case WIFI_SONIC_OFF: //drive bug turn off
+			 	if(run_t.gPower_On==1){
+				    run_t.gBug=1;
+					run_t.gAi =1;
+					run_t.gFan_RunContinue =0;
+			   }
+			 break;
+
+			 case WIFI_WIND_SPEED:
+                if(run_t.gPower_On==1){
+
+
+                }
 
 			 break;
 
@@ -146,9 +144,10 @@ void Wifi_Receive_Cmd(uint8_t cmd)
 			 break;
 
 			 
-           }
-
+        }
+   
 }
+
 
 /**********************************************************************
 *

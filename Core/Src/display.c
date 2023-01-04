@@ -66,7 +66,7 @@ void Display_DHT11_Value(void)
 
     switch(run_t.single_data){
     
-       case SINGLE_DATA:
+       case PANEL_DATA:
 	   	run_t.single_data=0;
     
         hum1 =  run_t.gReal_humtemp[0]/10 %10;  //Humidity 

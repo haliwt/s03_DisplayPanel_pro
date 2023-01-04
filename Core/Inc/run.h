@@ -2,9 +2,23 @@
 #define __RUN_H_
 #include "main.h"
 
-enum Signal{SINGLE_DATA=1,WIFI_INFO,WIFI_TIME,WIFI_TEMP,WIFI_CMD,WIFI_BEIJING_TIME};
 
-enum State{IDLE ,CODE, RUN};
+typedef enum WIFI_STATE_T{
+   
+    WIFI_POWER_ON = 0x80,
+    WIFI_POWER_OFF=0X81,
+    WIFI_MODE_1=0X08,   //state ->normal works
+    WIFI_MODE_2=0X18,   //state->sleeping works
+    WIFI_KILL_ON=0x04,  //Anion(plasma)
+    WIFI_KILL_OFF=0x14,
+    WIFI_PTC_ON = 0x02, 
+    WIFI_PTC_OFF = 0x12,
+    WIFI_SONIC_ON = 0x01,       //ultrasonic
+    WIFI_SONIC_OFF = 0x11,
+    WIFI_WIND_SPEED = 0x90
+
+
+}wifi_state_t;
 
 
 typedef struct __RUN{
@@ -64,6 +78,8 @@ typedef struct __RUN{
    uint8_t wifi_turn_off;
    uint8_t wifi_connect_flag;
    uint8_t wifi_connect_label;
+   uint8_t wifi_set_temperature;
+   uint8_t wifi_set_timing;
 
  
    

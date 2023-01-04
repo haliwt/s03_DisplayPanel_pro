@@ -160,7 +160,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				|| inputBuf[0]=='P' ||inputBuf[0] =='C' || inputBuf[0] == 'B') //'D'->data , 'W' ->wifi
 			{
 				state=3;
-				if(inputBuf[0]=='D') run_t.single_data=SINGLE_DATA; //receive data is single data
+				if(inputBuf[0]=='D') run_t.single_data=PANEL_DATA; //receive data is single data
                 else if(inputBuf[0]=='W') run_t.single_data = WIFI_INFO; //wifi data
 			    else if(inputBuf[0]=='T') run_t.single_data = WIFI_TIME; //times
                 else if(inputBuf[0]=='P') run_t.single_data = WIFI_TEMP;//temperature 
@@ -173,42 +173,52 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			break;
             
         case 3:
-            if(run_t.single_data==SINGLE_DATA)
+            if(run_t.single_data==PANEL_DATA){
                  run_t.gReal_humtemp[0]=inputBuf[0]; //Humidity value 
-             else if(run_t.single_data == WIFI_INFO)
-                 info = inputBuf[0]; //Humidity
-             else if(run_t.single_data == WIFI_CMD)
+                 state = 4;  
+            }
+            else if(run_t.single_data == WIFI_INFO){
+                  if(inputBuf[0]==0x01)
+                     run_t.wifi_connect_flag =1;
+                   else 
+                      run_t.wifi_connect_flag =0;
+                   
+                    state=0;
+                    run_t.decodeFlag=1;
+             
+             }
+            else if(run_t.single_data == WIFI_TIME){ //wifi modify temperature of value
+                 run_t.wifi_set_timing=inputBuf[0]; 
+                 state=0;
+                 run_t.decodeFlag=1;
+            }
+            else if(run_t.single_data == WIFI_TEMP){ //wifi modify temperature of value
+                 run_t.wifi_set_temperature=inputBuf[0]; 
+                 state=0;
+                 run_t.decodeFlag=1;
+            }
+            else if(run_t.single_data == WIFI_CMD){
                  run_t.wifiCmd[0] =inputBuf[0];
-			 else if(run_t.single_data == WIFI_BEIJING_TIME)
+                 state=0;
+                 run_t.decodeFlag=1; 
+             }
+			 else if(run_t.single_data == WIFI_BEIJING_TIME){
 			  	 run_t.gTimes_hours_temp  = inputBuf[0];
-             else
-              	 run_t.gInputCmd[0]=inputBuf[0]; //Humidity
-            state = 4;        
+                 state = 4; 
+             }
+            
+                  
             
         break;
         
-		case 4: //#3  if 'R' = hex:0x52
+		case 4: //
 
 		 if(run_t.single_data == WIFI_BEIJING_TIME){
-						 run_t.gTimes_minutes_temp = inputBuf[0];
-						 state =5;
+				run_t.gTimes_minutes_temp = inputBuf[0];
+				state =5;
 		 }
-		 else{ 
-             
-         if(run_t.single_data==SINGLE_DATA)
+		 else if(run_t.single_data==PANEL_DATA){
               run_t.gReal_humtemp[1]=inputBuf[0]; //temperature value
-         else if(run_t.single_data == WIFI_INFO){
-               if(inputBuf[0]==0xAA)
-		  	     run_t.wifi_connect_flag =1;
-               else 
-                  run_t.wifi_connect_flag =0;
-          }
-          else if(run_t.single_data == WIFI_CMD){
-                 run_t.wifiCmd[1] =inputBuf[0];
-          }
-		 
-		  else
-			 run_t.gInputCmd[1]=inputBuf[0];  //temperature value
 			
 		    run_t.decodeFlag=1;
 			state=0;

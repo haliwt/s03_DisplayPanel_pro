@@ -38,12 +38,15 @@ static void Timing_Handler(void);
 void Scan_KeyModel(void)
 {
    
-    
+       uint16_t k1;
       //   decade_hour,unit_hour;
         if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
           HAL_Delay(20);
-		 while(POWER_KEY_VALUE()  ==KEY_DOWN);
-		  single_buzzer_fun();//SendData_Buzzer();
+		 while(POWER_KEY_VALUE()  ==KEY_DOWN){
+             k1++;
+         };
+         if(k1<200){
+		     single_buzzer_fun();//SendData_Buzzer();
 
              run_t.wifiCmd[0]=0;//rx wifi command 
 			  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
@@ -58,7 +61,7 @@ void Scan_KeyModel(void)
 				  run_t.gDry =0;
 				  run_t.gWifi =0;
 				  run_t.gTiming_flag=0;
-				   SendData_PowerOff(1);
+				  SendData_PowerOff(1);
 				  
 	             
 			  }
@@ -74,7 +77,12 @@ void Scan_KeyModel(void)
 					
 		           
               }
-
+          }
+          else if(k1>300){
+             if( run_t.gPower_On==1)
+                  SendData_PowerOff(2);
+            
+          }
      }
      else if(MODE_KEY_VALUE()==KEY_DOWN){ //Mode key 
 	 	    
