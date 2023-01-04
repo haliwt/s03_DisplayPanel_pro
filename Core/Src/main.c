@@ -63,7 +63,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+   uint8_t keyValue;
 /* USER CODE END 0 */
 
 /**
@@ -73,7 +73,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -114,6 +114,7 @@ int main(void)
     /* USER CODE END WHILE */
            
     /* USER CODE BEGIN 3 */
+  
       Scan_KeyModel();
       RunCommand_Handler();
    

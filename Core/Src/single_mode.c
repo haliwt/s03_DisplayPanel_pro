@@ -7,8 +7,8 @@
 #include "key.h"
 #include "lcd.h"
 
-
-
+uint16_t k;
+uint8_t keyvalue;
 uint8_t decade_hour;
 uint8_t unit_hour;
 uint8_t decade_temp;
@@ -38,14 +38,13 @@ static void Timing_Handler(void);
 void Scan_KeyModel(void)
 {
    
-       uint16_t k1;
+     
       //   decade_hour,unit_hour;
         if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
           HAL_Delay(20);
-		 while(POWER_KEY_VALUE()  ==KEY_DOWN){
-             k1++;
-         };
-         if(k1<200){
+		 while(POWER_KEY_VALUE()  ==KEY_DOWN);
+       
+       
 		     single_buzzer_fun();//SendData_Buzzer();
 
              run_t.wifiCmd[0]=0;//rx wifi command 
@@ -77,12 +76,12 @@ void Scan_KeyModel(void)
 					
 		           
               }
-          }
-          else if(k1>300){
-             if( run_t.gPower_On==1)
-                  SendData_PowerOff(2);
-            
-          }
+          
+//          else if(k1>300){
+//             if( run_t.gPower_On==1)
+//                  SendData_PowerOff(2);
+//            
+//          }
      }
      else if(MODE_KEY_VALUE()==KEY_DOWN){ //Mode key 
 	 	    
@@ -250,12 +249,50 @@ void Scan_KeyModel(void)
   }
 /************************************************************************
 	*
-	*Function Name:static void Timing_Handler(void)
+	*Function Name: void Wifi_Key_Fun(void)
 	*
 	*
 	*
 	*
 ************************************************************************/
+void Wifi_Key_Fun(void)
+{
+    
+    if(run_t.gPower_On==1){
+      if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
+          HAL_Delay(20);
+	   while(POWER_KEY_VALUE() ==KEY_DOWN){
+            k++;
+       };
+       
+       if(k < 1000){
+           keyvalue = 0x01;
+       
+       }
+       else{
+       
+          keyvalue = 0x11;
+          k=0;
+          
+       }
+   
+   
+   
+   }
+
+
+  }
+  
+} 
+  
+/************************************************************************
+	*
+	*Function Name: void Wifi_Key_Fun(void)
+	*
+	*
+	*
+	*
+************************************************************************/  
 static void Timing_Handler(void)
 {
    switch(run_t.gTiming_flag){
@@ -336,7 +373,13 @@ static void Timing_Handler(void)
 
 
 }
-
+/******************************************************************************
+*
+*Function Name:void Single_RunCmd(void)
+*Funcion: handle of receive by usart data
+*
+*
+******************************************************************************/
 static void RunKeyOrder_Handler(void)
 {
 	
@@ -370,11 +413,13 @@ void RunCommand_Handler(void)
    if(run_t.gWifi ==0) //wifi function turn 0n 
         Wifi_Receive_Cmd(run_t.wifiCmd[0]);
 
-    if(run_t.gPower_On ==0 || run_t.gPower_On == 0xff){
+    
+   if(run_t.gPower_On ==0 || run_t.gPower_On == 0xff ){
 	 	
 	      Breath_Led();
 		  Power_Off();
-     }
+    }
+ 
 }
 
 /**********************************************************************************************************
