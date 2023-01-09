@@ -157,16 +157,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			break;
 		case 2://#2
 			if(inputBuf[0]=='D' || inputBuf[0]=='W' || inputBuf[0]=='T' \
-				|| inputBuf[0]=='P' ||inputBuf[0] =='C' || inputBuf[0] == 'B') //'D'->data , 'W' ->wifi
+				|| inputBuf[0]=='P' ||inputBuf[0] =='C' || inputBuf[0] == 'B' ||inputBuf[0] == 'S') //'D'->data , 'W' ->wifi
 			{
-				state=3;
+				
 				if(inputBuf[0]=='D') run_t.single_data=PANEL_DATA; //receive data is single data
                 else if(inputBuf[0]=='W') run_t.single_data = WIFI_INFO; //wifi data
 			    else if(inputBuf[0]=='T') run_t.single_data = WIFI_TIME; //times
                 else if(inputBuf[0]=='P') run_t.single_data = WIFI_TEMP;//temperature 
 				else if(inputBuf[0]=='C') run_t.single_data = WIFI_CMD; //command 
 				else if(inputBuf[0]=='B') run_t.single_data = WIFI_BEIJING_TIME;
-			    
+				else if(inputBuf[0]=='S') run_t.single_data = WIFI_WIND_SPEED;
+			    state=3;
 			}
 			else
 				state=0;
@@ -201,6 +202,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                  run_t.wifiCmd[0] =inputBuf[0];
                  state=0;
                  run_t.decodeFlag=1; 
+             }
+             else if(run_t.single_data == WIFI_WIND_SPEED){
+                 run_t.wifiCmd[0] =inputBuf[0];
+                 state=0;
+                 run_t.decodeFlag=1; 
+
              }
 			 else if(run_t.single_data == WIFI_BEIJING_TIME){
 			  	 run_t.gTimes_hours_temp  = inputBuf[0];
@@ -240,6 +247,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		default:
 			state=0;
 			run_t.decodeFlag=0;  //
+		break;
 
 		}
 		HAL_UART_Receive_IT(&huart1,inputBuf,1);//UART receive data interrupt 1 byte

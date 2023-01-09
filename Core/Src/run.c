@@ -10,19 +10,15 @@ RUN_T run_t;
 uint8_t tim3,tim14;
 void Power_Off(void);
 
-
-
-
-
 /**********************************************************************
 *
-*Functin Name: void Wifi_Receive_Cmd(uint8_t cmd)
+*Functin Name: void Receive_ManiBoard_Cmd(uint8_t cmd)
 *Function :  wifi recieve data
 *Input Ref:  receive wifi send order
 *Return Ref: NO
 *
 **********************************************************************/
-void Wifi_Receive_Cmd(uint8_t cmd)
+void Receive_ManiBoard_Cmd(uint8_t cmd)
 {
 	switch(cmd){
 
@@ -36,12 +32,12 @@ void Wifi_Receive_Cmd(uint8_t cmd)
 			  run_t.power_key =1;
 			  run_t.gFan_RunContinue=0;
 			 
-			  run_t.gAi =0; //WT.EDIT 2022.09.01
-			  run_t.gWifi =0;
+			  run_t.gModel =1; //WT.EDIT 2022.09.01
+			  run_t.gWifi =1;
 
-			  run_t.gDry =0;
-			  run_t.gPlasma=0;
-              run_t.gBug =0;
+			  run_t.gDry =1;
+			  run_t.gPlasma=1;
+              run_t.gBug =1;
 		      run_t.gPower_On =1;
 			
                Display_Temperature_Humidity_Value();
@@ -65,23 +61,22 @@ void Wifi_Receive_Cmd(uint8_t cmd)
 
 			 break;
 
-			 case WIFI_MODE_1: //AI turn on -> AI icon display 
+			case WIFI_MODE_1: //AI turn on -> AI icon display 
                 if(run_t.gPower_On==1)
-				      run_t.gAi =0; //0-> has ,1->no gAi
+				     run_t.gModel =1; //0-> has ,1->no gModel
                    
-				 
-             break;
+			break;
 
 			 case WIFI_MODE_2: //icon don't display 
                  if(run_t.gPower_On==1)
-				 run_t.gAi =1; //turon off AI mode
+				 run_t.gModel =2; //turon off AI mode
 			 	   
                  
              break;
 
-			 case WIFI_KILL_ON: //kill turn on
+			 case WIFI_KILL_ON: //kill turn on plasma
 			  if(run_t.gPower_On==1){
-                    run_t.gPlasma = 0;
+                    run_t.gPlasma = 1;
 			        run_t.gFan_RunContinue =0;
                 } 
 			 break;
@@ -89,14 +84,14 @@ void Wifi_Receive_Cmd(uint8_t cmd)
 			 case WIFI_KILL_OFF: //kill turn off
                 if(run_t.gPower_On==1){
 			 	  run_t.gPlasma =1;
-				  run_t.gAi =1;
+				  
 		          run_t.gFan_RunContinue =0;
                 }
 			 break;
 
 			 case WIFI_PTC_ON://dry turn on
                 if(run_t.gPower_On==1){
-			        run_t.gDry =0;
+			        run_t.gDry =1;
                     run_t.gFan_RunContinue =0;
                  
                 }
@@ -105,8 +100,8 @@ void Wifi_Receive_Cmd(uint8_t cmd)
 			 case WIFI_PTC_OFF: //dry turn off
                
 			 	if(run_t.gPower_On==1){
-					run_t.gDry=1;
-                    run_t.gAi =1;
+					run_t.gDry=0;
+                 
 		            run_t.gFan_RunContinue =0;
 			 	}
 
@@ -115,7 +110,7 @@ void Wifi_Receive_Cmd(uint8_t cmd)
 			 case WIFI_SONIC_ON:  //drive bug
 		
 				 if(run_t.gPower_On==1){		   
-				  run_t.gBug =0; //turn on 
+				  run_t.gBug =1; //turn on 
 			
 				 run_t.gFan_RunContinue =0;
 			    }
@@ -124,14 +119,21 @@ void Wifi_Receive_Cmd(uint8_t cmd)
 
 			 case WIFI_SONIC_OFF: //drive bug turn off
 			 	if(run_t.gPower_On==1){
-				    run_t.gBug=1;
-					run_t.gAi =1;
+				    run_t.gBug=0;
 					run_t.gFan_RunContinue =0;
 			   }
 			 break;
 
-			 case WIFI_WIND_SPEED:
+			 case  WIFI_WIND_SPEED_ITEM :
                 if(run_t.gPower_On==1){
+
+
+                }
+
+			 break;
+
+			 case WIFI_TEMPERATURE:
+ 				if(run_t.gPower_On==1){
 
 
                 }
@@ -164,7 +166,7 @@ void Power_Off(void)
 			     run_t.gPower_On =0xff;
 			 	 // Smg_AllOff();
 				
-		         run_t.gAi =0;
+		         run_t.gModel =0;
 				
 				 run_t.gPlasma=0;
 				 run_t.gDry=0;

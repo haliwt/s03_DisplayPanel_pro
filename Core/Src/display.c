@@ -91,6 +91,7 @@ void Display_DHT11_Value(void)
 		 lcd_t.number4_low = hum2;
 
 		 DisplayPanel_Ref_Handler();
+		 run_t.single_data=0xff;
       break;
 
       case WIFI_TIME: //GMT time 
@@ -152,7 +153,7 @@ void Display_DHT11_Value(void)
 			   DisplayPanel_Ref_Handler();
            
         } 
-
+        run_t.single_data=0xff;
       break;
 
          
@@ -181,36 +182,16 @@ void Display_DHT11_Value(void)
 					  lcd_t.number2_high = temp2;
 					 lcd_t.number2_low = temp2;
 
-//					 //humidity
-//					 
-//					 lcd_t.number3_high = hum1;
-//					 lcd_t.number3_low = hum1;
-//					 
-//					 lcd_t.number4_high = hum2;
-//					 lcd_t.number4_low = hum2;
 					    
 				  DisplayPanel_Ref_Handler();
                     
          }
+		 run_t.single_data=0xff;
       break;
 
-	  case WIFI_CMD:
-                  
+	 
 
-	  break;
-
-	  
-     
-         
-    
-      default:
-         run_t.single_data=0;
-      	
-      break;
-
-
-
-  }
+     }
 }  
 
 

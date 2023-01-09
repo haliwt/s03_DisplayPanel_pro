@@ -15,7 +15,8 @@ typedef enum WIFI_STATE_T{
     WIFI_PTC_OFF = 0x12,
     WIFI_SONIC_ON = 0x01,       //ultrasonic
     WIFI_SONIC_OFF = 0x11,
-    WIFI_WIND_SPEED = 0x90
+    WIFI_WIND_SPEED_ITEM = 0x90,
+    WIFI_TEMPERATURE = 0xA0
 
 
 }wifi_state_t;
@@ -55,7 +56,7 @@ typedef struct __RUN{
 
    uint8_t  gDry;
 
-   uint8_t  gAi;
+   uint8_t  gModel;
    uint8_t  gBug;
   
    uint8_t  gTimes_minutes_temp;
@@ -73,7 +74,7 @@ typedef struct __RUN{
 
    uint8_t single_data;
    uint8_t fan_off_60s;
-   uint8_t wifi_receive_cmd_flag;
+   uint8_t Receive_ManiBoard_Cmd_flag;
    uint8_t wifi_turn_on;
    uint8_t wifi_turn_off;
    uint8_t wifi_connect_flag;
@@ -127,7 +128,7 @@ void SplitDispose_Key(uint8_t value);
 void Power_Off(void);
 void DisplayTimer_Timing(void);
 
-void Wifi_Receive_Cmd(uint8_t cmd);
+void Receive_ManiBoard_Cmd(uint8_t cmd);
 void RunCommand_Handler(void);
 
 

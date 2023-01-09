@@ -37,10 +37,8 @@ static void Timing_Handler(void);
 *******************************************************************************/
 void Scan_KeyModel(void)
 {
-   
-     
-      //   decade_hour,unit_hour;
-        if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
+   //   decade_hour,unit_hour;
+     if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
           HAL_Delay(20);
 		 while(POWER_KEY_VALUE()  ==KEY_DOWN);
        
@@ -55,7 +53,7 @@ void Scan_KeyModel(void)
 				  run_t.power_key =1;
 				  run_t.gFan_RunContinue=0;
 				 
-				  run_t.gAi =0; //WT.EDIT 2022.09.01
+				  run_t.gModel =0; //WT.EDIT 2022.09.01
 				  run_t.gPlasma=0;
 				  run_t.gDry =0;
 				  run_t.gWifi =0;
@@ -404,15 +402,15 @@ static void RunKeyOrder_Handler(void)
 ******************************************************************************/
 void RunCommand_Handler(void)
 {
+   //key input run function
    if(run_t.gPower_On ==1 ){
-        Decode_Function();
-		RunKeyOrder_Handler();
+       RunKeyOrder_Handler();
    }
-  
-    
-   if(run_t.gWifi ==0) //wifi function turn 0n 
-        Wifi_Receive_Cmd(run_t.wifiCmd[0]);
-
+   //receive from mainboard data 
+   if(run_t.decodeFlag ==1){
+       run_t.decodeFlag =0;
+       Decode_Function();
+     }
     
    if(run_t.gPower_On ==0 || run_t.gPower_On == 0xff ){
 	 	
@@ -432,12 +430,11 @@ void RunCommand_Handler(void)
 *********************************************************************************************************/
 void Decode_Function(void)
 {
-   if(run_t.decodeFlag ==1){
    
-       run_t.decodeFlag =0;
-       
-       Display_DHT11_Value();
-    }
+   Receive_ManiBoard_Cmd(run_t.wifiCmd[0]);
+    
+   Display_DHT11_Value();
+    
 }
 
 /****************************************************************

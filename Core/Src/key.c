@@ -72,7 +72,7 @@ key_types key_t;
 //		}
 //		case second:
 //		{
-//			if(key_t.read == key_t.buffer) //again adjust key if be pressed down 
+//			if(key_t.read == key_t.buffer) //agModeln adjust key if be pressed down 
 //			{
 //				if(++key_t.on_time>50000)// 10000 long key be down
 //				{
