@@ -306,14 +306,14 @@ void DisplayPanel_Ref_Handler(void)
     Display_Kill_Dry_Ster_Icon();
 	
     //T1->AI
-    if(run_t.gModel==0)
+    if(run_t.gModel==1)
        TM1723_Write_Display_Data(0xC3,lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high]);//display  "AI icon"
      else 
 	 	TM1723_Write_Display_Data(0xC3,lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high]);//don't display "AI icon"
      //
 	 TM1723_Write_Display_Data(0xC4,0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high]);//display "t,c"
 	 
-     //wifi icon
+     //T2->WIFI icon -> 0xC5
      if(run_t.wifi_connect_flag ==0){ //hasn't wifi
 		 if(lcd_t.gTimer_wifi_500ms >49 && lcd_t.gTimer_wifi_500ms<100){
 	          
@@ -330,7 +330,7 @@ void DisplayPanel_Ref_Handler(void)
 	 else{
            TM1723_Write_Display_Data(0xC5,WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number3_high]); //Wifi
 	 }
-     //end wifi icon address "0xC9"-numbers "4-B,G,C","5-A,F,E,D"
+     //Humidity Icon "0xC9"-numbers "4-B,G,C","5-A,F,E,D"
      TM1723_Write_Display_Data(0xC9,0x01+lcdNumber4_Low[lcd_t.number4_low]+lcdNumber5_High[lcd_t.number5_high]);//display digital '4,5'
 
 	 //T15,"0xCA"Numbers"5-B,G,C","6-A,F,E,D"
@@ -380,18 +380,18 @@ static void Display_Kill_Dry_Ster_Icon(void)
 
   if(run_t.gDry==1 && run_t.gPlasma==1 && run_t.gBug==1){
 
-     //Address C2 ->low_byte->T3,T4,T5,T6,high_byte->1A,1F,1E,1D 
-     TM1723_Write_Display_Data(0xC2,0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol+lcdNumber1_High[lcd_t.number1_high]);//display digital "temp
-      TIM1723_Write_Cmd(LUM_VALUE);
+     //[T3,T4,T5,T6,---- ] ->Address C2 ->low_byte->T3,T4,T5,T6,high_byte->1A,1F,1E,1D 
+     TM1723_Write_Display_Data(0xC2,(0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol)+lcdNumber1_High[lcd_t.number1_high]);//display digital "temp
+     TIM1723_Write_Cmd(LUM_VALUE);
   }
-   else if(run_t.gDry==0 && run_t.gPlasma==1 && run_t.gBug==1){
+  else if(run_t.gDry==0 && run_t.gPlasma==1 && run_t.gBug==1){
 
-        TM1723_Write_Display_Data(0xC2,0X01+DRY_NO_Symbol+KILL_Symbol+BUG_Symbol+lcdNumber1_High[lcd_t.number1_high]);//display digital "temp
+      TM1723_Write_Display_Data(0xC2,((0X01+DRY_NO_Symbol+KILL_Symbol+BUG_Symbol)&0x0d)+lcdNumber1_High[lcd_t.number1_high]);//display digital "temp
       TIM1723_Write_Cmd(LUM_VALUE);
    }
    else if(run_t.gDry==0 && run_t.gPlasma==0 && run_t.gBug ==1){
 
-        TM1723_Write_Display_Data(0xC2,0X01+DRY_NO_Symbol+KILL_NO_Symbol+BUG_Symbol+lcdNumber1_High[lcd_t.number1_high]);//display digit
+        TM1723_Write_Display_Data(0xC2,((0X01+DRY_NO_Symbol+KILL_NO_Symbol+BUG_Symbol)& 0x9)+lcdNumber1_High[lcd_t.number1_high]);//display digit
         TIM1723_Write_Cmd(LUM_VALUE);
    }
   else if(run_t.gDry==0 && run_t.gPlasma==0 && run_t.gBug ==0){
@@ -401,14 +401,26 @@ static void Display_Kill_Dry_Ster_Icon(void)
   }
   else if(run_t.gDry==1 && run_t.gPlasma==0 && run_t.gBug ==1){
 
-        TM1723_Write_Display_Data(0xC2,0X01+DRY_Symbol+KILL_NO_Symbol+BUG_Symbol+lcdNumber1_High[lcd_t.number1_high]);//display digit
+        TM1723_Write_Display_Data(0xC2,((0X01+DRY_Symbol+KILL_NO_Symbol+BUG_Symbol)&0x0b)+lcdNumber1_High[lcd_t.number1_high]);//display digit
         TIM1723_Write_Cmd(LUM_VALUE);
   }
   else if(run_t.gDry==1 && run_t.gPlasma==0 && run_t.gBug ==0){
 
-        TM1723_Write_Display_Data(0xC2,0X01+DRY_Symbol+KILL_NO_Symbol+BUG_NO_Symbol+lcdNumber1_High[lcd_t.number1_high]);//display digit
+        TM1723_Write_Display_Data(0xC2,((0X01+DRY_Symbol+KILL_NO_Symbol+BUG_NO_Symbol)&0x03)+lcdNumber1_High[lcd_t.number1_high]);//display digit
        TIM1723_Write_Cmd(LUM_VALUE);
   }
+  else if(run_t.gDry==0 && run_t.gPlasma==1 && run_t.gBug ==0){
+   
+		  TM1723_Write_Display_Data(0xC2,((0X01+DRY_NO_Symbol+KILL_Symbol+BUG_NO_Symbol)&0x05)+lcdNumber1_High[lcd_t.number1_high]);//display digit
+		  TIM1723_Write_Cmd(LUM_VALUE);
+ }
+  else if(run_t.gDry==1 && run_t.gPlasma==1 && run_t.gBug ==0){
+	 
+			TM1723_Write_Display_Data(0xC2,((0X01+DRY_Symbol+KILL_Symbol+BUG_NO_Symbol)&0x07)+lcdNumber1_High[lcd_t.number1_high]);//display digit
+			TIM1723_Write_Cmd(LUM_VALUE);
+   }
+
+  
    TIM1723_Write_Cmd(LUM_VALUE);
    
 }

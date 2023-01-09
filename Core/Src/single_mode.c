@@ -403,14 +403,14 @@ static void RunKeyOrder_Handler(void)
 void RunCommand_Handler(void)
 {
    //key input run function
-   if(run_t.gPower_On ==1 ){
+   if(run_t.gPower_On ==1 &&  run_t.decodeFlag ==0){
        RunKeyOrder_Handler();
    }
    //receive from mainboard data 
    if(run_t.decodeFlag ==1){
        run_t.decodeFlag =0;
        Decode_Function();
-     }
+    }
     
    if(run_t.gPower_On ==0 || run_t.gPower_On == 0xff ){
 	 	
