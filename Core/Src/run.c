@@ -83,7 +83,7 @@ void Receive_ManiBoard_Cmd(uint8_t cmd)
 
 			 case WIFI_KILL_OFF: //kill turn off
                 if(run_t.gPower_On==1){
-			 	  run_t.gPlasma =1;
+			 	  run_t.gPlasma =0;
 				  
 		          run_t.gFan_RunContinue =0;
                 }
