@@ -309,7 +309,7 @@ void DisplayPanel_Ref_Handler(void)
     if(run_t.gModel==1)
        TM1723_Write_Display_Data(0xC3,lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high]);//display  "AI icon"
      else 
-	 	TM1723_Write_Display_Data(0xC3,lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high]);//don't display "AI icon"
+	 	TM1723_Write_Display_Data(0xC3,(lcdNumber1_Low[lcd_t.number1_low]&0x0e)+lcdNumber2_High[lcd_t.number2_high]);//don't display "AI icon"
      //
 	 TM1723_Write_Display_Data(0xC4,0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high]);//display "t,c"
 	 
