@@ -22,6 +22,7 @@ void (*single_add_fun)(void);
 void (*single_buzzer_fun)(void);
 void (*sendAi_usart_fun)(uint8_t senddat);
 
+static void Receive_Wifi_Cmd(uint8_t cmd);
 
 static void RunKeyOrder_Handler(void);
 static void Timing_Handler(void);
@@ -87,8 +88,10 @@ void Scan_KeyModel(void)
 	 	    
 	     	 HAL_Delay(20);
 	         while(MODE_KEY_VALUE()==KEY_DOWN);
+			
 	 	  
 			if(run_t.gPower_On ==1){
+				single_buzzer_fun();
 				
 			run_t.gKeyTimer_mode = run_t.gKeyTimer_mode ^ 0x01; //the same is "0",and differenct is "1"
 
@@ -113,7 +116,9 @@ void Scan_KeyModel(void)
 	 	
 		  HAL_Delay(20);
         while(DEC_KEY_VALUE()==KEY_DOWN);
+		
 		if(run_t.gPower_On ==1){
+			single_buzzer_fun();
 		 if(run_t.gKeyTimer_mode==1){//times, is timer is 
                     
 			 	    run_t.dispTime_hours--;
@@ -177,8 +182,10 @@ void Scan_KeyModel(void)
 	 	 HAL_Delay(20);
 
 		  while(ADD_KEY_VALUE()==KEY_DOWN);
+		 
 		  	 
 	     	  if(run_t.gPower_On ==1){
+			  	single_buzzer_fun();
 			 	  
 				if(run_t.gKeyTimer_mode==1){ //timing of timers is times 
                      run_t.gTimer_key_5s =0;
@@ -370,6 +377,33 @@ static void Timing_Handler(void)
 
 
 }
+
+/******************************************************************************
+*
+*Function Name:void RunPocess_Command_Handler(void)
+*Funcion: handle of tall process 
+*
+*
+******************************************************************************/
+void RunPocess_Command_Handler(void)
+{
+   //key input run function
+   if(run_t.gPower_On ==1 &&  run_t.decodeFlag ==0){
+       RunKeyOrder_Handler();
+   }
+   //receive from mainboard data 
+   if(run_t.decodeFlag ==1){
+       run_t.decodeFlag =0;
+       Decode_Function();
+    }
+    
+   if(run_t.gPower_On ==0 || run_t.gPower_On == 0xff ){
+	 	
+	      Breath_Led();
+		  Power_Off();
+    }
+ 
+}
 /******************************************************************************
 *
 *Function Name:void Single_RunCmd(void)
@@ -391,33 +425,6 @@ static void RunKeyOrder_Handler(void)
 	 
 }
 
-/******************************************************************************
-*
-*Function Name:void Single_RunCmd(void)
-*Funcion: handle of receive by usart data
-*
-*
-******************************************************************************/
-void RunCommand_Handler(void)
-{
-   //key input run function
-   if(run_t.gPower_On ==1 &&  run_t.decodeFlag ==0){
-       RunKeyOrder_Handler();
-   }
-   //receive from mainboard data 
-   if(run_t.decodeFlag ==1){
-       run_t.decodeFlag =0;
-       Decode_Function();
-    }
-    
-   if(run_t.gPower_On ==0 || run_t.gPower_On == 0xff ){
-	 	
-	      Breath_Led();
-		  Power_Off();
-    }
- 
-}
-
 /**********************************************************************************************************
 **
 *Function Name:static void notifyStatusToHost(uint8_t lightNum,uint8_t filterNum,uint8_t unionNum)
@@ -429,10 +436,7 @@ void RunCommand_Handler(void)
 void Decode_Function(void)
 {
    
-  // Receive_ManiBoard_Cmd(run_t.wifiCmd[0]);
    Receive_MainBoard_Data_Handler(run_t.single_data);
-    
- // Display_DHT11_Value();
     
 }
 
@@ -455,12 +459,14 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 
 
 	 case WIFI_CMD:
-	 	 Receive_ManiBoard_Cmd(run_t.wifiCmd[0]);
+	 	 
+	 	 Receive_Wifi_Cmd(run_t.wifiCmd[0]);
 
 	 break;
 
 	 case  WIFI_WIND_SPEED:
 	 	if(run_t.gPower_On ==1){
+		  
 
 		   if(run_t.wifi_set_wind_speed <50){
 		   	 
@@ -482,25 +488,27 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 
 	 break;
 
-	 case WIFI_TEMP: //temperature 
+	 case WIFI_TEMP: //set temperature value
+	       if(run_t.gPower_On ==1){
+		   	   
 
-	      run_t.wifi_set_temp_flag = 1;
+		      run_t.wifi_set_temp_flag = 1;
 
-	      temperature_decade= run_t.wifi_set_temperature /10 ;
-		  temperature_unit = run_t.wifi_set_temperature %10;
-	   
-         lcd_t.number1_high = temperature_decade;
-		 lcd_t.number1_low = temperature_decade;
+		      temperature_decade= run_t.wifi_set_temperature /10 ;
+			  temperature_unit = run_t.wifi_set_temperature %10;
+		   
+	         lcd_t.number1_high = temperature_decade;
+			 lcd_t.number1_low = temperature_decade;
 
-		 
-	    lcd_t.number2_high =  temperature_unit;
-		lcd_t.number2_low = temperature_unit;
-
+			 
+		    lcd_t.number2_high =  temperature_unit;
+			lcd_t.number2_low = temperature_unit;
+	      }
 	 break;
 
 	 case PANEL_DATA:
-	   	run_t.single_data=0;
-    
+	   
+        if(run_t.gPower_On ==1){
         hum1 =  run_t.gReal_humtemp[0]/10 %10;  //Humidity 
         hum2 =  run_t.gReal_humtemp[0]%10;
         
@@ -523,12 +531,11 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 		 lcd_t.number4_low = hum2;
 
 		 DisplayPanel_Ref_Handler();
-		 
+        }
       break;
 
       case WIFI_TIME: //GMT time 
-          if(run_t.wifi_connect_flag ==1){
-		  	run_t.single_data=0;
+          if(run_t.wifi_connect_flag ==1 && run_t.gPower_On==1){
 		  	
           if(run_t.gInputCmd[0] > 0){
 
@@ -594,6 +601,129 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
      }
 
 
+}
+/**********************************************************************
+*
+*Functin Name: void Receive_ManiBoard_Cmd(uint8_t cmd)
+*Function :  wifi recieve data
+*Input Ref:  receive wifi send order
+*Return Ref: NO
+*
+**********************************************************************/
+void Receive_Wifi_Cmd(uint8_t cmd)
+{
+	switch(cmd){
+
+
+		   case WIFI_POWER_ON: //turn on 
+		 	
+              single_buzzer_fun();
+              run_t.gTimes_hours_temp=12;
+              run_t.gPower_On=1;
+          
+			  run_t.power_key =1;
+			  run_t.gFan_RunContinue=0;
+			 
+			  run_t.gModel =1; //WT.EDIT 2022.09.01
+			
+
+			  run_t.gDry =1;
+			  run_t.gPlasma=1;
+              run_t.gBug =1;
+		      run_t.gPower_On =1;
+			
+               Display_Temperature_Humidity_Value();
+               run_t.wifi_turn_off ++;
+	     
+              cmd=0xff;
+
+	         break;
+
+			 case WIFI_POWER_OFF: //turn off 
+                
+			    single_buzzer_fun();
+			    run_t.gFan_RunContinue=1;
+	            run_t.gPower_On=0;
+				run_t.fan_off_60s =0;
+	            run_t.gFan_RunContinue=1; //WT.EDIT 2022.08.31
+				run_t.fan_off_60s = 0;
+                //Display_Temperature_Humidity_Value();
+                 run_t.wifi_turn_on ++;
+               cmd=0xff;
+
+			 break;
+
+			case WIFI_MODE_1: //AI turn on -> AI icon display 
+                if(run_t.gPower_On==1){
+				     run_t.gModel =1; //0-> has ,1->no gModel
+                	} 
+			break;
+
+			 case WIFI_MODE_2: //icon don't display 
+                 if(run_t.gPower_On==1){
+				   run_t.gModel =2; //turon off AI mode
+			 	   
+                 }
+             break;
+
+			 case WIFI_KILL_ON: //kill turn on plasma
+			  if(run_t.gPower_On==1){
+                    run_t.gPlasma = 1;
+			        run_t.gFan_RunContinue =0;
+                } 
+			 break;
+
+			 case WIFI_KILL_OFF: //kill turn off
+                if(run_t.gPower_On==1){
+			 	  run_t.gPlasma =0;
+				  
+		          run_t.gFan_RunContinue =0;
+                }
+			 break;
+
+			 case WIFI_PTC_ON://dry turn on
+                if(run_t.gPower_On==1){
+			        run_t.gDry =1;
+                    run_t.gFan_RunContinue =0;
+                 
+                }
+			 break;
+
+			 case WIFI_PTC_OFF: //dry turn off
+               
+			 	if(run_t.gPower_On==1){
+					run_t.gDry=0;
+                 
+		            run_t.gFan_RunContinue =0;
+			 	}
+
+			 break;
+
+			 case WIFI_SONIC_ON:  //drive bug
+		
+				 if(run_t.gPower_On==1){		   
+				  run_t.gBug =1; //turn on 
+			
+				 run_t.gFan_RunContinue =0;
+			    }
+
+			 break;
+
+			 case WIFI_SONIC_OFF: //drive bug turn off
+			 	if(run_t.gPower_On==1){
+				    run_t.gBug=0;
+					run_t.gFan_RunContinue =0;
+			   }
+			 break;
+
+
+	         default :
+                  cmd =0;
+			 break;
+
+			 
+        }
+   
 }
 
 /****************************************************************

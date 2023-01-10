@@ -103,9 +103,9 @@ int main(void)
   UART_Start_Receive_IT(&huart1,inputBuf,1);
   /* USER CODE END 2 */
   
-   Single_Add_RunCmd(DisplayTiming_KEY_Add_Subtract_Fun);
+ //  Single_Add_RunCmd(DisplayTiming_KEY_Add_Subtract_Fun);
    Single_SendBuzzer_RunCmd(SendData_Buzzer);
-   Panel_Led_OnOff_RunCmd(Panel_Led_OnOff_Function);
+  /// Panel_Led_OnOff_RunCmd(Panel_Led_OnOff_Function);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
@@ -116,7 +116,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
   
       Scan_KeyModel();
-      RunCommand_Handler();
+      RunPocess_Command_Handler();
       
    
   }

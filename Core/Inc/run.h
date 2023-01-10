@@ -126,7 +126,7 @@ void SplitDispose_Key(uint8_t value);
 void Power_Off(void);
 void DisplayTimer_Timing(void);
 
-void Receive_ManiBoard_Cmd(uint8_t cmd);
+
 void RunCommand_Handler(void);
 
 

@@ -57,59 +57,6 @@ void SendData_Buzzer(void)
 	
 }
 
-void SendData_AI(uint8_t dat)
-{
-	
-   //crc=0x55;
-	outputBuf[0]='T'; //4D
-	outputBuf[1]='K'; //58
-	outputBuf[2]='A'; //4C	// AI 
-	outputBuf[3]=dat; //53	//
-	
-    transferSize=4;
-	if(transferSize)
-	{
-		while(transOngoingFlag);
-		transOngoingFlag=1;
-		HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
-	}
-	
-}
-
-void SendData_Timer_Hours(uint8_t hdata)
-{
-	    outputBuf[0]='T'; //4D
-		outputBuf[1]='K'; //58
-		outputBuf[2]='H'; //4C	// AI 
-		outputBuf[3]=hdata; //53	//
-		
-		transferSize=4;
-		if(transferSize)
-		{
-			while(transOngoingFlag);
-			transOngoingFlag=1;
-			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
-		}
-	
-}
-
-void SendData_Set_Timer(uint8_t hdata)
-{
-	    outputBuf[0]='T'; //4D
-		outputBuf[1]='K'; //58
-		outputBuf[2]='I'; //4C	// 'I' ->time
-		outputBuf[3]=hdata; //53	//
-		
-		transferSize=4;
-		if(transferSize)
-		{
-			while(transOngoingFlag);
-			transOngoingFlag=1;
-			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
-		}
-	
-}
-
 
 void SendData_Set_Temperature(uint8_t hdata)
 {

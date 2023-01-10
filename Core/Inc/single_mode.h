@@ -9,7 +9,7 @@ extern void (*sendAi_usart_fun)(uint8_t senddat);
 
 void Scan_KeyModel(void);
 
-void RunCommand_Handler(void);
+
 
 void Single_AI_RunCmd(void (*singlaieHandler)(uint8_t dat));
 
@@ -23,6 +23,8 @@ void SplitDispose_Key_RunCmd(void(*keyHandler)(uint8_t dat));
 void Decode_Function(void);
 
 void Wifi_Key_Fun(void);
+void RunPocess_Command_Handler(void);
+
 
 void Receive_MainBoard_Data_Handler(uint8_t cmd);
 
