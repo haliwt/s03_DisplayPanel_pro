@@ -27,14 +27,14 @@ void Power_Off(void)
     	 if(run_t.gPower_On ==0){
 
 			     run_t.gPower_On =0xff;
-			 	 // Smg_AllOff();
+			
 				
 		         run_t.gModel =0;
 				
 				 run_t.gPlasma=0;
 				 run_t.gDry=0;
 				
-				 run_t.gTemperature =20;
+			
 				
 
 				  run_t.gTimer_Cmd=0; //timer of command "1"->timer is start
@@ -48,21 +48,16 @@ void Power_Off(void)
 				  run_t.gTimes_hours_temp=12;
 				  run_t.gTimes_minutes_temp=0;
 			
-				  run_t.gKeyTimer_mode =0;
-				  run_t.gTimer_key_5s=0;
-				  run_t.gTimer_key_4s=0;
-	              run_t.gTimer_key_60s=0;
+
 				  run_t.gTimer_fan_counter=0;
 				  Lcd_PowerOff_Fun();
 				
-				//  SendData_PowerOff(0);//ShutDown_AllFunction();
-				 // ALL_LED_Off();
+				
 				  
                   
 		}
 		Breath_Led();
-	    //power off display fan run times 60s
-          if(run_t.gFan_RunContinue==1){
+        if(run_t.gFan_RunContinue==1){
 
 		      if(run_t.fan_off_60s > 60){
                 run_t.gFan_RunContinue=0;
@@ -134,13 +129,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		tm0=0;
 		tm2++;
 		
-		run_t.gTimer_key_4s ++;
-		run_t.gTimer_key_60s++;
+
+
 		run_t.fan_off_60s++;
-		 run_t.gTimer_led_500ms =1;
-		 run_t.gTimer_key_5s++;
-	     run_t.gTimer_disp_temp++;
-		 run_t.gTimer_set_temperature++;
+        run_t.gTimer_set_temperature++;
 		 run_t.beijing_time_seconds++;
 	    if(tm2>59){//60s ->1 minute 
 	      tm2=0;

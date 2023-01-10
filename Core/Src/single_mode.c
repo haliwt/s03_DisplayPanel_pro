@@ -38,8 +38,9 @@ static void Timing_Handler(void);
 *******************************************************************************/
 void Scan_KeyModel(void)
 {
-   //   decade_hour,unit_hour;
-     if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
+     static uint8_t model_temp;
+
+      if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
           HAL_Delay(20);
 		 while(POWER_KEY_VALUE()  ==KEY_DOWN);
        
@@ -58,6 +59,7 @@ void Scan_KeyModel(void)
 				  run_t.gPlasma=1;
 				  run_t.gDry =1;
 				  run_t.gBug =1;
+				  run_t.wifi_special_key = 1;
 				 
 				  run_t.gTiming_flag=0;
 				  SendData_PowerOff(1);
@@ -70,6 +72,7 @@ void Scan_KeyModel(void)
 				  run_t.gPlasma=0;
 				  run_t.gDry =0;
 				  run_t.gBug =0;
+				   run_t.wifi_special_key = 0;
 			
 				  run_t.gTiming_flag=0;
 
@@ -93,20 +96,19 @@ void Scan_KeyModel(void)
 			if(run_t.gPower_On ==1){
 				single_buzzer_fun();
 				
-			run_t.gKeyTimer_mode = run_t.gKeyTimer_mode ^ 0x01; //the same is "0",and differenct is "1"
+			model_temp = model_temp ^ 0x01;
 
-			if(run_t.gKeyTimer_mode == 1){ //timing of function.
+			if(model_temp == 1){ //timing of function.
                 
-				run_t.gTimer_key_5s =0;
-				run_t.temperature_flag =0;
+				run_t.gModel =2;
+				
 		    }
             else{ //temperature of function adjust ref .
-               run_t.gKeyTimer_mode=0;
-			 
-			   run_t.temperature_flag =1;
+             
+			   run_t.gModel =1;
 			 
             }
-			single_buzzer_fun();//SendData_Buzzer();
+		
            
 	     }
 		
@@ -119,39 +121,9 @@ void Scan_KeyModel(void)
 		
 		if(run_t.gPower_On ==1){
 			single_buzzer_fun();
-		 if(run_t.gKeyTimer_mode==1){//times, is timer is 
+	
                     
-			 	    run_t.dispTime_hours--;
-					
-
-					 if(run_t.dispTime_hours <0){
-                         run_t.dispTime_hours=24;
-
-					 }
-
-					 decade_hour = run_t.dispTime_hours / 10 %10;
-					 unit_hour = run_t.dispTime_hours % 10; //
-
-					 lcd_t.number5_low=decade_hour;
-                     lcd_t.number5_high =decade_hour;
-
-					 lcd_t.number6_low = unit_hour;
-					 lcd_t.number6_high = unit_hour;
-					
-					if(run_t.dispTime_hours >0){
-						run_t.gTiming_flag =1;
-						run_t.gTimer_1_hour_counter=0;
-					    run_t.gTimer_minute_Counter=0;
-					}
-					else run_t.gTiming_flag =0;
-						 
-					run_t.gTimer_key_5s=0;//run_t.gTimer_5s_start =1; //timer is 5s start be pressed key 
-				    run_t.temperature_flag =0;
-		}
-		else{ //setup temperature value 
-                    
-					 run_t.temperature_flag =1;
-				    //setup temperature of value,minimum 20,maximum 40
+			 	   //setup temperature of value,minimum 20,maximum 40
 					 run_t.gTemperature --;
 					 if(run_t.gTemperature<20) run_t.gTemperature=40;
 					  
@@ -168,16 +140,10 @@ void Scan_KeyModel(void)
 
 					 lcd_t.number6_low = unit_temp;
 					 lcd_t.number6_high = unit_temp;
-					
-					    run_t.gTimer_key_4s=0;
-				        run_t.gTimer_key_60s=0;
-						run_t.gTimer_set_temperature=0;
+					 run_t.gTimer_set_temperature=0;
 			}
               single_buzzer_fun();//SendData_Buzzer();
-		}	
-		
-             
-     }  
+	}	
 	else if(ADD_KEY_VALUE()==KEY_DOWN){ //"+" KEY
 	 	 HAL_Delay(20);
 
@@ -187,47 +153,12 @@ void Scan_KeyModel(void)
 	     	  if(run_t.gPower_On ==1){
 			  	single_buzzer_fun();
 			 	  
-				if(run_t.gKeyTimer_mode==1){ //timing of timers is times 
-                     run_t.gTimer_key_5s =0;
-				
-					 run_t.dispTime_hours++;
-				     
-				    if(run_t.dispTime_hours >24){
-						run_t.dispTime_hours=0;
-					}
-
-					decade_hour = run_t.dispTime_hours / 10 %10;
-					 unit_hour = run_t.dispTime_hours % 10; //
-					 
-					
-                    
-					 lcd_t.number5_low=decade_hour;
-                     lcd_t.number5_high =decade_hour;
-
-					 lcd_t.number6_low = unit_hour;
-					 lcd_t.number6_high = unit_hour;
-					
-                    if(run_t.dispTime_hours >0){
-						run_t.gTiming_flag =1;
-						run_t.gTimer_1_hour_counter=0;
-					    run_t.gTimer_minute_Counter=0;
-                    }
-					else run_t.gTiming_flag =0;
-
-					run_t.gTimer_key_5s=0;//run_t.gTimer_5s_start =1; //timer is 5s start be pressed key 
-				    run_t.temperature_flag =0;
-				
-                    
-				 }
-				 else{ //temperature of value
-				      run_t.temperature_flag =1;
-					  //setup temperature minimum 20, maximum 40
-				     run_t.gTemperature ++;
-                     if(run_t.gTemperature > 40)run_t.gTemperature= 20;
+		            run_t.gTemperature ++;
+                    if(run_t.gTemperature > 40)run_t.gTemperature= 20;
 					
                      
                       
-				     if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
+				    if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
 			            else run_t.temperature_set_flag=0;
 
 					 decade_temp =  run_t.gTemperature / 10 %10;
@@ -238,18 +169,12 @@ void Scan_KeyModel(void)
 
 					 lcd_t.number6_low = unit_temp;
 					 lcd_t.number6_high = unit_temp;
+					 run_t.gTimer_set_temperature=0;
 					
-
-			
-				        run_t.gTimer_key_4s=0;
-						run_t.gTimer_key_60s=0;
-						run_t.gTimer_set_temperature=0;
-					
-				 }
-				single_buzzer_fun();//SendData_Buzzer();
-            }
-			
-	}
+			}
+				
+     }
+		
 }
 /************************************************************************
 	*
@@ -261,31 +186,7 @@ void Scan_KeyModel(void)
 ************************************************************************/
 void Wifi_Key_Fun(void)
 {
-    
-    if(run_t.gPower_On==1){
-      if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
-          HAL_Delay(20);
-	   while(POWER_KEY_VALUE() ==KEY_DOWN){
-            k++;
-       };
-       
-       if(k < 1000){
-           keyvalue = 0x01;
-       
-       }
-       else{
-       
-          keyvalue = 0x11;
-          k=0;
-          
-       }
    
-   
-   
-   }
-
-
-  }
   
 } 
   
@@ -633,7 +534,7 @@ void Receive_Wifi_Cmd(uint8_t cmd)
 		      run_t.gPower_On =1;
 			
                Display_Temperature_Humidity_Value();
-               run_t.wifi_turn_off ++;
+            
 	     
               cmd=0xff;
 
@@ -646,9 +547,9 @@ void Receive_Wifi_Cmd(uint8_t cmd)
 	            run_t.gPower_On=0;
 				run_t.fan_off_60s =0;
 	            run_t.gFan_RunContinue=1; //WT.EDIT 2022.08.31
-				run_t.fan_off_60s = 0;
-                //Display_Temperature_Humidity_Value();
-                 run_t.wifi_turn_on ++;
+				
+              
+                
                cmd=0xff;
 
 			 break;

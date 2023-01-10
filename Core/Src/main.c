@@ -102,10 +102,8 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim3);
   UART_Start_Receive_IT(&huart1,inputBuf,1);
   /* USER CODE END 2 */
-  
- //  Single_Add_RunCmd(DisplayTiming_KEY_Add_Subtract_Fun);
-   Single_SendBuzzer_RunCmd(SendData_Buzzer);
-  /// Panel_Led_OnOff_RunCmd(Panel_Led_OnOff_Function);
+  Single_SendBuzzer_RunCmd(SendData_Buzzer);
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 

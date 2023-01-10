@@ -62,27 +62,25 @@ typedef struct __RUN{
    uint8_t  gTimes_minutes_temp;
    
    uint8_t  gTimer_fan_counter;
-   uint8_t  gTimer_key_5s;
+
   
-   uint8_t gTimer_key_4s;
-   uint8_t gTimer_key_60s;
-   uint8_t gTimer_led_500ms;
+
+   
 
    uint8_t single_data;
    uint8_t fan_off_60s;
-   uint8_t Receive_ManiBoard_Cmd_flag;
-   uint8_t wifi_turn_on;
-   uint8_t wifi_turn_off;
+
    uint8_t wifi_connect_flag;
-   uint8_t wifi_connect_label;
+
    uint8_t wifi_set_temperature;
    uint8_t wifi_set_timing;
    uint8_t wifi_set_wind_speed;
    uint8_t wifi_set_temp_flag ;
+   uint8_t wifi_special_key;
 
  
    
-   uint8_t gKeyTimer_mode;
+
    uint8_t dispTime_minute;
    uint8_t Timer_mode_flag;
    uint8_t temperature_set_flag;
@@ -92,7 +90,7 @@ typedef struct __RUN{
 	
   
    
-   uint8_t  gTimer_disp_temp;
+  
    uint8_t  gTimer_set_temperature ;
    uint8_t  gTimer_1_hour_counter;
    uint8_t  beijing_time_seconds;
