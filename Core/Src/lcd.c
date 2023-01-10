@@ -102,16 +102,16 @@ const unsigned char segNumber_High[]={
 
 };
 
-static const uint8_t lcdNumber2_Low[]  ={0x0A,0x0A,0x06,0x0E,0x0E,0x0C,0x0C,0x0A,0x0E,0x0E,0x00};
-static const uint8_t lcdNumber2_High[] ={0xF0,0,0xD0,0x90,0x20,0xB0,0xF0,0x10,0xF0,0xB0,0x0};
+static const uint8_t lcdNumber2_Low[]  ={0x0A,0x0A,0x06,0x0E,0x0E,0x0C,0x0C,0x0A,0x0E,0x0E};
+static const uint8_t lcdNumber2_High[] ={0xF0,0,  0xD0,0x90,0x20,0xB0,0xF0,0x10,0xF0,0xB0};
 
-static const uint8_t lcdNumber3_Low[]  ={0x0A,0x0A,0x06,0x0E,0x0E,0x0C,0x0C,0x0A,0x0E,0x0E,0x00};
-static const uint8_t lcdNumber3_High[] ={0xF0,0,0xD0,0x90,0x20,0xB0,0xF0,0x10,0xF0,0xB0,0x0};
+static const uint8_t lcdNumber3_Low[]  ={0x0A,0x0A,0x06,0x0E,0x0E,0x0C,0x0C,0x0A,0x0E,0x0E};
+static const uint8_t lcdNumber3_High[] ={0xF0,0,  0xD0, 0x90,0x20,0xB0,0xF0,0x10,0xF0,0xB0};
 
-static const uint8_t lcdNumber4_Low[]  ={0x0A,0x0A,0x06,0x0E,0x0E,0x0C,0x0C,0x0A,0x0E,0x0E,0x00};
-static const uint8_t lcdNumber4_High[] ={0xF0,0,0xD0,0x90,0x20,0xB0,0xF0,0x10,0xF0,0xB0,0x0};
+static const uint8_t lcdNumber4_Low[]  ={0x0A,0x0A,0x06,0x0E,0x0E,0x0C,0x0C,0x0A,0x0E,0x0E};
+static const uint8_t lcdNumber4_High[] ={0xF0,0,   0xD0,0x90,0x20,0xB0,0xF0,0x10,0xF0,0xB0};
 
-static const uint8_t lcdNumber5_Low[]  ={0x0A,0x0A,0x06,0x0E,0x0E,0x0C,0x0C,0x0A,0x0E,0x0E,0x00};
+static const uint8_t lcdNumber5_Low[]  ={0x0A,0x0A,0x06,0x0E,0x0E,0x0C,0x0C,0x0A,0x0E,0x0E};
 static const uint8_t lcdNumber5_High[] ={0xF0,0,0xD0,0x90,0x20,0xB0,0xF0,0x10,0xF0,0xB0,0x0};
 
 static const uint8_t lcdNumber6_Low[]  ={0x0A,0x0A,0x06,0x0E,0x0E,0x0C,0x0C,0x0A,0x0E,0x0E,0x00};
@@ -225,34 +225,41 @@ void DisplayPanel_Ref_Handler(void)
     Display_Kill_Dry_Ster_Icon();
 	
     //T1->AI
-    if(run_t.gModel==1)
+    if(run_t.gModel==1){
        TM1723_Write_Display_Data(0xC3,lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high]);//display  "AI icon"
-     else 
+	TIM1723_Write_Cmd(LUM_VALUE);
+	}
+	 else{ 
 	 	TM1723_Write_Display_Data(0xC3,(lcdNumber1_Low[lcd_t.number1_low]&0x0e)+lcdNumber2_High[lcd_t.number2_high]);//don't display "AI icon"
-     //
-	 TM1723_Write_Display_Data(0xC4,0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high]);//display "t,c"
-	 
+		TIM1723_Write_Cmd(LUM_VALUE);
+	 }
+	 //
+	 TM1723_Write_Display_Data(0xC4,(0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high])&0xff);//display "t,c"
+	 TIM1723_Write_Cmd(LUM_VALUE);
      //T2->WIFI icon -> 0xC5
      if(run_t.wifi_connect_flag ==0){ //hasn't wifi
 		 if(lcd_t.gTimer_wifi_500ms >49 && lcd_t.gTimer_wifi_500ms<100){
 	          
-	           TM1723_Write_Display_Data(0xC5,WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number3_high]); //Wifi
-	     }
+	           TM1723_Write_Display_Data(0xC5,(WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi
+				TIM1723_Write_Cmd(LUM_VALUE);
+		 }
 	     else if(lcd_t.gTimer_wifi_500ms <50){
 		 	 
-	         TM1723_Write_Display_Data(0xC5,WIFI_NO_Symbol+lcdNumber3_Low[lcd_t.number3_high] + lcdNumber4_High[lcd_t.number3_high]); //Wifi 
-	     }
+	         TM1723_Write_Display_Data(0xC5,(WIFI_NO_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi 
+             TIM1723_Write_Cmd(LUM_VALUE);
+		 }
 	     else{
 	        lcd_t.gTimer_wifi_500ms =0;
 	     }
-		 TIM1723_Write_Cmd(LUM_VALUE);
+		
      }
 	 else{
-           TM1723_Write_Display_Data(0xC5,WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number3_high]); //Wifi
+           TM1723_Write_Display_Data(0xC5,(WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi
+           TIM1723_Write_Cmd(LUM_VALUE);
 	 }
      //Humidity Icon "0xC9"-numbers "4-B,G,C","5-A,F,E,D"
-     TM1723_Write_Display_Data(0xC9,0x01+lcdNumber4_Low[lcd_t.number4_low]+lcdNumber5_High[lcd_t.number5_high]);//display digital '4,5'
-
+     TM1723_Write_Display_Data(0xC9,(0x01+lcdNumber4_Low[lcd_t.number4_low]+lcdNumber5_High[lcd_t.number5_high]) & 0xff);//display digital '4,5'
+     TIM1723_Write_Cmd(LUM_VALUE);
 	 //T15,"0xCA"Numbers"5-B,G,C","6-A,F,E,D"
       if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<20){
          TM1723_Write_Display_Data(0xCA,T15+lcdNumber5_Low[lcd_t.number5_low]+lcdNumber6_High[lcd_t.number6_high]);//display digital '5,6'

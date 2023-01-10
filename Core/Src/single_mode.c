@@ -135,11 +135,11 @@ void Scan_KeyModel(void)
 					 decade_temp =  run_t.gTemperature / 10 %10;
 					 unit_temp =  run_t.gTemperature % 10; //
 
-					 lcd_t.number5_low=decade_temp;
-                     lcd_t.number5_high =decade_temp;
+					 lcd_t.number3_low=decade_temp;
+                     lcd_t.number3_high =decade_temp;
 
-					 lcd_t.number6_low = unit_temp;
-					 lcd_t.number6_high = unit_temp;
+					 lcd_t.number4_low = unit_temp;
+					 lcd_t.number4_high = unit_temp;
 					 run_t.gTimer_set_temperature=0;
 			}
               single_buzzer_fun();//SendData_Buzzer();
@@ -164,11 +164,11 @@ void Scan_KeyModel(void)
 					 decade_temp =  run_t.gTemperature / 10 %10;
 					 unit_temp =  run_t.gTemperature % 10; //
 
-					 lcd_t.number5_low=decade_temp;
-                     lcd_t.number5_high =decade_temp;
+					 lcd_t.number3_low=decade_temp;
+                     lcd_t.number3_high =decade_temp;
 
-					 lcd_t.number6_low = unit_temp;
-					 lcd_t.number6_high = unit_temp;
+					 lcd_t.number4_low = unit_temp;
+					 lcd_t.number4_high = unit_temp;
 					 run_t.gTimer_set_temperature=0;
 					
 			}
