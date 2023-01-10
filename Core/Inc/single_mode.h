@@ -24,6 +24,9 @@ void Decode_Function(void);
 
 void Wifi_Key_Fun(void);
 
+void Receive_MainBoard_Data_Handler(uint8_t cmd);
+
+
 
 #endif 
 

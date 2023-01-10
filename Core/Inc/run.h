@@ -81,6 +81,8 @@ typedef struct __RUN{
    uint8_t wifi_connect_label;
    uint8_t wifi_set_temperature;
    uint8_t wifi_set_timing;
+   uint8_t wifi_set_wind_speed;
+   uint8_t wifi_set_temp_flag ;
 
  
    

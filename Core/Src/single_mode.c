@@ -388,8 +388,7 @@ static void RunKeyOrder_Handler(void)
 	 Timing_Handler();
 	 DisplayPanel_Ref_Handler();
     
-         
-	 }
+    }
 	 
 }
 
@@ -431,10 +430,82 @@ void RunCommand_Handler(void)
 void Decode_Function(void)
 {
    
-   Receive_ManiBoard_Cmd(run_t.wifiCmd[0]);
+  // Receive_ManiBoard_Cmd(run_t.wifiCmd[0]);
+   Receive_MainBoard_Data_Handler(run_t.single_data);
     
    Display_DHT11_Value();
     
+}
+
+/**********************************************************************************************************
+	**
+	*Function Name:void Receive_MainBoard_Data_Handler(uint8_t cmd)
+	*Function : mainboard of command 
+	*Input Ref:
+	*Return Ref:NO
+	*
+*********************************************************************************************************/
+void Receive_MainBoard_Data_Handler(uint8_t cmd)
+{
+    static uint8_t temperature_decade, temperature_unit;
+
+
+	 switch(cmd){
+
+
+	 case WIFI_CMD:
+	 	 Receive_ManiBoard_Cmd(run_t.wifiCmd[0]);
+
+	 break;
+
+	 case  WIFI_WIND_SPEED:
+	 	if(run_t.gPower_On ==1){
+
+		   if(run_t.wifi_set_wind_speed <50){
+		   	 
+
+		   	}
+			else if(run_t.wifi_set_wind_speed > 49 && run_t.wifi_set_wind_speed < 80){
+
+
+			}
+			else if(run_t.wifi_set_wind_speed <50){
+
+
+
+			}
+
+
+
+		}
+
+	 break;
+
+	 case WIFI_TEMP: //temperature 
+
+	      run_t.wifi_set_temp_flag = 1;
+
+	      temperature_decade= run_t.wifi_set_temperature /10 ;
+		  temperature_unit = run_t.wifi_set_temperature %10;
+	   
+         lcd_t.number1_high = temperature_decade;
+		 lcd_t.number1_low = temperature_decade;
+
+		 
+	    lcd_t.number2_high =  temperature_unit;
+		lcd_t.number2_low = temperature_unit;
+
+	 break;
+
+	
+
+
+
+
+
+	 }
+
+
 }
 
 /****************************************************************

@@ -124,22 +124,6 @@ void Receive_ManiBoard_Cmd(uint8_t cmd)
 			   }
 			 break;
 
-			 case  WIFI_WIND_SPEED_ITEM :
-                if(run_t.gPower_On==1){
-
-
-                }
-
-			 break;
-
-			 case WIFI_TEMPERATURE:
- 				if(run_t.gPower_On==1){
-
-
-                }
-
-			 break;
-
 
 	         default :
                   cmd =0;

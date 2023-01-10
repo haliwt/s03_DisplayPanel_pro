@@ -208,93 +208,12 @@ static void TM1723_Write_Display_Data(uint8_t addr,uint8_t dat)
 
 /*************************************************************************
  	*
- 	* Function Name:void Display_Name_Humidity(void)
- 	* Function :lcd display 'humidity'
+ 	* Function Name:void DisplayPanel_Ref_Handler(void)
+ 	* Function :lcd display panel 
  	* Input Ref:NO
  	* Return Ref:NO
  	* 
 *************************************************************************/ 
-#if 0
-void DisplayPanel_TestHandler(void)
-{
-     TIM1723_Write_Cmd(0x00);
-	 TIM1723_Write_Cmd(0x40);
-	 TIM1723_Write_Cmd(0x44);
-	 
-    //low-byte->T3,T4,T5,67,high->byte->1A,1F,1E,1D
-    TM1723_Write_Display_Data(0xC2,lcdNumber1_High[6]+0x0F);//display digital "88"
-
-    if(run_t.gModel==0)
-      TM1723_Write_Display_Data(0xC3,lcdNumber1_Low[6]+AI_Symbol+lcdNumber2_High[1]);//display  "AI icon"
-    else
-	  TM1723_Write_Display_Data(0xC3,lcdNumber1_Low[6]+AI_NO_Symbol+lcdNumber2_High[1]);//don't display  "AI icon"
-     
-	 TM1723_Write_Display_Data(0xC4,0x01+lcdNumber2_Low[1]+lcdNumber3_High[2]);//display "t,c"
-	 
-     //wifi icon
-	 if(run_t.wifi_connect_flag ==0){ //hasn't wifi
-		 if(lcd_t.gTimer_wifi_500ms >49 && lcd_t.gTimer_wifi_500ms<100){
-	          
-	           TM1723_Write_Display_Data(0xC5,WIFI_Symbol+lcdNumber3_Low[2] + lcdNumber4_High[3]); //Wifi
-	     }
-	     else if(lcd_t.gTimer_wifi_500ms <50){
-		 	 
-	         TM1723_Write_Display_Data(0xC5,WIFI_NO_Symbol+lcdNumber3_Low[2] + lcdNumber4_High[3]); //Wifi 
-	     }
-	     else{
-	        lcd_t.gTimer_wifi_500ms =0;
-	     }
-     }
-	 else{ //link wifi to tencent clud 
-        TM1723_Write_Display_Data(0xC5,WIFI_Symbol+lcdNumber3_Low[2] + lcdNumber4_High[3]); //Wifi
-
-	 }
-	 //endif icon
-     TM1723_Write_Display_Data(0xC9,0x01+lcdNumber4_Low[3]+lcdNumber5_High[4]);//display digital '4,5'
-
-	 //T15
-      if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<20){
-         TM1723_Write_Display_Data(0xCA,T15+lcdNumber5_Low[4]+lcdNumber6_High[5]);//display digital '5,6'
-      }
-	  else if(lcd_t.gTimer_fan_10ms <10){
-		  TM1723_Write_Display_Data(0xCA,lcdNumber5_Low[4]+lcdNumber6_High[5]);//display digital '5,6'
-	  }
-     
-	 TM1723_Write_Display_Data(0xCB,0x01+lcdNumber6_Low[5]+lcdNumber7_High[9]);//display "t,c"
-
-    //T14
-	 if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<20){
-	      TM1723_Write_Display_Data(0xCC,lcdNumber7_Low[9]+lcdNumber8_High[7]);//display "t,c
-
-	 }
-	 else if(lcd_t.gTimer_fan_10ms <10){
-  			TM1723_Write_Display_Data(0xCC,T14+lcdNumber7_Low[9]+lcdNumber8_High[7]);//display "t,c
-	  }
-     //T13
-	 if(lcd_t.gTimer_fan_10ms>9 && lcd_t.gTimer_fan_10ms<20){
-				TM1723_Write_Display_Data(0xCE,T13+lcdNumber8_Low[7]+0xE0);//display "t,c"
-	  }
-	  else if(lcd_t.gTimer_fan_10ms <10){
-	         TM1723_Write_Display_Data(0xCE,lcdNumber8_Low[7]+0xE0);//display "t,c"
-
-	  }
-	  //T11
-      if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<20){
-              TM1723_Write_Display_Data(0xCF,T11+T16);//
-      }
-	  else if(lcd_t.gTimer_fan_10ms <10){
-	         TM1723_Write_Display_Data(0xCF,T16+T12+T10);//
-
-	  }
-	  else
-	  	   lcd_t.gTimer_fan_10ms=0;
-	//open display
-	 TIM1723_Write_Cmd(0x94);//(0x9B);
-
-}
-
-#endif 
-
 void DisplayPanel_Ref_Handler(void)
 {
      TIM1723_Write_Cmd(0x00);
@@ -326,6 +245,7 @@ void DisplayPanel_Ref_Handler(void)
 	     else{
 	        lcd_t.gTimer_wifi_500ms =0;
 	     }
+		 TIM1723_Write_Cmd(LUM_VALUE);
      }
 	 else{
            TM1723_Write_Display_Data(0xC5,WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number3_high]); //Wifi
