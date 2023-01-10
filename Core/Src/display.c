@@ -91,11 +91,11 @@ void Display_DHT11_Value(void)
 		 lcd_t.number4_low = hum2;
 
 		 DisplayPanel_Ref_Handler();
-		 run_t.single_data=0xff;
+		 
       break;
 
       case WIFI_TIME: //GMT time 
-          if((run_t.wifi_connect_flag ==1) && (run_t.gWifi ==0)){
+          if(run_t.wifi_connect_flag ==1){
 		  	run_t.single_data=0;
 		  	
           if(run_t.gInputCmd[0] > 0){
@@ -153,12 +153,12 @@ void Display_DHT11_Value(void)
 			   DisplayPanel_Ref_Handler();
            
         } 
-        run_t.single_data=0xff;
+        
       break;
 
          
       case  WIFI_TEMP:
-           if((run_t.wifi_connect_flag ==1) && (run_t.gWifi ==0)){
+           if(run_t.wifi_connect_flag ==1){
 		   	run_t.single_data=0;
            if(run_t.gInputCmd[0] >19 && run_t.gInputCmd[0] <41){ //setup temperature 
 
@@ -186,7 +186,7 @@ void Display_DHT11_Value(void)
 				  DisplayPanel_Ref_Handler();
                     
          }
-		 run_t.single_data=0xff;
+		
       break;
 
 	 

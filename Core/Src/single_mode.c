@@ -53,18 +53,24 @@ void Scan_KeyModel(void)
 				  run_t.power_key =1;
 				  run_t.gFan_RunContinue=0;
 				 
-				  run_t.gModel =0; //WT.EDIT 2022.09.01
-				  run_t.gPlasma=0;
-				  run_t.gDry =0;
-				  run_t.gWifi =0;
+				  run_t.gModel =1; //WT.EDIT 2022.09.01
+				  run_t.gPlasma=1;
+				  run_t.gDry =1;
+				  run_t.gBug =1;
+				 
 				  run_t.gTiming_flag=0;
 				  SendData_PowerOff(1);
 				  
 	             
 			  }
 			  else{
-                  
-					run_t.gTiming_flag=0;
+
+			      run_t.gModel =0; //WT.EDIT 2022.09.01
+				  run_t.gPlasma=0;
+				  run_t.gDry =0;
+				  run_t.gBug =0;
+			
+				  run_t.gTiming_flag=0;
 
 					run_t.power_key =2;
 				    run_t.gFan_RunContinue=1;
@@ -75,11 +81,7 @@ void Scan_KeyModel(void)
 		           
               }
           
-//          else if(k1>300){
-//             if( run_t.gPower_On==1)
-//                  SendData_PowerOff(2);
-//            
-//          }
+
      }
      else if(MODE_KEY_VALUE()==KEY_DOWN){ //Mode key 
 	 	    
@@ -241,10 +243,7 @@ void Scan_KeyModel(void)
             }
 			
 	}
-	
-    
-	 
-  }
+}
 /************************************************************************
 	*
 	*Function Name: void Wifi_Key_Fun(void)
@@ -433,7 +432,7 @@ void Decode_Function(void)
   // Receive_ManiBoard_Cmd(run_t.wifiCmd[0]);
    Receive_MainBoard_Data_Handler(run_t.single_data);
     
-   Display_DHT11_Value();
+ // Display_DHT11_Value();
     
 }
 
@@ -448,6 +447,8 @@ void Decode_Function(void)
 void Receive_MainBoard_Data_Handler(uint8_t cmd)
 {
     static uint8_t temperature_decade, temperature_unit;
+	static uint8_t hum1,hum2,time[1],temp[1]; 
+    static uint8_t m,n,p,q,temp1,temp2;
 
 
 	 switch(cmd){
@@ -497,13 +498,100 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 
 	 break;
 
-	
+	 case PANEL_DATA:
+	   	run_t.single_data=0;
+    
+        hum1 =  run_t.gReal_humtemp[0]/10 %10;  //Humidity 
+        hum2 =  run_t.gReal_humtemp[0]%10;
+        
+        temp1 = run_t.gReal_humtemp[1]/10 %10;  // temperature
+        temp2 = run_t.gReal_humtemp[1]%10;
+
+         //temperature 
+		 lcd_t.number1_high = temp1;
+		 lcd_t.number1_low = temp1;
+
+		  lcd_t.number2_high = temp2;
+		 lcd_t.number2_low = temp2;
+
+		 //humidity
+		 
+		 lcd_t.number3_high = hum1;
+		 lcd_t.number3_low = hum1;
+		 
+		 lcd_t.number4_high = hum2;
+		 lcd_t.number4_low = hum2;
+
+		 DisplayPanel_Ref_Handler();
+		 
+      break;
+
+      case WIFI_TIME: //GMT time 
+          if(run_t.wifi_connect_flag ==1){
+		  	run_t.single_data=0;
+		  	
+          if(run_t.gInputCmd[0] > 0){
 
 
+		     if(time[0] != run_t.gInputCmd[0]){
 
+			      time[0] = run_t.gInputCmd[0];
 
+	             
+	               run_t.wifisetTime[0]= run_t.gInputCmd[0];
+			       run_t.dispTime_hours=run_t.wifisetTime[0];
+			 
+			      run_t.dispTime_minute = 0;
 
-	 }
+	              run_t.gTimer_Cmd=1;	 
+			    
+			      run_t.gTimer_setup_zero=0;
+		       	}
+			}
+          else{
+          
+           run_t.gTimer_Cmd=0;	
+           run_t.dispTime_minute = 0;
+           run_t.dispTime_hours=0;
+          
+          }
+
+		        m = run_t. dispTime_hours /10%10 ;
+			    n=	run_t. dispTime_hours %10; 
+	            if(run_t.dispTime_minute ==0 ){ 
+					p=0;
+					q=0;
+
+	            }
+				else{
+				   p = run_t. dispTime_minute /10 %10;
+				   q=  run_t. dispTime_minute %10;
+				}
+
+                //hours
+				 lcd_t.number5_high = m;
+				 lcd_t.number5_low = m;
+
+				  lcd_t.number6_high = n;
+				 lcd_t.number6_low = n;
+
+				 //minutes 
+				 lcd_t.number7_high = p;
+				 lcd_t.number7_low = p;
+
+				  lcd_t.number8_high = q;
+				 lcd_t.number8_low = q;
+						
+			   DisplayPanel_Ref_Handler();
+           
+        } 
+        
+      break;
+
+   
+
+	 
+     }
 
 
 }

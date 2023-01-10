@@ -61,10 +61,6 @@ typedef struct __RUN{
   
    uint8_t  gTimes_minutes_temp;
    
-
-   uint8_t  gWifi;
-
- 
    uint8_t  gTimer_fan_counter;
    uint8_t  gTimer_key_5s;
   

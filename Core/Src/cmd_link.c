@@ -185,13 +185,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                       run_t.wifi_connect_flag =0;
                    
                     state=0;
-                  //  run_t.decodeFlag=1;
+                    run_t.decodeFlag=1;
              
              }
             else if(run_t.single_data == WIFI_TIME){ //wifi modify temperature of value
                  run_t.wifi_set_timing=inputBuf[0]; 
                  state=0;
-                // run_t.decodeFlag=1;
+                 run_t.decodeFlag=1;
             }
             else if(run_t.single_data == WIFI_TEMP){ //wifi modify temperature of value
                  run_t.wifi_set_temperature=inputBuf[0]; 
@@ -228,7 +228,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
               run_t.gReal_humtemp[1]=inputBuf[0]; //temperature value
 			
 		     state=0;
-		     //run_t.decodeFlag=1;
+		     run_t.decodeFlag=1;
           }
 
 		 break;

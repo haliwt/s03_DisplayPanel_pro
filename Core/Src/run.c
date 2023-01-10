@@ -33,7 +33,7 @@ void Receive_ManiBoard_Cmd(uint8_t cmd)
 			  run_t.gFan_RunContinue=0;
 			 
 			  run_t.gModel =1; //WT.EDIT 2022.09.01
-			  run_t.gWifi =1;
+			
 
 			  run_t.gDry =1;
 			  run_t.gPlasma=1;
@@ -182,9 +182,7 @@ void Power_Off(void)
                   
 		}
 		Breath_Led();
-		//SMG_POWER_OFF()	;
-		
-	      //power off display fan run times 60s
+	    //power off display fan run times 60s
           if(run_t.gFan_RunContinue==1){
 
 		      if(run_t.fan_off_60s > 60){
