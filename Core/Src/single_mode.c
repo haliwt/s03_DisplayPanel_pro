@@ -39,6 +39,45 @@ static void Timing_Handler(void);
 void Scan_KeyModel(void)
 {
      static uint8_t model_temp;
+     static uint16_t wifi_key_counter;
+
+    if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN){
+        // if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
+         // HAL_Delay(20);
+		 while(POWER_KEY_VALUE()  ==KEY_DOWN){
+            wifi_key_counter++;
+
+		 };
+
+		 if(wifi_key_counter > 10000){
+             wifi_key_counter=0;
+			 run_t.wifi_connect_flag =1;
+
+
+		 }
+		 else{
+		 	 wifi_key_counter=0;
+			run_t.gModel =0; //WT.EDIT 2022.09.01
+			run_t.gPlasma=0;
+			run_t.gDry =0;
+			run_t.gBug =0;
+			run_t.wifi_special_key = 0;
+			run_t.wifi_connect_flag =0;
+
+			run_t.gTiming_flag=0;
+
+			run_t.power_key =2;
+			run_t.gFan_RunContinue=1;
+			run_t.gPower_On=0;
+			run_t.fan_off_60s =0;
+			SendData_PowerOff(0);
+
+
+         }
+
+
+	}
+	else{
 
       if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
           HAL_Delay(20);
@@ -75,7 +114,7 @@ void Scan_KeyModel(void)
 				   run_t.wifi_special_key = 0;
 			
 				  run_t.gTiming_flag=0;
-
+                   run_t.wifi_connect_flag =0;
 					run_t.power_key =2;
 				    run_t.gFan_RunContinue=1;
 		            run_t.gPower_On=0;
@@ -135,11 +174,11 @@ void Scan_KeyModel(void)
 					 decade_temp =  run_t.gTemperature / 10 %10;
 					 unit_temp =  run_t.gTemperature % 10; //
 
-					 lcd_t.number3_low=decade_temp;
-                     lcd_t.number3_high =decade_temp;
+					 lcd_t.number1_low=decade_temp;
+                     lcd_t.number1_high =decade_temp;
 
-					 lcd_t.number4_low = unit_temp;
-					 lcd_t.number4_high = unit_temp;
+					 lcd_t.number2_low = unit_temp;
+					 lcd_t.number2_high = unit_temp;
 					 run_t.gTimer_set_temperature=0;
 			}
               single_buzzer_fun();//SendData_Buzzer();
@@ -164,17 +203,17 @@ void Scan_KeyModel(void)
 					 decade_temp =  run_t.gTemperature / 10 %10;
 					 unit_temp =  run_t.gTemperature % 10; //
 
-					 lcd_t.number3_low=decade_temp;
-                     lcd_t.number3_high =decade_temp;
+					 lcd_t.number1_low=decade_temp;
+                     lcd_t.number1_high =decade_temp;
 
-					 lcd_t.number4_low = unit_temp;
-					 lcd_t.number4_high = unit_temp;
+					 lcd_t.number2_low = unit_temp;
+					 lcd_t.number2_high = unit_temp;
 					 run_t.gTimer_set_temperature=0;
 					
 			}
 				
      }
-		
+	}	
 }
 /************************************************************************
 	*
