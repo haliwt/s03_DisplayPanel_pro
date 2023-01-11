@@ -27,6 +27,7 @@ static void Receive_Wifi_Cmd(uint8_t cmd);
 static void RunKeyOrder_Handler(void);
 static void Timing_Handler(void);
 static void Power_Off_Fun(void);
+static void Power_On_Fun(void);
 
 
 /*******************************************************************************
@@ -77,36 +78,9 @@ void Scan_KeyModel(void)
 
              run_t.wifiCmd[0]=0;//rx wifi command 
 			  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
-			  	  run_t.gTimes_hours_temp=12;
-	              run_t.gPower_On=1;
-	          
-				  run_t.power_key =1;
-				  run_t.gFan_RunContinue=0;
-				 
-				  run_t.gModel =1; //WT.EDIT 2022.09.01
-				  run_t.gPlasma=1;
-				  run_t.gDry =1;
-				  run_t.gBug =1;
-				  run_t.wifi_special_key = 1;
-				 
-				  run_t.gTiming_label=  time_normal;
-				  run_t.gTimer_minute_Counter =0;
-				  run_t.dispTime_hours=12;
-
-				 
-				   decade_hour = run_t.dispTime_hours / 10 ;
-				   unit_hour = run_t.dispTime_hours % 10; //
-					 
-					
-                    
-					 lcd_t.number5_low=decade_hour;
-                     lcd_t.number5_high =decade_hour;
-
-					 lcd_t.number6_low = unit_hour;
-					 lcd_t.number6_high = unit_hour;
-					
+			  	 
+				  Power_On_Fun();
 				  SendData_PowerOff(1);
-				  
 	             
 			  }
 			  else{
@@ -132,12 +106,13 @@ void Scan_KeyModel(void)
 			if(model_temp == 1){ //timing of function.
                 
 				run_t.gModel =2;
+				SendData_Set_Wifi(0x14);
 				
 		    }
             else{ //temperature of function adjust ref .
              
 			   run_t.gModel =1;
-			 
+			   SendData_Set_Wifi(0x04);
             }
 		
            
@@ -233,6 +208,42 @@ static void Power_Off_Fun(void)
 		SendData_PowerOff(0);
   
 } 
+
+static void Power_On_Fun(void)
+{
+                
+	run_t.gPower_On=1;
+
+	run_t.power_key =1;
+	run_t.gFan_RunContinue=0;
+
+	run_t.gModel =1; //WT.EDIT 2022.09.01
+	run_t.gPlasma=1;
+	run_t.gDry =1;
+	run_t.gBug =1;
+	run_t.wifi_special_key = 1;
+
+	run_t.gTiming_label=  time_normal;
+	run_t.gTimer_minute_Counter =0;
+	run_t.dispTime_hours=12;
+
+
+	decade_hour = run_t.dispTime_hours / 10 ;
+	unit_hour = run_t.dispTime_hours % 10; //
+
+
+
+	lcd_t.number5_low=decade_hour;
+	lcd_t.number5_high =decade_hour;
+
+	lcd_t.number6_low = unit_hour;
+	lcd_t.number6_high = unit_hour;
+
+	
+
+
+
+}
   
 /************************************************************************
 	*
@@ -246,11 +257,7 @@ static void Timing_Handler(void)
 {
    switch(run_t.gTiming_label){
 
-    case 0:
-
-    break;
-
-	case time_timing://time timing is be setup 
+     case time_timing://time timing is be setup 
 	   if(run_t.gTimer_minute_Counter >0){ //minute
 
        
@@ -346,6 +353,11 @@ static void Timing_Handler(void)
 
 
 	break;
+
+	case time_gmt:
+
+	break;
+		 
 	case 5:
 		run_t.power_key =2;
 	    run_t.gFan_RunContinue=1;
@@ -373,7 +385,7 @@ static void Timing_Handler(void)
 void RunPocess_Command_Handler(void)
 {
    //key input run function
-   if(run_t.gPower_On ==1 &&  run_t.decodeFlag ==0){
+   if(run_t.gPower_On ==1 && run_t.decodeFlag ==0){
        RunKeyOrder_Handler();
    }
    //receive from mainboard data 
@@ -603,21 +615,9 @@ void Receive_Wifi_Cmd(uint8_t cmd)
 		   case WIFI_POWER_ON: //turn on 
 		 	
               single_buzzer_fun();
-              run_t.gTimes_hours_temp=12;
-              run_t.gPower_On=1;
-          
-			  run_t.power_key =1;
-			  run_t.gFan_RunContinue=0;
-			 
-			  run_t.gModel =1; //WT.EDIT 2022.09.01
+              Power_On_Fun();
 			
-
-			  run_t.gDry =1;
-			  run_t.gPlasma=1;
-              run_t.gBug =1;
-		      run_t.gPower_On =1;
-			
-               Display_Temperature_Humidity_Value();
+             // Display_Temperature_Humidity_Value();
             
 	     
               cmd=0xff;
@@ -627,10 +627,7 @@ void Receive_Wifi_Cmd(uint8_t cmd)
 			 case WIFI_POWER_OFF: //turn off 
                 
 			    single_buzzer_fun();
-			    run_t.gFan_RunContinue=1;
-	            run_t.gPower_On=0;
-				run_t.fan_off_60s =0;
-	            run_t.gFan_RunContinue=1; //WT.EDIT 2022.08.31
+			    Power_Off_Fun();
 				
               
                 

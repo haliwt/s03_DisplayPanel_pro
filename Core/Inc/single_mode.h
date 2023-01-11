@@ -6,10 +6,10 @@
 typedef enum _time_t{
 
    time_timing= 0x01,
-   time_normal
+   time_normal,
+   time_gmt
 
-
-};
+}time_state_t;
 
 extern void (*single_ai_fun)(uint8_t cmd);
 extern void (*single_add_fun)(void);
@@ -36,6 +36,7 @@ void RunPocess_Command_Handler(void);
 
 
 void Receive_MainBoard_Data_Handler(uint8_t cmd);
+
 
 
 
