@@ -15,7 +15,7 @@ uint8_t decade_temp;
 uint8_t unit_temp;
 uint8_t decade_minute;
 uint8_t uint_minute;
-
+uint32_t wifi_key_counter;
 
 void (*single_ai_fun)(uint8_t cmd);
 void (*single_add_fun)(void);
@@ -39,19 +39,18 @@ static void Timing_Handler(void);
 void Scan_KeyModel(void)
 {
      static uint8_t model_temp;
-     static uint16_t wifi_key_counter;
+     //static uint16_t wifi_key_counter;
 
     if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN){
-        // if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
-         // HAL_Delay(20);
+      
 		 while(POWER_KEY_VALUE()  ==KEY_DOWN){
             wifi_key_counter++;
 
 		 };
 
-		 if(wifi_key_counter > 10000){
+		 if(wifi_key_counter > 0x1e6bdf){
              wifi_key_counter=0;
-			 run_t.wifi_connect_flag =1;
+			 run_t.wifi_detect_key =1;
 
 
 		 }

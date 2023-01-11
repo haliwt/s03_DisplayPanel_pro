@@ -46,6 +46,7 @@ typedef struct __RUN{
 
   uint8_t temperature_flag;
   uint8_t gTiming_flag;
+ 
   
    uint8_t usart_flag;
    uint8_t decodeFlag;
@@ -77,6 +78,7 @@ typedef struct __RUN{
    uint8_t wifi_set_wind_speed;
    uint8_t wifi_set_temp_flag ;
    uint8_t wifi_special_key;
+   uint8_t wifi_detect_key ;
 
  
    
