@@ -89,7 +89,8 @@ void Scan_KeyModel(void)
 				  run_t.gBug =1;
 				  run_t.wifi_special_key = 1;
 				 
-				  run_t.gTiming_flag=1;
+				  run_t.gTiming_label=  time_normal;
+				  run_t.gTimer_minute_Counter =0;
 				  run_t.dispTime_hours=12;
 
 				 
@@ -223,7 +224,7 @@ static void Power_Off_Fun(void)
 		run_t.wifi_special_key = 0;
 		run_t.wifi_detect_key =0;
 
-		run_t.gTiming_flag=0;
+		run_t.gTiming_label=0;
 		run_t.wifi_connect_flag =0;
 		run_t.power_key =2;
 		run_t.gFan_RunContinue=1;
@@ -243,13 +244,13 @@ static void Power_Off_Fun(void)
 ************************************************************************/  
 static void Timing_Handler(void)
 {
-   switch(run_t.gTiming_flag){
+   switch(run_t.gTiming_label){
 
     case 0:
 
     break;
 
-	case 1://time timing is be setup 
+	case time_timing://time timing is be setup 
 	   if(run_t.gTimer_minute_Counter >0){ //minute
 
        
@@ -258,9 +259,9 @@ static void Timing_Handler(void)
 			  run_t.dispTime_minute = 59;
 			  if(run_t.dispTime_hours < 0){
 
-                  run_t.gTiming_flag = 2;
+                  run_t.gTiming_label = 2;
 				  run_t.dispTime_hours =0;
-			      run_t.gTiming_flag=0;
+			      run_t.gTiming_label=0;
 				  run_t.dispTime_minute=0;
 
 			  }
@@ -305,7 +306,47 @@ static void Timing_Handler(void)
 
 	break;
 
-	case 2:
+	case time_normal:
+		 if(run_t.gTimer_minute_Counter >0){ //minute
+
+			  run_t.gTimer_minute_Counter=0;
+
+			  run_t.dispTime_minute++;
+			  if(run_t.dispTime_minute > 59){
+				  run_t.dispTime_minute=0;
+                  run_t.dispTime_hours ++;
+				  if(run_t.dispTime_hours >23){
+					run_t.dispTime_hours=0;
+
+				  }
+
+			  }
+			 decade_hour = run_t.dispTime_hours / 10 %10;
+			 unit_hour = run_t.dispTime_hours % 10; //
+
+			 decade_minute = run_t.dispTime_minute / 10 %10;
+			 uint_minute = run_t.dispTime_minute % 10; //
+					 
+			 lcd_t.number5_low=decade_hour;
+             lcd_t.number5_high =decade_hour;
+
+			 lcd_t.number6_low = unit_hour;
+			 lcd_t.number6_high = unit_hour;
+	   
+
+
+			lcd_t.number7_low = decade_minute;
+			lcd_t.number7_high = decade_minute;
+
+			lcd_t.number8_low = uint_minute;
+			lcd_t.number8_high = uint_minute;
+					 
+          }
+		
+
+
+	break;
+	case 5:
 		run_t.power_key =2;
 	    run_t.gFan_RunContinue=1;
         run_t.gPower_On=0;

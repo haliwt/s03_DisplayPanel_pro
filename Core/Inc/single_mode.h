@@ -2,6 +2,15 @@
 #define __SINGLE_MODE_
 #include "main.h"
 
+
+typedef enum _time_t{
+
+   time_timing= 0x01,
+   time_normal
+
+
+};
+
 extern void (*single_ai_fun)(uint8_t cmd);
 extern void (*single_add_fun)(void);
 extern void (*sendAi_usart_fun)(uint8_t senddat);
