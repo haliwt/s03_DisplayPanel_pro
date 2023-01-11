@@ -220,11 +220,10 @@ void DisplayPanel_Ref_Handler(void)
 	// TIM1723_Write_Cmd(0x40);
 	 TIM1723_Write_Cmd(0x44);
 
-    //Address C2 ->low_byte->T3,T4,T5,T6,high_byte->1A,1F,1E,1D 
-    //TM1723_Write_Display_Data(0xC2,0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol+lcdNumber1_High[lcd_t.number1_high]);//display digital "temperature"
+    
     Display_Kill_Dry_Ster_Icon();
 	
-    //T1->AI
+    //T1->gModel->0xC3
     if(run_t.gModel==1){
        TM1723_Write_Display_Data(0xC3,lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high]);//display  "AI icon"
 	TIM1723_Write_Cmd(LUM_VALUE);
@@ -236,27 +235,49 @@ void DisplayPanel_Ref_Handler(void)
 	 //
 	 TM1723_Write_Display_Data(0xC4,(0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high])&0xff);//display "t,c"
 	 TIM1723_Write_Cmd(LUM_VALUE);
+	 
      //T2->WIFI icon -> 0xC5
      if(run_t.wifi_connect_flag ==0){ //hasn't wifi
-		 if(lcd_t.gTimer_wifi_500ms >49 && lcd_t.gTimer_wifi_500ms<100){
-	          
-	           TM1723_Write_Display_Data(0xC5,(WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi
-				TIM1723_Write_Cmd(LUM_VALUE);
+         if(run_t.wifi_detect_key ==0){
+			 if(lcd_t.gTimer_wifi_500ms >99 && lcd_t.gTimer_wifi_500ms<200){
+		          
+		           TM1723_Write_Display_Data(0xC5,(WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi
+					TIM1723_Write_Cmd(LUM_VALUE);
+			 }
+		     else if(lcd_t.gTimer_wifi_500ms <100){
+			 	 
+		         TM1723_Write_Display_Data(0xC5,(WIFI_NO_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi 
+	             TIM1723_Write_Cmd(LUM_VALUE);
+			 }
+		     else{
+		        lcd_t.gTimer_wifi_500ms =0;
+		     }
+         }
+		 else{ //be detected of wifi signal fast blink wiif icon
+
+             if(lcd_t.gTimer_wifi_500ms >19 && lcd_t.gTimer_wifi_500ms<40){
+		          
+		           TM1723_Write_Display_Data(0xC5,(WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi
+					TIM1723_Write_Cmd(LUM_VALUE);
+			 }
+		     else if(lcd_t.gTimer_wifi_500ms <20){
+			 	 
+		         TM1723_Write_Display_Data(0xC5,(WIFI_NO_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi 
+	             TIM1723_Write_Cmd(LUM_VALUE);
+			 }
+		     else{
+		        lcd_t.gTimer_wifi_500ms =0;
+		     }
+
+
 		 }
-	     else if(lcd_t.gTimer_wifi_500ms <50){
-		 	 
-	         TM1723_Write_Display_Data(0xC5,(WIFI_NO_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi 
-             TIM1723_Write_Cmd(LUM_VALUE);
-		 }
-	     else{
-	        lcd_t.gTimer_wifi_500ms =0;
-	     }
 		
      }
-	 else{
+	 else{//wifi be connect is OK 
            TM1723_Write_Display_Data(0xC5,(WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi
            TIM1723_Write_Cmd(LUM_VALUE);
 	 }
+	 /*T2 end*/
      //Humidity Icon "0xC9"-numbers "4-B,G,C","5-A,F,E,D"
      TM1723_Write_Display_Data(0xC9,(0x01+lcdNumber4_Low[lcd_t.number4_low]+lcdNumber5_High[lcd_t.number5_high]) & 0xff);//display digital '4,5'
      TIM1723_Write_Cmd(LUM_VALUE);

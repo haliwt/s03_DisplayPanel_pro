@@ -26,6 +26,7 @@ static void Receive_Wifi_Cmd(uint8_t cmd);
 
 static void RunKeyOrder_Handler(void);
 static void Timing_Handler(void);
+static void Power_Off_Fun(void);
 
 
 /*******************************************************************************
@@ -39,37 +40,26 @@ static void Timing_Handler(void);
 void Scan_KeyModel(void)
 {
      static uint8_t model_temp;
+	 uint8_t decade_hour,unit_hour;
      //static uint16_t wifi_key_counter;
 
-    if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN){
+    if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_detect_key ==0 ){
       
 		 while(POWER_KEY_VALUE()  ==KEY_DOWN){
-            wifi_key_counter++;
+             wifi_key_counter++;
 
 		 };
 
-		 if(wifi_key_counter > 0x1e6bdf){
+		 if(wifi_key_counter > 0x1a6bdf){ //0x1e6bdf
              wifi_key_counter=0;
 			 run_t.wifi_detect_key =1;
-
+             single_buzzer_fun();//SendData_Buzzer();
+             SendData_Set_Wifi(0x01);
 
 		 }
 		 else{
-		 	 wifi_key_counter=0;
-			run_t.gModel =0; //WT.EDIT 2022.09.01
-			run_t.gPlasma=0;
-			run_t.gDry =0;
-			run_t.gBug =0;
-			run_t.wifi_special_key = 0;
-			run_t.wifi_connect_flag =0;
-
-			run_t.gTiming_flag=0;
-
-			run_t.power_key =2;
-			run_t.gFan_RunContinue=1;
-			run_t.gPower_On=0;
-			run_t.fan_off_60s =0;
-			SendData_PowerOff(0);
+            wifi_key_counter=0;
+		 	Power_Off_Fun();
 
 
          }
@@ -99,26 +89,28 @@ void Scan_KeyModel(void)
 				  run_t.gBug =1;
 				  run_t.wifi_special_key = 1;
 				 
-				  run_t.gTiming_flag=0;
+				  run_t.gTiming_flag=1;
+				  run_t.dispTime_hours=12;
+
+				 
+				   decade_hour = run_t.dispTime_hours / 10 ;
+				   unit_hour = run_t.dispTime_hours % 10; //
+					 
+					
+                    
+					 lcd_t.number5_low=decade_hour;
+                     lcd_t.number5_high =decade_hour;
+
+					 lcd_t.number6_low = unit_hour;
+					 lcd_t.number6_high = unit_hour;
+					
 				  SendData_PowerOff(1);
 				  
 	             
 			  }
 			  else{
 
-			      run_t.gModel =0; //WT.EDIT 2022.09.01
-				  run_t.gPlasma=0;
-				  run_t.gDry =0;
-				  run_t.gBug =0;
-				   run_t.wifi_special_key = 0;
-			
-				  run_t.gTiming_flag=0;
-                   run_t.wifi_connect_flag =0;
-					run_t.power_key =2;
-				    run_t.gFan_RunContinue=1;
-		            run_t.gPower_On=0;
-					run_t.fan_off_60s =0;
-					SendData_PowerOff(0);
+			    Power_Off_Fun();
 					
 		           
               }
@@ -222,9 +214,22 @@ void Scan_KeyModel(void)
 	*
 	*
 ************************************************************************/
-void Wifi_Key_Fun(void)
+static void Power_Off_Fun(void)
 {
-   
+		run_t.gModel =0; //WT.EDIT 2022.09.01
+		run_t.gPlasma=0;
+		run_t.gDry =0;
+		run_t.gBug =0;
+		run_t.wifi_special_key = 0;
+		run_t.wifi_detect_key =0;
+
+		run_t.gTiming_flag=0;
+		run_t.wifi_connect_flag =0;
+		run_t.power_key =2;
+		run_t.gFan_RunContinue=1;
+		run_t.gPower_On=0;
+		run_t.fan_off_60s =0;
+		SendData_PowerOff(0);
   
 } 
   
@@ -245,7 +250,7 @@ static void Timing_Handler(void)
     break;
 
 	case 1://time timing is be setup 
-	   if(run_t.gTimer_minute_Counter >0){
+	   if(run_t.gTimer_minute_Counter >0){ //minute
 
        
 		  	if(run_t.dispTime_minute ==0){
