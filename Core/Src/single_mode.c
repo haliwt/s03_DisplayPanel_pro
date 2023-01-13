@@ -216,7 +216,11 @@ static void Power_Off_Fun(void)
 		run_t.gPower_On=0;
 		run_t.fan_off_60s =0;
 		power_on_off_flag=1;
-		SendData_PowerOff(0);
+	    if(run_t.wifi_power_flag == WIFI_POWER_OFF_ITEM){
+			run_t.wifi_power_flag = WIFI_POWER_NULL;
+	    }	
+		else
+	   	   SendData_PowerOff(0);
   
 } 
 
@@ -324,7 +328,8 @@ void RunPocess_Command_Handler(void)
 	      run_t.gPower_On =0xff;
          if(run_t.gFan_RunContinue == 1){
            if(run_t.fan_off_60s < 61){
-		     LCD_BACK_LIGHT_OFF();
+		      LED_MODEL_OFF();
+			  POWER_ON_LED();
 		      LCD_Display_Wind_Icon_Handler();
            	}
 		   else{
@@ -471,8 +476,8 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
        case WIFI_BEIJING_TIME: 
          if(run_t.wifi_connect_flag ==1 && run_t.gPower_On==1){
 
-
-		     if(run_t.dispTime_hours < 24 && run_t.dispTime_minutes < 60 ){
+        
+		     
 
 				 lcd_t.number5_low=(run_t.dispTime_hours ) /10;
 	             lcd_t.number5_high =(run_t.dispTime_hours) /10;
@@ -489,7 +494,7 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 				lcd_t.number8_high = (run_t.dispTime_minutes )%10;
 
 	            DisplayPanel_Ref_Handler();
-		    }
+		    
         } 
         
       break;
@@ -513,24 +518,21 @@ void Receive_Wifi_Cmd(uint8_t cmd)
 
 		   case WIFI_POWER_ON: //turn on 
 		 	
-              single_buzzer_fun();
+            //  single_buzzer_fun();
+              run_t.wifi_power_flag = WIFI_POWER_ON_ITEM;
               Power_On_Fun();
-			
-           
-            
-	     
-              cmd=0xff;
+			  cmd=0xff;
 
 	         break;
 
 			 case WIFI_POWER_OFF: //turn off 
                 
-			    single_buzzer_fun();
+			    //single_buzzer_fun();
+			   run_t.wifi_power_flag = WIFI_POWER_OFF_ITEM;
+				
 			    Power_Off_Fun();
 				
-              
-                
-               cmd=0xff;
+              cmd=0xff;
 
 			 break;
 

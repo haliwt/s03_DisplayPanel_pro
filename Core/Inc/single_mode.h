@@ -11,6 +11,13 @@ typedef enum _time_t{
 
 }time_state_t;
 
+typedef enum _WIFI_POWER_STATE_{
+	WIFI_POWER_ON_ITEM = 0x01,
+	WIFI_POWER_OFF_ITEM,
+	WIFI_POWER_NULL
+
+}wifi_power_state;
+
 extern void (*single_ai_fun)(uint8_t cmd);
 extern void (*single_add_fun)(void);
 extern void (*sendAi_usart_fun)(uint8_t senddat);
