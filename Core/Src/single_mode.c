@@ -58,7 +58,7 @@ void Scan_KeyModel(void)
 		 if(wifi_key_counter > 0x1a6bdf){ //0x1e6bdf
              wifi_key_counter=0;
 			 run_t.wifi_detect_key =1;
-             single_buzzer_fun();//SendData_Buzzer();
+             
              SendData_Set_Wifi(0x01);
 
 		 }
@@ -68,7 +68,8 @@ void Scan_KeyModel(void)
 
 
          }
-
+		HAL_Delay(50);
+        single_buzzer_fun();//SendData_Buzzer();
 
 	}
 	else{
@@ -78,7 +79,7 @@ void Scan_KeyModel(void)
 		 while(POWER_KEY_VALUE()  ==KEY_DOWN);
        
        
-		     single_buzzer_fun();//SendData_Buzzer();
+		    
 
              run_t.wifiCmd[0]=0;//rx wifi command 
 			  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
@@ -93,7 +94,8 @@ void Scan_KeyModel(void)
 					
 		           
               }
-          
+            HAL_Delay(50);
+			single_buzzer_fun();//SendData_Buzzer();
 
      }
      else if(MODE_KEY_VALUE()==KEY_DOWN){ //Mode key 
