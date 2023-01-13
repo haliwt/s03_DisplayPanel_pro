@@ -68,8 +68,7 @@ void Scan_KeyModel(void)
 
 
          }
-		HAL_Delay(50);
-        single_buzzer_fun();//SendData_Buzzer();
+	
 
 	}
 	else{
@@ -95,8 +94,7 @@ void Scan_KeyModel(void)
 				
 		           
               }
-            HAL_Delay(50);
-			single_buzzer_fun();//SendData_Buzzer();
+           
 
      }
      else if(MODE_KEY_VALUE()==KEY_DOWN){ //Mode key 
@@ -126,8 +124,7 @@ void Scan_KeyModel(void)
 		
            
 	     }
-		 HAL_Delay(50);
-		 single_buzzer_fun();
+		
 		  
      }
      else if(DEC_KEY_VALUE()==KEY_DOWN){ //"-" KEY
