@@ -83,6 +83,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     tim3++;
     lcd_t.gTimer_wifi_500ms++;
 	lcd_t.gTimer_fan_10ms++;
+	run_t.gTimer_numbers_one_two_blink++;
 
     if(tm0>99){ //100 *10ms = 1000ms = 1s
 		tm0=0;

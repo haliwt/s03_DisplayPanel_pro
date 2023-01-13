@@ -219,7 +219,9 @@ static void TM1723_Write_Display_Data(uint8_t addr,uint8_t dat)
 *************************************************************************/ 
 void DisplayPanel_Ref_Handler(void)
 {
-     TIM1723_Write_Cmd(0x00);
+     static uint8_t number_blink_times;
+
+	 TIM1723_Write_Cmd(0x00);
 	// TIM1723_Write_Cmd(0x40);
 	 TIM1723_Write_Cmd(0x44);
 
@@ -235,7 +237,31 @@ void DisplayPanel_Ref_Handler(void)
 	 	TM1723_Write_Display_Data(0xC3,(lcdNumber1_Low[lcd_t.number1_low]&0x0e)+lcdNumber2_High[lcd_t.number2_high]);//don't display "AI icon"
 		TIM1723_Write_Cmd(LUM_VALUE);
 	 }
-	 //
+	 //digital 1,2 ->blink 
+	 if(run_t.wifi_set_temp_flag ==1){
+	 	 if(run_t.gTimer_numbers_one_two_blink >49 && run_t.gTimer_numbers_one_two_blink <100 ){
+		 TM1723_Write_Display_Data(0xC2,(0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol)+lcdNumber1_High[lcd_t.number1_high]);//display digital "temp
+         TM1723_Write_Display_Data(0xC3,lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high]);//display  "AI icon
+
+		 TIM1723_Write_Cmd(LUM_VALUE);
+		 
+	 	 }
+		 else if(run_t.gTimer_numbers_one_two_blink < 50){
+			TM1723_Write_Display_Data(0xC2,(((0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol)+lcdNumber1_High[lcd_t.number1_high]) & 0x0F));
+         	TM1723_Write_Display_Data(0xC3,((lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high])& 0x01));
+            TIM1723_Write_Cmd(LUM_VALUE);
+        }
+		else if(run_t.gTimer_numbers_one_two_blink > 99){
+             run_t.gTimer_numbers_one_two_blink =0;
+			 number_blink_times++;
+		     if(number_blink_times > 2){
+                 number_blink_times =0;
+				 run_t.wifi_set_temp_flag =0;
+			 }
+		}
+
+	 }
+	//
 	 TM1723_Write_Display_Data(0xC4,(0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high])&0xff);//display "t,c"
 	 TIM1723_Write_Cmd(LUM_VALUE);
 	 
@@ -450,15 +476,24 @@ void DisplayPanel_Ref_Handler(void)
 
 }
 
-
+/******************************************************************************
+	*
+	*Function Name:static void Display_Kill_Dry_Ster_Icon(void)
+	*Function: display of icon 
+	*
+	*
+	*
+******************************************************************************/
 static void Display_Kill_Dry_Ster_Icon(void)
 {
 
+
   if(run_t.gDry==1 && run_t.gPlasma==1 && run_t.gBug==1){
 
-     //[T3,T4,T5,T6,---- ] ->Address C2 ->low_byte->T3,T4,T5,T6,high_byte->1A,1F,1E,1D 
+  
      TM1723_Write_Display_Data(0xC2,(0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol)+lcdNumber1_High[lcd_t.number1_high]);//display digital "temp
      TIM1723_Write_Cmd(LUM_VALUE);
+	 
   }
   else if(run_t.gDry==0 && run_t.gPlasma==1 && run_t.gBug==1){
 
@@ -495,6 +530,7 @@ static void Display_Kill_Dry_Ster_Icon(void)
 			TM1723_Write_Display_Data(0xC2,((0X01+DRY_Symbol+KILL_Symbol+BUG_NO_Symbol)&0x07)+lcdNumber1_High[lcd_t.number1_high]);//display digit
 			TIM1723_Write_Cmd(LUM_VALUE);
    }
+
 
   
    TIM1723_Write_Cmd(LUM_VALUE);
