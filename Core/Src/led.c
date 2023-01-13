@@ -62,6 +62,7 @@ void Lcd_PowerOn_Fun(void)
     POWER_ON_LED()	;//key of led turn On
     LED_MODEL_ON();
 	LCD_BACK_LIGHT_ON();
+	
 
 }
 

@@ -85,13 +85,14 @@ void Scan_KeyModel(void)
 			  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
 			  	 
 				  Power_On_Fun();
+				  run_t.disp_wind_speed_grade =3;
 				  SendData_PowerOff(1);
 	             
 			  }
 			  else{
 
 			    Power_Off_Fun();
-					
+				run_t.disp_wind_speed_grade =1;	
 		           
               }
             HAL_Delay(50);
@@ -386,17 +387,18 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 	 	if(run_t.gPower_On ==1){
 		  
 
-		   if(run_t.wifi_set_wind_speed <50){
+		   if(run_t.wifi_set_wind_speed <40){
 		   	 
-
+                run_t.disp_wind_speed_grade = 1;
 		   	}
-			else if(run_t.wifi_set_wind_speed > 49 && run_t.wifi_set_wind_speed < 80){
+			else if(run_t.wifi_set_wind_speed >39 && run_t.wifi_set_wind_speed < 67){
+			    run_t.disp_wind_speed_grade = 2;
 
 
 			}
-			else if(run_t.wifi_set_wind_speed <50){
+			else if(run_t.wifi_set_wind_speed >66){
 
-
+				run_t.disp_wind_speed_grade = 3;
 
 			}
 
@@ -497,7 +499,7 @@ void Receive_Wifi_Cmd(uint8_t cmd)
               single_buzzer_fun();
               Power_On_Fun();
 			
-             // Display_Temperature_Humidity_Value();
+           
             
 	     
               cmd=0xff;
