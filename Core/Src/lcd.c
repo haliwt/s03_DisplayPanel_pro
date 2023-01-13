@@ -409,11 +409,11 @@ void DisplayPanel_Ref_Handler(void)
 	  //T16 WIND SPPEDD ->address "0xCF",T12,T11,T10
 	  if(run_t.disp_wind_speed_grade ==3){
 	      if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<20){
-	            TM1723_Write_Display_Data(0xCF,T11+T16);//
+	            TM1723_Write_Display_Data(0xCF,((T11+T16) & 0x05));//
 	      }
   
 		  else if(lcd_t.gTimer_fan_10ms <10){
-		         TM1723_Write_Display_Data(0xCF,T16+T12+T10+T16);//
+		         TM1723_Write_Display_Data(0xCF,((T16+T12+T10)& 0x0B));//
 
 		  }
 		  else if(lcd_t.gTimer_fan_10ms > 19){
@@ -422,10 +422,10 @@ void DisplayPanel_Ref_Handler(void)
 	  }
 	  else if(run_t.disp_wind_speed_grade ==2){
 	      if(lcd_t.gTimer_fan_10ms >39 && lcd_t.gTimer_fan_10ms<80){
-	            TM1723_Write_Display_Data(0xCF,T11+T16);//
+	            TM1723_Write_Display_Data(0xCF,((T11+T16)& 0x05));//
 	      }
   		 else if(lcd_t.gTimer_fan_10ms <40){
-		         TM1723_Write_Display_Data(0xCF,T16+T12+T10+T16);//
+		         TM1723_Write_Display_Data(0xCF,((T16+T12+T10)&0x0B));//
 
 		  }
 		  else if(lcd_t.gTimer_fan_10ms >79){
@@ -434,10 +434,10 @@ void DisplayPanel_Ref_Handler(void)
 	  }
 	  else if(run_t.disp_wind_speed_grade ==1){
 	      if(lcd_t.gTimer_fan_10ms >79 && lcd_t.gTimer_fan_10ms<160){
-	            TM1723_Write_Display_Data(0xCF,T11+T16);//
+	            TM1723_Write_Display_Data(0xCF,((T11+T16)&0x05));//
 	      }
   		  else if(lcd_t.gTimer_fan_10ms <80){
-		         TM1723_Write_Display_Data(0xCF,T16+T12+T10+T16);//
+		         TM1723_Write_Display_Data(0xCF,((T16+T12+T10)& 0x0B));//
 
 		  }
 		  else if(lcd_t.gTimer_fan_10ms >159){
