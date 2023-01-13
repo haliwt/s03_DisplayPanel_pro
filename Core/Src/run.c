@@ -8,60 +8,12 @@
 RUN_T run_t;
 
 uint8_t tim3,tim14;
-void Power_Off(void);
 
 
 
 
 
-/**********************************************************************
-*
-*Functin Name: void Power_Off(void)
-*Function : Timer of key be pressed handle
-*Input Ref:  key of value
-*Return Ref: NO
-*
-**********************************************************************/
-void Power_Off(void)
-{
-    	 if(run_t.gPower_On ==0){
 
-         run_t.gPower_On =0xff;
-    
-        
-         run_t.gModel =0;
-        
-         run_t.gPlasma=0;
-         run_t.gDry=0;
-        
-        run_t.gTimer_Cmd=0; //timer of command "1"->timer is start
-        
-        run_t.gTemperature_timer_flag=0;
-    
-        run_t.gDht11_flag=0; //the first power on display "00"
-        
-    
-
-          run_t.gTimer_fan_counter=0;
-          Lcd_PowerOff_Fun();
-				
-				
-		}
-		Breath_Led();
-        if(run_t.gFan_RunContinue==1){
-
-		      if(run_t.fan_off_60s > 60){
-                run_t.gFan_RunContinue=0;
-                
-              }
-			  else{
-
-			   
-							
-           }
-
-		 }
-}
 
 
 

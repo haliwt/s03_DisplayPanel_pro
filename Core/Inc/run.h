@@ -35,7 +35,7 @@ typedef struct __RUN{
    uint8_t keyDec_continue;
   
 
-   uint8_t gDht11_flag;
+
    uint8_t gTemperature;
  
    uint8_t gTimer_minute_Counter;
@@ -52,7 +52,7 @@ typedef struct __RUN{
    uint8_t decodeFlag;
    uint8_t gTemp_check;
    
-   uint8_t  gTimer_Cmd;
+
    uint8_t  gPlasma;
 
    uint8_t  gDry;
@@ -101,7 +101,7 @@ typedef struct __RUN{
 extern RUN_T run_t;
 
 
-void Power_Off(void);
+
 
 
 

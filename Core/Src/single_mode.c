@@ -85,14 +85,14 @@ void Scan_KeyModel(void)
 			  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
 			  	 
 				  Power_On_Fun();
-				  run_t.disp_wind_speed_grade =3;
+				  
 				  SendData_PowerOff(1);
 	             
 			  }
 			  else{
 
 			    Power_Off_Fun();
-				run_t.disp_wind_speed_grade =1;	
+				
 		           
               }
             HAL_Delay(50);
@@ -212,6 +212,7 @@ static void Power_Off_Fun(void)
 		run_t.wifi_connect_flag =0;
 		run_t.power_key =2;
 		run_t.gFan_RunContinue=1;
+		run_t.disp_wind_speed_grade =1;	
 		run_t.gPower_On=0;
 		run_t.fan_off_60s =0;
 		power_on_off_flag=1;
@@ -235,9 +236,10 @@ static void Power_On_Fun(void)
 
 	run_t.gTiming_label=  time_normal;
 	run_t.gTimer_minute_Counter =0;
-	if(power_on_off_flag==0)
+	if(power_on_off_flag==0){
 	     run_t.dispTime_hours=12;
-	
+		 run_t.disp_wind_speed_grade =3;
+	}
 
 	 lcd_t.number5_low=(run_t.dispTime_hours ) /10;
      lcd_t.number5_high =(run_t.dispTime_hours) /10;
@@ -319,7 +321,19 @@ void RunPocess_Command_Handler(void)
    if(run_t.gPower_On ==0 || run_t.gPower_On == 0xff ){
 	 	
 	      Breath_Led();
-		  Power_Off();
+	      run_t.gPower_On =0xff;
+         if(run_t.gFan_RunContinue == 1){
+           if(run_t.fan_off_60s < 61){
+		     LCD_BACK_LIGHT_OFF();
+		      LCD_Display_Wind_Icon_Handler();
+           	}
+		   else{
+               run_t.gFan_RunContinue =0;
+			   Lcd_PowerOff_Fun();
+
+		   }
+
+         }
     }
  
 }
@@ -457,22 +471,25 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
        case WIFI_BEIJING_TIME: 
          if(run_t.wifi_connect_flag ==1 && run_t.gPower_On==1){
 
-			 lcd_t.number5_low=(run_t.dispTime_hours ) /10;
-             lcd_t.number5_high =(run_t.dispTime_hours) /10;
 
-			 lcd_t.number6_low = (run_t.dispTime_hours ) %10;;
-			 lcd_t.number6_high = (run_t.dispTime_hours ) %10;
-	   
+		     if(run_t.dispTime_hours < 24 && run_t.dispTime_minutes < 60 ){
+
+				 lcd_t.number5_low=(run_t.dispTime_hours ) /10;
+	             lcd_t.number5_high =(run_t.dispTime_hours) /10;
+
+				 lcd_t.number6_low = (run_t.dispTime_hours ) %10;;
+				 lcd_t.number6_high = (run_t.dispTime_hours ) %10;
+		   
 
 
-			lcd_t.number7_low = (run_t.dispTime_minutes )/10;
-			lcd_t.number7_high = (run_t.dispTime_minutes )/10;
+				lcd_t.number7_low = (run_t.dispTime_minutes )/10;
+				lcd_t.number7_high = (run_t.dispTime_minutes )/10;
 
-			lcd_t.number8_low = (run_t.dispTime_minutes )%10;
-			lcd_t.number8_high = (run_t.dispTime_minutes )%10;
+				lcd_t.number8_low = (run_t.dispTime_minutes )%10;
+				lcd_t.number8_high = (run_t.dispTime_minutes )%10;
 
-            DisplayPanel_Ref_Handler();
-           
+	            DisplayPanel_Ref_Handler();
+		    }
         } 
         
       break;

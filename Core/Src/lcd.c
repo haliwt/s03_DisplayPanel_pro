@@ -536,3 +536,42 @@ static void Display_Kill_Dry_Ster_Icon(void)
    TIM1723_Write_Cmd(LUM_VALUE);
    
 }
+
+void LCD_Display_Wind_Icon_Handler(void)
+{
+	 TIM1723_Write_Cmd(0x00);
+	 TIM1723_Write_Cmd(0x40);
+	 TIM1723_Write_Cmd(0x44);
+
+	  TM1723_Write_Display_Data(0xC2,0x0);
+	  TM1723_Write_Display_Data(0xC3,0x0);
+	  TM1723_Write_Display_Data(0xC4,0x0);
+	  TM1723_Write_Display_Data(0xC5,0x0);
+	  TM1723_Write_Display_Data(0xC9,0x0);
+	  TM1723_Write_Display_Data(0xCB,0x0);
+
+     //only display wind speed "icon"
+      if(run_t.disp_wind_speed_grade ==1){
+	      if(lcd_t.gTimer_fan_10ms >79 && lcd_t.gTimer_fan_10ms<160){
+		  	   TM1723_Write_Display_Data(0xCA,(T15+lcdNumber5_Low[lcd_t.number5_low]+lcdNumber6_High[lcd_t.number6_high])&0x01);//"T15"
+	      		TM1723_Write_Display_Data(0xCC,(lcdNumber7_Low[lcd_t.number7_low]+lcdNumber8_High[lcd_t.number8_high])&0x00);//"T14"
+		  	    TM1723_Write_Display_Data(0xCE,(T13+lcdNumber8_Low[lcd_t.number8_low]+0xE0)&0x01); //"T13"
+	            TM1723_Write_Display_Data(0xCF,((T11+T16)&0x05));//
+	      }
+  		  else if(lcd_t.gTimer_fan_10ms <80){
+		  	   TM1723_Write_Display_Data(0xCA,(lcdNumber5_Low[lcd_t.number5_low]+lcdNumber6_High[lcd_t.number6_high])&0x00);//"T15"
+		  	   TM1723_Write_Display_Data(0xCC,(T14+lcdNumber7_Low[lcd_t.number7_low]+lcdNumber8_High[lcd_t.number8_high])&0x01);//"T14"
+		  	   TM1723_Write_Display_Data(0xCE,(lcdNumber8_Low[lcd_t.number8_low]+0xE0)&0x00);//display "T13"
+		       TM1723_Write_Display_Data(0xCF,((T16+T12+T10)& 0x0B));//
+
+		  }
+		  else if(lcd_t.gTimer_fan_10ms >159){
+        		lcd_t.gTimer_fan_10ms=0;
+         }
+      }
+	//open display
+	 TIM1723_Write_Cmd(LUM_VALUE);//(0x9B);
+
+
+
+}
