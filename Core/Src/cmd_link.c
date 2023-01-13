@@ -58,22 +58,22 @@ void SendData_Buzzer(void)
 }
 
 
-//void SendData_Set_Temperature(uint8_t hdata)
-//{
-//	    outputBuf[0]='T'; //4D
-//		outputBuf[1]='K'; //58
-//		outputBuf[2]='T'; //4C	// 'T'->temperature
-//		outputBuf[3]=hdata; //53	//
-//		
-//		transferSize=4;
-//		if(transferSize)
-//		{
-//			while(transOngoingFlag);
-//			transOngoingFlag=1;
-//			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
-//		}
-//	
-//}
+void SendData_Set_Temperature(uint8_t hdata)
+{
+	    outputBuf[0]='T'; //4D
+		outputBuf[1]='K'; //58
+		outputBuf[2]='T'; //4C	// 'T'->temperature
+		outputBuf[3]=hdata; //53	//
+		
+		transferSize=4;
+		if(transferSize)
+		{
+			while(transOngoingFlag);
+			transOngoingFlag=1;
+			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
+		}
+	
+}
 
 void SendData_Set_Wifi(uint8_t hdata)
 {
@@ -121,13 +121,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				state=0; 
 			break;
 		case 2://#2
-			if(inputBuf[0]=='D' || inputBuf[0]=='W' || inputBuf[0]=='T' \
-				|| inputBuf[0]=='P' ||inputBuf[0] =='C' || inputBuf[0] == 'B' ||inputBuf[0] == 'S') //'D'->data , 'W' ->wifi
+			if(inputBuf[0]=='D' || inputBuf[0]=='W'   || inputBuf[0]=='P' ||inputBuf[0] =='C' || inputBuf[0] == 'B' ||inputBuf[0] == 'S') //'D'->data , 'W' ->wifi
 			{
 				
 				if(inputBuf[0]=='D') run_t.single_data=PANEL_DATA; //receive data is single data
                 else if(inputBuf[0]=='W') run_t.single_data = WIFI_INFO; //wifi data
-			    else if(inputBuf[0]=='T') run_t.single_data = WIFI_TIME; //times
                 else if(inputBuf[0]=='P') run_t.single_data = WIFI_TEMP;//temperature 
 				else if(inputBuf[0]=='C') run_t.single_data = WIFI_CMD; //command 
 				else if(inputBuf[0]=='B') run_t.single_data = WIFI_BEIJING_TIME;
@@ -153,11 +151,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                     run_t.decodeFlag=1;
              
              }
-            else if(run_t.single_data == WIFI_TIME){ //wifi modify temperature of value
-                 run_t.wifi_set_timing=inputBuf[0]; 
-                 state=0;
-                 run_t.decodeFlag=1;
-            }
             else if(run_t.single_data == WIFI_TEMP){ //wifi modify temperature of value
                  run_t.wifi_set_temperature=inputBuf[0]; 
                  state=0;
@@ -175,18 +168,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
              }
 			 else if(run_t.single_data == WIFI_BEIJING_TIME){
-			  	 run_t.gTimes_hours_temp  = inputBuf[0];
+			  	 run_t.dispTime_hours  = inputBuf[0];
                  state = 4; 
              }
-            
-                  
             
         break;
         
 		case 4: //
 
 		 if(run_t.single_data == WIFI_BEIJING_TIME){
-				run_t.gTimes_minutes_temp = inputBuf[0];
+				run_t.dispTime_minutes = inputBuf[0];
 				state =5;
 		 }
 		 else if(run_t.single_data==PANEL_DATA){
@@ -200,7 +191,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
            
         case 5: 
 			if(run_t.single_data == WIFI_BEIJING_TIME){
-				 run_t.beijing_time_seconds = inputBuf[0];
+				 run_t.dispTime_seconds = (inputBuf[0] -0x30) + 2;
 				 run_t.decodeFlag=1;
 			    state=0;
 		 }

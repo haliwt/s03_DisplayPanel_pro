@@ -45,8 +45,7 @@ void Power_Off(void)
 			
 			
 				  run_t.gDht11_flag=0; //the first power on display "00"
-				  run_t.gTimes_hours_temp=12;
-				  run_t.gTimes_minutes_temp=0;
+				  run_t.gTime_hours=12;
 			
 
 				  run_t.gTimer_fan_counter=0;
@@ -115,7 +114,7 @@ void DisplayTimer_Timing(void)
 *******************************************************************************/
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  static uint8_t tm0,tm2;
+  static uint8_t tm0;
     
    if(htim->Instance==TIM3){
     
@@ -127,27 +126,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
     if(tm0>99){ //100 *10ms = 1000ms = 1s
 		tm0=0;
-		tm2++;
 		
-
-
 		run_t.fan_off_60s++;
-        run_t.gTimer_set_temperature++;
-		 run_t.beijing_time_seconds++;
-	    if(tm2>59){//60s ->1 minute 
-	      tm2=0;
-		   run_t.gTimer_1_hour_counter++;
-		   run_t.gTimer_minute_Counter ++;
+     
+		run_t.dispTime_seconds++;
+	    if(run_t.dispTime_seconds >59){//60s ->1 minute 
+	      run_t.dispTime_seconds=0;
+		  run_t.gTimer_minute_Counter ++;
 		 
-		  if(run_t.gTimer_1_hour_counter> 59){ // 1 hour
-	        run_t.gTimer_1_hour_counter=0;
-			
-	         run_t.gTimer_1hour =1;
-
-		  }
-		
-	    
-		}
+		 }
      
 
    }

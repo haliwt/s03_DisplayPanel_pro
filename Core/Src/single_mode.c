@@ -12,9 +12,11 @@ uint8_t keyvalue;
 uint8_t decade_hour;
 uint8_t unit_hour;
 uint8_t decade_temp;
-uint8_t unit_temp;
 uint8_t decade_minute;
-uint8_t uint_minute;
+uint8_t unit_minute;
+uint8_t decade_second;
+uint8_t unit_second;
+uint8_t unit_temp ;
 uint32_t wifi_key_counter;
 
 void (*single_ai_fun)(uint8_t cmd);
@@ -41,8 +43,8 @@ static void Power_On_Fun(void);
 void Scan_KeyModel(void)
 {
      static uint8_t model_temp;
-	 uint8_t decade_hour,unit_hour;
-     //static uint16_t wifi_key_counter;
+	
+  
 
     if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_detect_key ==0 ){
       
@@ -99,7 +101,7 @@ void Scan_KeyModel(void)
 			
 	 	  
 			if(run_t.gPower_On ==1){
-				single_buzzer_fun();
+				
 				
 			model_temp = model_temp ^ 0x01;
 
@@ -107,12 +109,14 @@ void Scan_KeyModel(void)
                 
 				run_t.gModel =2;
 				SendData_Set_Wifi(0x14);
+				single_buzzer_fun();
 				
 		    }
             else{ //temperature of function adjust ref .
              
 			   run_t.gModel =1;
 			   SendData_Set_Wifi(0x04);
+			   single_buzzer_fun();
             }
 		
            
@@ -146,7 +150,6 @@ void Scan_KeyModel(void)
 
 					 lcd_t.number2_low = unit_temp;
 					 lcd_t.number2_high = unit_temp;
-					 run_t.gTimer_set_temperature=0;
 			}
               single_buzzer_fun();//SendData_Buzzer();
 	}	
@@ -175,7 +178,7 @@ void Scan_KeyModel(void)
 
 					 lcd_t.number2_low = unit_temp;
 					 lcd_t.number2_high = unit_temp;
-					 run_t.gTimer_set_temperature=0;
+					
 					
 			}
 				
@@ -255,65 +258,8 @@ static void Power_On_Fun(void)
 ************************************************************************/  
 static void Timing_Handler(void)
 {
-   switch(run_t.gTiming_label){
-
-     case time_timing://time timing is be setup 
-	   if(run_t.gTimer_minute_Counter >0){ //minute
-
-       
-		  	if(run_t.dispTime_minute ==0){
-			  run_t.dispTime_hours = run_t.dispTime_hours - 1;
-			  run_t.dispTime_minute = 59;
-			  if(run_t.dispTime_hours < 0){
-
-                  run_t.gTiming_label = 2;
-				  run_t.dispTime_hours =0;
-			      run_t.gTiming_label=0;
-				  run_t.dispTime_minute=0;
-
-			  }
-			  run_t.gTimer_minute_Counter=0;
-
-			  
-		  	}
-			else{
-			 
-			  run_t.dispTime_minute = run_t.dispTime_minute -1;
-
-			   run_t.gTimer_minute_Counter=0;
-
-
-			}
-
-			 decade_hour = run_t.dispTime_hours / 10 %10;
-			 unit_hour = run_t.dispTime_hours % 10; //
-
-			 decade_minute = run_t.dispTime_minute / 10 %10;
-			 uint_minute = run_t.dispTime_minute % 10; //
-					 
-			 lcd_t.number5_low=decade_hour;
-             lcd_t.number5_high =decade_hour;
-
-			 lcd_t.number6_low = unit_hour;
-			 lcd_t.number6_high = unit_hour;
-	   
-
-
-			lcd_t.number7_low = decade_minute;
-			lcd_t.number7_high = decade_minute;
-
-			lcd_t.number8_low = uint_minute;
-			lcd_t.number8_high = uint_minute;
-					 
-          }
-		  
+  
 		 
-		
-	 
-
-	break;
-
-	case time_normal:
 		 if(run_t.gTimer_minute_Counter >0){ //minute
 
 			  run_t.gTimer_minute_Counter=0;
@@ -332,7 +278,8 @@ static void Timing_Handler(void)
 			 unit_hour = run_t.dispTime_hours % 10; //
 
 			 decade_minute = run_t.dispTime_minute / 10 %10;
-			 uint_minute = run_t.dispTime_minute % 10; //
+			 unit_minute = run_t.dispTime_minute % 10; //
+
 					 
 			 lcd_t.number5_low=decade_hour;
              lcd_t.number5_high =decade_hour;
@@ -345,35 +292,16 @@ static void Timing_Handler(void)
 			lcd_t.number7_low = decade_minute;
 			lcd_t.number7_high = decade_minute;
 
-			lcd_t.number8_low = uint_minute;
-			lcd_t.number8_high = uint_minute;
+			lcd_t.number8_low = unit_minute;
+			lcd_t.number8_high = unit_minute;
 					 
           }
 		
-
-
-	break;
-
-	case time_gmt:
-
-	break;
-		 
-	case 5:
-		run_t.power_key =2;
-	    run_t.gFan_RunContinue=1;
-        run_t.gPower_On=0;
-		run_t.fan_off_60s =0;
-		SendData_PowerOff(0);
-					
-   break;
-
-
-
-   }
-
-
-
 }
+
+
+
+
 
 /******************************************************************************
 *
@@ -448,8 +376,8 @@ void Decode_Function(void)
 void Receive_MainBoard_Data_Handler(uint8_t cmd)
 {
     static uint8_t temperature_decade, temperature_unit;
-	static uint8_t hum1,hum2,time[1],temp[1]; 
-    static uint8_t m,n,p,q,temp1,temp2;
+	static uint8_t hum1,hum2,temp1,temp2; 
+   
 
 
 	 switch(cmd){
@@ -531,60 +459,27 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
         }
       break;
 
-      case WIFI_TIME: //GMT time 
-          if(run_t.wifi_connect_flag ==1 && run_t.gPower_On==1){
+       case WIFI_BEIJING_TIME: 
+         if(run_t.wifi_connect_flag ==1 && run_t.gPower_On==1){
+
+
+		    
 		  	
-          if(run_t.gInputCmd[0] > 0){
+              lcd_t.number5_low=(run_t.dispTime_hours - 0x30) /10;
+             lcd_t.number5_high =(run_t.dispTime_hours - 0x30) /10;
+
+			 lcd_t.number6_low = (run_t.dispTime_hours -0x30) %10;;
+			 lcd_t.number6_high = (run_t.dispTime_hours -0x30) %10;
+	   
 
 
-		     if(time[0] != run_t.gInputCmd[0]){
+			lcd_t.number7_low = (run_t.dispTime_minutes -0x30)/10;
+			lcd_t.number7_high = (run_t.dispTime_minutes -0x30)/10;
 
-			      time[0] = run_t.gInputCmd[0];
+			lcd_t.number8_low = (run_t.dispTime_minutes -0x30)%10;
+			lcd_t.number8_high = (run_t.dispTime_minutes -0x30)%10;
 
-	             
-	               run_t.wifisetTime[0]= run_t.gInputCmd[0];
-			       run_t.dispTime_hours=run_t.wifisetTime[0];
-			 
-			      run_t.dispTime_minute = 0;
 
-	              run_t.gTimer_Cmd=1;	 
-			    
-			      run_t.gTimer_setup_zero=0;
-		       	}
-			}
-          else{
-          
-           run_t.gTimer_Cmd=0;	
-           run_t.dispTime_minute = 0;
-           run_t.dispTime_hours=0;
-          
-          }
-
-		        m = run_t. dispTime_hours /10%10 ;
-			    n=	run_t. dispTime_hours %10; 
-	            if(run_t.dispTime_minute ==0 ){ 
-					p=0;
-					q=0;
-
-	            }
-				else{
-				   p = run_t. dispTime_minute /10 %10;
-				   q=  run_t. dispTime_minute %10;
-				}
-
-                //hours
-				 lcd_t.number5_high = m;
-				 lcd_t.number5_low = m;
-
-				  lcd_t.number6_high = n;
-				 lcd_t.number6_low = n;
-
-				 //minutes 
-				 lcd_t.number7_high = p;
-				 lcd_t.number7_low = p;
-
-				  lcd_t.number8_high = q;
-				 lcd_t.number8_low = q;
 						
 			   DisplayPanel_Ref_Handler();
            
@@ -592,10 +487,7 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
         
       break;
 
-   
-
-	 
-     }
+	}
 
 
 }

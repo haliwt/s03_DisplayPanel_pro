@@ -60,13 +60,8 @@ typedef struct __RUN{
    uint8_t  gModel;
    uint8_t  gBug;
   
-   uint8_t  gTimes_minutes_temp;
    
    uint8_t  gTimer_fan_counter;
-
-  
-
-   
 
    uint8_t single_data;
    uint8_t fan_off_60s;
@@ -87,40 +82,22 @@ typedef struct __RUN{
    uint8_t Timer_mode_flag;
    uint8_t temperature_set_flag;
 
-   uint8_t gTimer_1hour;
-   uint8_t rx_temphum_flag;
-	
-  
-   
-  
-   uint8_t  gTimer_set_temperature ;
-   uint8_t  gTimer_1_hour_counter;
-   uint8_t  beijing_time_seconds;
-   
-   
    uint8_t gReal_humtemp[2];
    uint8_t gInputCmd[2];
    uint8_t wifisetTime[1];
    uint8_t wifiCmd[2];
 
     int8_t dispTime_hours;
+	int8_t dispTime_minutes;
+	int8_t dispTime_seconds;
 	
-    int8_t 	gTimes_hours_temp;
+    int8_t 	gTime_hours;
 
 
    
  }RUN_T;
 
 extern RUN_T run_t;
-
-
-
-void SplitDispose_Key(uint8_t value);
-
-
-
-
-
 
 
 void Power_Off(void);

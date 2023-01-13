@@ -21,10 +21,10 @@ void Display_Temperature_Humidity_Value(void)
 		
 		panel_led_fun();
 
-	    m = (run_t.gTimes_hours_temp /10) ;
-		n=	(run_t.gTimes_hours_temp%10); 
-		p = (run_t.gTimes_minutes_temp /10);
-		q=  (run_t.gTimes_minutes_temp %10);
+	    m = (run_t.dispTime_hours/10) ;
+		n=	(run_t.gTime_hours%10); 
+		p = (run_t.dispTime_minutes/10);
+		q=  (run_t.dispTime_minutes%10);
 
         //hours
 		 lcd_t.number5_high = m;
