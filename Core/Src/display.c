@@ -57,6 +57,7 @@ void Display_Temperature_Humidity_Value(void)
 *Return Ref: NO
 *
 **********************************************************************/
+#if 0
 void Display_DHT11_Value(void)
 {
     
@@ -196,5 +197,5 @@ void Display_DHT11_Value(void)
 
 
 
-
+#endif 
 

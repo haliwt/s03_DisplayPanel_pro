@@ -77,8 +77,6 @@ typedef struct __RUN{
 
  
    
-
-   uint8_t dispTime_minute;
    uint8_t Timer_mode_flag;
    uint8_t temperature_set_flag;
 
@@ -101,7 +99,7 @@ extern RUN_T run_t;
 
 
 void Power_Off(void);
-void DisplayTimer_Timing(void);
+
 
 
 void RunCommand_Handler(void);
