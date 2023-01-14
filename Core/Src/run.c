@@ -11,12 +11,6 @@ uint8_t tim3,tim14;
 
 
 
-
-
-
-
-
-
 /*******************************************************************************
 	*
 	*Function Name:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
@@ -41,7 +35,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		tm0=0;
 		
 		run_t.fan_off_60s++;
-     
+        run_t.gTimer_wifi_connect_counter++;
 		run_t.dispTime_seconds++;
 	    if(run_t.dispTime_seconds >59){//60s ->1 minute 
 	      run_t.dispTime_seconds=0;

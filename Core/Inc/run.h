@@ -85,7 +85,7 @@ typedef struct __RUN{
    uint8_t gInputCmd[2];
    uint8_t wifisetTime[1];
    uint8_t wifiCmd[2];
-   
+   uint8_t gTimer_wifi_connect_counter;
   
 
     int8_t dispTime_hours;
@@ -94,6 +94,7 @@ typedef struct __RUN{
 	
 	
     int8_t 	gTime_hours;
+	
      uint16_t gTimer_numbers_one_two_blink;
 
    
