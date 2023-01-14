@@ -30,10 +30,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     lcd_t.gTimer_wifi_500ms++;
 	lcd_t.gTimer_fan_10ms++;
 	run_t.gTimer_numbers_one_two_blink++;
+   
 
     if(tm0>99){ //100 *10ms = 1000ms = 1s
 		tm0=0;
-		
+		run_t.power_on_times ++; 
 		run_t.fan_off_60s++;
         run_t.gTimer_wifi_connect_counter++;
 		run_t.dispTime_seconds++;

@@ -5,13 +5,17 @@
 #include "led.h"
 #include "lcd.h"
 #include "cmd_link.h"
+#include "single_mode.h"
 
 
 key_types key_t;
- uint16_t  k1=0 ;
-     uint16_t  k2=0 ;
+ uint8_t  k1 ;
+     uint8_t  k2 ;
+	 uint8_t k3;
      uint16_t cnt;
       uint8_t value;
+//uint32_t wifi_key_counter;
+
 //uint8_t KEY_Scan(void)
 //{
 //   uint8_t  reval = 0;
@@ -166,44 +170,72 @@ key_types key_t;
 ************************************************************************/
 uint8_t KEY_Scan(void)
 {
-    
+
+  
+
    if(POWER_KEY_VALUE() ==KEY_DOWN){
-        cnt=0;
+        if(k1<0x32)
         k1++;   
     }
     else
-        k1=0;
-   if(MODE_KEY_VALUE()==KEY_DOWN){
-        if(k2<200)
-        k2++; 
-       
-   }
-   else
-       k2=0;
+		k1=0;
 
-   if(POWER_KEY_VALUE() ==KEY_UP && k1 >100){
+	if(k1 < 0x20 && k1 > 0x02){
+
+	    if(POWER_KEY_VALUE() ==KEY_UP);
+		HAL_Delay(20);
+
+	    if(POWER_KEY_VALUE() ==KEY_UP){
+            cnt = 0x01;
+			return cnt;
+         }
+		
+     }
+
+   if(k1 ==0x32){
        
-        if(k1< 10000 ){
-            value =0x01 ; 
-        }
-        else if(k1>25000){
-            value = 0x11;
-            
-        }
-        
-      }
+	    cnt = 0x02;
+		return cnt ;
+
+
+	}
+	
     
-      if(k2==200 && MODE_KEY_VALUE()==KEY_UP){
-          value = 0x20;
-          
-          return value ; 
-       }
-       
-           
-      return value ; 
-    
-    
-   
+	
 }
+#if 0
+void Wifi_Detected_KeyScan(void)
+{
+	if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.gPower_On==1){
+      
+		 while(POWER_KEY_VALUE()  ==KEY_DOWN){
+             wifi_key_counter++;
+
+		 };
+
+		 if(wifi_key_counter > 0x1a6bd){ //0x1a6bdf
+             wifi_key_counter=0;
+			 run_t.wifi_connect_flag =0;
+			 run_t.wifi_detect_key =1;
+		 
+             run_t.wifi_special_key=0;
+          //   SendData_Set_Wifi(0x01);
+			
+
+		 }
+		 else{
+            run_t.wifi_special_key=0;
+            wifi_key_counter=0;
+		 	Power_Off_Fun();
+		  
+        }
+		
+    }
+	
+
+}
+
+
+#endif 
 
 

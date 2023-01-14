@@ -19,6 +19,7 @@ uint8_t unit_second;
 uint8_t unit_temp ;
 uint8_t power_on_off_flag;
 uint32_t wifi_key_counter;
+uint8_t keyvalue;
 
 
 void (*single_ai_fun)(uint8_t cmd);
@@ -30,7 +31,7 @@ static void Receive_Wifi_Cmd(uint8_t cmd);
 
 static void RunKeyOrder_Handler(void);
 static void Timing_Handler(void);
-static void Power_Off_Fun(void);
+//static void Power_Off_Fun(void);
 static void Power_On_Fun(void);
 
 
@@ -45,21 +46,20 @@ static void Power_On_Fun(void);
 void Scan_KeyModel(void)
 {
      static uint8_t model_temp;
-	
-  
 
-    if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_detect_key ==0 ){
+	
+   if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_detect_key ==0 ){
       
 		 while(POWER_KEY_VALUE()  ==KEY_DOWN){
              wifi_key_counter++;
 
 		 };
 
-		 if(wifi_key_counter > 0x1a6bdf){ //0x1e6bdf
+		 if(wifi_key_counter > 0x1a0bdf){ //1a6bdf//0x1e6bdf
              wifi_key_counter=0;
-			 run_t.wifi_connect_flag =0;
+             run_t.wifi_connect_flag =0;
 			 run_t.wifi_detect_key =1;
-             run_t.gTimer_wifi_connect_counter=0;
+             run_t.wifi_special_key=0;
              SendData_Set_Wifi(0x01);
 
 		 }
@@ -72,31 +72,30 @@ void Scan_KeyModel(void)
 	
 
 	}
-	else{
-
-      if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
-          HAL_Delay(20);
-		 while(POWER_KEY_VALUE()  ==KEY_DOWN);
-       
-       
-		    
-
-             run_t.wifiCmd[0]=0;//rx wifi command 
-			  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
-			  	 
-				  Power_On_Fun();
-				  
-				  SendData_PowerOff(1);
+   
+      
+	
+    if(run_t.wifi_special_key ==0){
+	      if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
+	          HAL_Delay(20);
+			 while(POWER_KEY_VALUE()  ==KEY_DOWN);
 	             
-			  }
-			  else{
+				  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
+				  	 
+					  Power_On_Fun();
+					  
+					  SendData_PowerOff(1);
+		              run_t.power_on_times = 1;
+				  }
+				  else{
 
-			    Power_Off_Fun();
-				
-		           
-              }
-           
-
+				    Power_Off_Fun();
+					
+			           
+	              }
+	           
+      
+	     }
      }
      else if(MODE_KEY_VALUE()==KEY_DOWN){ //Mode key 
 	 	    
@@ -187,8 +186,8 @@ void Scan_KeyModel(void)
 			}
 				
      }
-	}	
-}
+}	
+
 /************************************************************************
 	*
 	*Function Name: static void Power_Off_Fun(void)
@@ -197,7 +196,7 @@ void Scan_KeyModel(void)
 	*
 	*
 ************************************************************************/
-static void Power_Off_Fun(void)
+ void Power_Off_Fun(void)
 {
 		run_t.gModel =0; //WT.EDIT 2022.09.01
 		run_t.gPlasma=0;
@@ -205,6 +204,7 @@ static void Power_Off_Fun(void)
 		run_t.gBug =0;
 		run_t.wifi_special_key = 0;
 		run_t.wifi_detect_key =0;
+         run_t.power_on_times =0;
 
 		run_t.gTiming_label=0;
 		run_t.wifi_connect_flag =0;
@@ -235,6 +235,7 @@ static void Power_On_Fun(void)
 	run_t.gDry =1;
 	run_t.gBug =1;
 	run_t.wifi_special_key = 1;
+  
 
 	run_t.gTiming_label=  time_normal;
 	run_t.gTimer_minute_Counter =0;
@@ -356,6 +357,7 @@ static void RunKeyOrder_Handler(void)
 	 Lcd_PowerOn_Fun();
 	 Timing_Handler();
 	 DisplayPanel_Ref_Handler();
+     
     
     }
 	 

@@ -91,7 +91,7 @@ typedef struct __RUN{
     int8_t dispTime_hours;
 	int8_t dispTime_minutes;
 	int8_t dispTime_seconds;
-	
+	int8_t power_on_times;
 	
     int8_t 	gTime_hours;
 	
