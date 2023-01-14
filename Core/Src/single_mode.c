@@ -57,9 +57,10 @@ void Scan_KeyModel(void)
 
 		 if(wifi_key_counter > 0x1a0bdf){ //1a6bdf//0x1e6bdf
              wifi_key_counter=0;
+             run_t.wifi_special_key=0;
              run_t.wifi_connect_flag =0;
 			 run_t.wifi_detect_key =1;
-             run_t.wifi_special_key=0;
+			 run_t.gTimer_wifi_connect_counter=0;
              SendData_Set_Wifi(0x01);
 
 		 }
