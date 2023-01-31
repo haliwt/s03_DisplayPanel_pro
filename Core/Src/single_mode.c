@@ -338,6 +338,7 @@ void RunPocess_Command_Handler(void)
 
 			lcd_t.number2_low = temp2;
 			lcd_t.number2_high = temp2;
+			run_t.gTimer_temp_delay =0;
 			run_t.temperature_set_flag = 1;
             
 		}
@@ -502,6 +503,8 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 			 
 		    lcd_t.number2_high =  temperature_unit;
 			lcd_t.number2_low = temperature_unit;
+
+			
 			run_t.gTimer_numbers_one_two_blink=0;
 	      }
 		cmd = 0xff;

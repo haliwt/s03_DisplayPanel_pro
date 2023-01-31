@@ -259,6 +259,9 @@ void DisplayPanel_Ref_Handler(void)
                  number_blink_times =0;
 				 run_t.wifi_set_temp_flag =0;
 			     run_t.temperature_set_flag = 1;
+				 run_t.gTimer_temp_delay =0;
+				 run_t.gTemperature = run_t.wifi_set_temperature;
+				 
 			 }
 		}
 
