@@ -153,6 +153,7 @@ void Scan_KeyModel(void)
 
 		lcd_t.number2_low = unit_temp;
 		lcd_t.number2_high = unit_temp;
+		
 		run_t.panel_key_setup_timer_flag = 1;
 		}
 	}	
@@ -314,15 +315,30 @@ static void Timing_Handler(void)
 void RunPocess_Command_Handler(void)
 {
    //key input run function
+   static uint8_t key_set_temp_flag,temp1,temp2;
    if(run_t.gPower_On ==1 && run_t.decodeFlag ==0){
        RunKeyOrder_Handler();
 	   if(run_t.panel_key_setup_timer_flag==1){
            run_t.panel_key_setup_timer_flag=0;
+		   key_set_temp_flag =1;
 		   run_t.wifi_set_temp_flag=1;
 	       run_t.temperature_set_flag = 1;
-	       
+		  
+	   }
+	   if(run_t.wifi_set_temp_flag ==0 && key_set_temp_flag ==1){
+	   	    key_set_temp_flag = 0;
 
-        }
+	        temp1 = run_t.gReal_humtemp[1]/10 %10;  // temperature
+            temp2 = run_t.gReal_humtemp[1]%10;
+
+		    lcd_t.number1_low=temp1;
+			lcd_t.number1_high =temp1;
+
+			lcd_t.number2_low = temp2;
+			lcd_t.number2_high = temp2;
+            
+		}
+	   
    }
    //receive from mainboard data 
    if(run_t.decodeFlag ==1){
