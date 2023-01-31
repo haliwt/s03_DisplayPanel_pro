@@ -45,7 +45,7 @@ static void Power_On_Fun(void);
 *******************************************************************************/
 void Scan_KeyModel(void)
 {
-     static uint8_t model_temp;
+  static uint8_t model_temp;
 
 	
    if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_detect_key ==0 ){
@@ -136,52 +136,50 @@ void Scan_KeyModel(void)
 		if(run_t.gPower_On ==1){
 			single_buzzer_fun();
 	
-                    
-			 	   //setup temperature of value,minimum 20,maximum 40
-					 run_t.gTemperature --;
-					 if(run_t.gTemperature<20) run_t.gTemperature=40;
-					  
-					  
-					   if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
-			            else run_t.temperature_set_flag=0;
+		//setup temperature of value,minimum 20,maximum 40
+		run_t.gTemperature --;
+		if(run_t.gTemperature<20) run_t.gTemperature=40;
 
 
-					 decade_temp =  run_t.gTemperature / 10 %10;
-					 unit_temp =  run_t.gTemperature % 10; //
+		//if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
+		//else run_t.temperature_set_flag=0;
 
-					 lcd_t.number1_low=decade_temp;
-                     lcd_t.number1_high =decade_temp;
 
-					 lcd_t.number2_low = unit_temp;
-					 lcd_t.number2_high = unit_temp;
-			}
-              single_buzzer_fun();//SendData_Buzzer();
+		decade_temp =  run_t.gTemperature / 10 %10;
+		unit_temp =  run_t.gTemperature % 10; //
+
+		lcd_t.number1_low=decade_temp;
+		lcd_t.number1_high =decade_temp;
+
+		lcd_t.number2_low = unit_temp;
+		lcd_t.number2_high = unit_temp;
+		run_t.panel_key_setup_timer_flag = 1;
+		}
 	}	
 	else if(ADD_KEY_VALUE()==KEY_DOWN){ //"+" KEY
 	 	 HAL_Delay(20);
 
 		  while(ADD_KEY_VALUE()==KEY_DOWN);
 		 
-		  	 
-	     	  if(run_t.gPower_On ==1){
-			  	single_buzzer_fun();
-			 	  
-		            run_t.gTemperature ++;
-                    if(run_t.gTemperature > 40)run_t.gTemperature= 20;
-					
-                     
-                      
-				    if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
-			            else run_t.temperature_set_flag=0;
+		  if(run_t.gPower_On ==1){
+			single_buzzer_fun();
 
-					 decade_temp =  run_t.gTemperature / 10 %10;
-					 unit_temp =  run_t.gTemperature % 10; //
+			run_t.gTemperature ++;
+			if(run_t.gTemperature > 40)run_t.gTemperature= 20;
+			
+			//if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
+			///else run_t.temperature_set_flag=0;
 
-					 lcd_t.number1_low=decade_temp;
-                     lcd_t.number1_high =decade_temp;
+			decade_temp =  run_t.gTemperature / 10 %10;
+			unit_temp =  run_t.gTemperature % 10; //
 
-					 lcd_t.number2_low = unit_temp;
-					 lcd_t.number2_high = unit_temp;
+			lcd_t.number1_low=decade_temp;
+			lcd_t.number1_high =decade_temp;
+
+			lcd_t.number2_low = unit_temp;
+			lcd_t.number2_high = unit_temp;
+
+			run_t.panel_key_setup_timer_flag = 1;
 					
 					
 			}
@@ -215,6 +213,8 @@ void Scan_KeyModel(void)
 		run_t.gPower_On=0;
 		run_t.fan_off_60s =0;
 		power_on_off_flag=1;
+		run_t.temperature_set_flag = 0; //WT.EDIT 2023.01.31
+		run_t.wifi_set_temp_flag=0;
 	    if(run_t.wifi_power_flag == WIFI_POWER_OFF_ITEM){
 			run_t.wifi_power_flag = WIFI_POWER_NULL;
 	    }	
@@ -236,7 +236,8 @@ static void Power_On_Fun(void)
 	run_t.gDry =1;
 	run_t.gBug =1;
 	run_t.wifi_special_key = 1;
-  
+	run_t.temperature_set_flag = 0; //WT.EDIT 2023.01.31
+    run_t.wifi_set_temp_flag=0; // //WT.EDIT 2023.01.31
 
 	run_t.gTiming_label=  time_normal;
 	run_t.gTimer_minute_Counter =0;
@@ -315,6 +316,13 @@ void RunPocess_Command_Handler(void)
    //key input run function
    if(run_t.gPower_On ==1 && run_t.decodeFlag ==0){
        RunKeyOrder_Handler();
+	   if(run_t.panel_key_setup_timer_flag==1){
+           run_t.panel_key_setup_timer_flag=0;
+		   run_t.wifi_set_temp_flag=1;
+	       run_t.temperature_set_flag = 1;
+	       
+
+        }
    }
    //receive from mainboard data 
    if(run_t.decodeFlag ==1){
