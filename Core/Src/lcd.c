@@ -350,10 +350,14 @@ void DisplayPanel_Ref_Handler(void)
 		  }
 	  }
 	  /*********************END T15***********************/
-     //address"0xCB" ->numbers .T9,"6-B,G,C","7-A,F,E,D"
-	 TM1723_Write_Display_Data(0xCB,0x01+lcdNumber6_Low[lcd_t.number6_low]+lcdNumber7_High[lcd_t.number7_high]);//display "6,7"
-
-    //T14,wind_speed ->numbers .high 4 bits -T14,"7-B,G,C",low 4 bits "8-A,F,E,D"
+     //address"0xCB" ->numbers .T9":","6-B,G,C","7-A,F,E,D"
+     if(lcd_t.gTimer_colon_ms < 6)
+	   TM1723_Write_Display_Data(0xCB,0x01+lcdNumber6_Low[lcd_t.number6_low]+lcdNumber7_High[lcd_t.number7_high]);//display "6,7"
+     else if(lcd_t.gTimer_colon_ms > 5 && lcd_t.gTimer_colon_ms < 11)
+	 	TM1723_Write_Display_Data(0xCB,lcdNumber6_Low[lcd_t.number6_low]+lcdNumber7_High[lcd_t.number7_high]);//display "6,7"
+	 else  lcd_t.gTimer_colon_ms = 0;
+        
+	 //T14,wind_speed ->numbers .high 4 bits -T14,"7-B,G,C",low 4 bits "8-A,F,E,D"
      if(run_t.disp_wind_speed_grade ==3){
 		 if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<20){
 		      TM1723_Write_Display_Data(0xCC,lcdNumber7_Low[lcd_t.number7_low]+lcdNumber8_High[lcd_t.number8_high]);//display "7,8'

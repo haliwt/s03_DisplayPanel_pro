@@ -20,17 +20,20 @@ uint8_t tim3,tim14;
 *******************************************************************************/
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  static uint8_t tm0;
+  static uint8_t tm0,tm1;
     
    if(htim->Instance==TIM3){
     
     tm0++;  //10ms
-	
-    tim3++;
+	tm1++;
+ 
     lcd_t.gTimer_wifi_500ms++;
 	lcd_t.gTimer_fan_10ms++;
 	run_t.gTimer_numbers_one_two_blink++;
-   
+    if(tm1>9){ //100ms 
+       tm1=0;
+       lcd_t.gTimer_colon_ms++ ;
+    }
 
     if(tm0>99){ //100 *10ms = 1000ms = 1s
 		tm0=0;

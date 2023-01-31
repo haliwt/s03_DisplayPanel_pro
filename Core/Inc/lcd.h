@@ -98,6 +98,8 @@ typedef struct _LCD_Ref{
 	 uint8_t number8_low;
 	 uint8_t number8_high;
 
+	 uint8_t  gTimer_colon_ms;
+
 
 }lcd_ref;
 
