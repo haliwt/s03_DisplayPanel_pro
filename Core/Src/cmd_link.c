@@ -57,12 +57,11 @@ void SendData_Buzzer(void)
 	
 }
 
-
-void SendData_Set_Temperature(uint8_t hdata)
+void SendData_Set_Command(uint8_t hdata)
 {
 	    outputBuf[0]='T'; //4D
 		outputBuf[1]='K'; //58
-		outputBuf[2]='T'; //4C	// 'T'->temperature
+		outputBuf[2]='C'; //"C" ->command
 		outputBuf[3]=hdata; //53	//
 		
 		transferSize=4;
@@ -74,7 +73,6 @@ void SendData_Set_Temperature(uint8_t hdata)
 		}
 	
 }
-
 void SendData_Set_Wifi(uint8_t hdata)
 {
 	    outputBuf[0]='T'; //4D
@@ -91,8 +89,6 @@ void SendData_Set_Wifi(uint8_t hdata)
 		}
 	
 }
-
-
 /********************************************************************************
 	**
 	*Function Name:void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)

@@ -14,6 +14,8 @@ enum Signal{
 	WIFI_BEIJING_TIME
 };
 
+
+
 extern uint8_t inputBuf[MAX_BUFFER_SIZE];
 extern uint8_t outputBuf[8];
 
@@ -22,6 +24,7 @@ void SendData_PowerOff(uint8_t index);
 
 void SendData_Set_Wifi(uint8_t hdata);
 
+void SendData_Set_Command(uint8_t hdata);
 
 
 

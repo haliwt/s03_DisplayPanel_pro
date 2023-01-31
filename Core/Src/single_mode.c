@@ -86,7 +86,7 @@ void Scan_KeyModel(void)
 					  Power_On_Fun();
 					  
 					  SendData_PowerOff(1);
-		              run_t.power_on_times = 1;
+		           
 				  }
 				  else{
 
@@ -166,12 +166,13 @@ void Scan_KeyModel(void)
 			single_buzzer_fun();
 
 			run_t.gTemperature ++;
+            if(run_t.gTemperature < 20){
+			    run_t.gTemperature=20;
+			}
+			
 			if(run_t.gTemperature > 40)run_t.gTemperature= 20;
 			
-			//if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
-			///else run_t.temperature_set_flag=0;
-
-			decade_temp =  run_t.gTemperature / 10 %10;
+		    decade_temp =  run_t.gTemperature / 10 %10;
 			unit_temp =  run_t.gTemperature % 10; //
 
 			lcd_t.number1_low=decade_temp;
@@ -204,7 +205,7 @@ void Scan_KeyModel(void)
 		run_t.gBug =0;
 		run_t.wifi_special_key = 0;
 		run_t.wifi_detect_key =0;
-         run_t.power_on_times =0;
+      
 
 		run_t.gTiming_label=0;
 		run_t.wifi_connect_flag =0;
@@ -322,7 +323,8 @@ void RunPocess_Command_Handler(void)
            run_t.panel_key_setup_timer_flag=0;
 		   key_set_temp_flag =1;
 		   run_t.wifi_set_temp_flag=1;
-	       run_t.temperature_set_flag = 1;
+		   run_t.gTimer_numbers_one_two_blink=0;
+	      
 		  
 	   }
 	   if(run_t.wifi_set_temp_flag ==0 && key_set_temp_flag ==1){
@@ -336,8 +338,34 @@ void RunPocess_Command_Handler(void)
 
 			lcd_t.number2_low = temp2;
 			lcd_t.number2_high = temp2;
+			run_t.temperature_set_flag = 1;
             
 		}
+	   if(run_t.gModel == 1){ //as is "Ai mode"
+
+          if(run_t.temperature_set_flag ==1 && run_t.gTimer_temp_delay >59){
+               run_t.gTimer_temp_delay =0;
+		 
+		  
+		  if(run_t.gTemperature <= run_t.gReal_humtemp[1] || run_t.gReal_humtemp[1] >39){//envirment temperature
+	  
+				run_t.gDry = 0;
+
+		        SendData_Set_Command(0x02); //PTC turn off
+			    //sendAi_usart_fun(0x91);//dry turn off;//turn off PTC "heat"
+			    
+                
+		  }
+		  else if((run_t.gTemperature -3) >= run_t.gReal_humtemp[1] ||  run_t.gReal_humtemp[1] <=37){
+	  
+		     run_t.gDry = 1;
+	         SendData_Set_Command(0x12); //PTC turn On
+				 
+		  }
+	  
+	     }
+
+	  }
 	   
    }
    //receive from mainboard data 
@@ -345,6 +373,8 @@ void RunPocess_Command_Handler(void)
        run_t.decodeFlag =0;
        Decode_Function();
     }
+
+   
     
    if(run_t.gPower_On ==0 || run_t.gPower_On == 0xff ){
 	 	
@@ -472,6 +502,7 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 			 
 		    lcd_t.number2_high =  temperature_unit;
 			lcd_t.number2_low = temperature_unit;
+			run_t.gTimer_numbers_one_two_blink=0;
 	      }
 		cmd = 0xff;
 	    run_t.single_data =0xff;
