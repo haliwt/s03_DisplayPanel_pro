@@ -400,7 +400,11 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 	 case WIFI_CMD:
 	 	 
 	 	 Receive_Wifi_Cmd(run_t.wifiCmd[0]);
-
+	 
+	     cmd = 0xff;
+	     run_t.single_data =0xff;
+	     
+   
 	 break;
 
 	 case  WIFI_WIND_SPEED:
@@ -425,7 +429,8 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 
 
 		}
-
+       cmd = 0xff;
+	   run_t.single_data =0xff;
 	 break;
 
 	 case WIFI_TEMP: //set temperature value
@@ -444,6 +449,8 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 		    lcd_t.number2_high =  temperature_unit;
 			lcd_t.number2_low = temperature_unit;
 	      }
+		cmd = 0xff;
+	    run_t.single_data =0xff;
 	 break;
 
 	 case PANEL_DATA:
@@ -472,32 +479,31 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 
 		 DisplayPanel_Ref_Handler();
         }
+		cmd = 0xff;
+	    run_t.single_data =0xff;
       break;
 
        case WIFI_BEIJING_TIME: 
          if(run_t.wifi_connect_flag ==1 && run_t.gPower_On==1){
+			 lcd_t.number5_low=(run_t.dispTime_hours ) /10;
+	         lcd_t.number5_high =(run_t.dispTime_hours) /10;
 
-        
-		     
-
-				 lcd_t.number5_low=(run_t.dispTime_hours ) /10;
-	             lcd_t.number5_high =(run_t.dispTime_hours) /10;
-
-				 lcd_t.number6_low = (run_t.dispTime_hours ) %10;;
-				 lcd_t.number6_high = (run_t.dispTime_hours ) %10;
-		   
+			 lcd_t.number6_low = (run_t.dispTime_hours ) %10;;
+			 lcd_t.number6_high = (run_t.dispTime_hours ) %10;
+	   
 
 
-				lcd_t.number7_low = (run_t.dispTime_minutes )/10;
-				lcd_t.number7_high = (run_t.dispTime_minutes )/10;
+			lcd_t.number7_low = (run_t.dispTime_minutes )/10;
+			lcd_t.number7_high = (run_t.dispTime_minutes )/10;
 
-				lcd_t.number8_low = (run_t.dispTime_minutes )%10;
-				lcd_t.number8_high = (run_t.dispTime_minutes )%10;
+			lcd_t.number8_low = (run_t.dispTime_minutes )%10;
+			lcd_t.number8_high = (run_t.dispTime_minutes )%10;
 
-	            DisplayPanel_Ref_Handler();
+	        DisplayPanel_Ref_Handler();
 		    
         } 
-        
+        cmd = 0xff;
+	    run_t.single_data =0xff;
       break;
 
 	}
