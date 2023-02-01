@@ -139,13 +139,9 @@ void Scan_KeyModel(void)
 		//setup temperature of value,minimum 20,maximum 40
 		run_t.gTemperature --;
 		if(run_t.gTemperature<20) run_t.gTemperature=40;
+        if(run_t.gTemperature >40)run_t.gTemperature=40;
 
-
-		//if(run_t.gTemperature >20)run_t.temperature_set_flag = 1;//run_t.gTemperature_timer_flag =1;
-		//else run_t.temperature_set_flag=0;
-
-
-		decade_temp =  run_t.gTemperature / 10 %10;
+        decade_temp =  run_t.gTemperature / 10 %10;
 		unit_temp =  run_t.gTemperature % 10; //
 
 		lcd_t.number1_low=decade_temp;
@@ -357,7 +353,7 @@ void RunPocess_Command_Handler(void)
 			    
                 
 		  }
-		  else if((run_t.gTemperature -3) >= run_t.gReal_humtemp[1] ||  run_t.gReal_humtemp[1] <=37){
+		  else if((run_t.gTemperature -3) > run_t.gReal_humtemp[1] ||  run_t.gReal_humtemp[1] < 37){
 	  
 		     run_t.gDry = 1;
 	         SendData_Set_Command(0x12); //PTC turn On

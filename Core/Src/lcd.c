@@ -65,6 +65,8 @@
 
 
 static void Display_Kill_Dry_Ster_Icon(void);
+static void LCD_DisplayNumber_OneTwo_Icon_Handler(void);
+
 
 const uint8_t lcdNumber1_Low[]={0x0A,0x0A,0x06,0x0E,0x0E,0x0C,0x0C,0x0A,0x0E,0x0E,0x00};
 
@@ -219,7 +221,7 @@ static void TM1723_Write_Display_Data(uint8_t addr,uint8_t dat)
 *************************************************************************/ 
 void DisplayPanel_Ref_Handler(void)
 {
-     static uint8_t number_blink_times;
+    
 
 	 TIM1723_Write_Cmd(0x00);
 	// TIM1723_Write_Cmd(0x40);
@@ -240,36 +242,13 @@ void DisplayPanel_Ref_Handler(void)
 	 /***********************setup temperature value ********************************/
 	 //digital 1,2 ->display "temperature"  blink  
 	 if(run_t.wifi_set_temp_flag ==1){
-	 	 if(run_t.gTimer_numbers_one_two_blink < 6  ){ //disp number
-		 TM1723_Write_Display_Data(0xC2,((0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol)+lcdNumber1_High[lcd_t.number1_high]) & 0xff);//display digital "temp
-         TM1723_Write_Display_Data(0xC3,(lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high]) & 0xff);//display  "AI icon
-         TM1723_Write_Display_Data(0xC4,(0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high])&0xff);//display "t,c"
-		 
-		 
-	 	 }
-		 else if(run_t.gTimer_numbers_one_two_blink > 5  && run_t.gTimer_numbers_one_two_blink <11){ //don't display 
-			TM1723_Write_Display_Data(0xC2,(((0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol)+lcdNumber1_High[lcd_t.number1_high]) & 0x0F));
-         	TM1723_Write_Display_Data(0xC3,((lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high])& 0x01));
-            TM1723_Write_Display_Data(0xC4,(0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high])&0xF1);//display "t,c"
-        }
-		else {
-             run_t.gTimer_numbers_one_two_blink =0;
-			 number_blink_times++;
-		     if(number_blink_times > 3){
-                 number_blink_times =0;
-				 run_t.wifi_set_temp_flag =0;
-			     run_t.temperature_set_flag = 1;
-				 run_t.gTimer_temp_delay =0;
-				 run_t.gTemperature = run_t.wifi_set_temperature;
-				 
-			 }
-		}
+	     LCD_DisplayNumber_OneTwo_Icon_Handler();
 
 	 }
 	 else{
         TM1723_Write_Display_Data(0xC4,(0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high])&0xff);
 	 }
-	 
+	 /**********************************end temperature*****************************************/
      //T2->WIFI icon -> 0xC5
      if(run_t.wifi_connect_flag ==0){ //hasn't wifi
          if(run_t.wifi_detect_key ==0 ){
@@ -549,6 +528,87 @@ static void Display_Kill_Dry_Ster_Icon(void)
    TIM1723_Write_Cmd(LUM_VALUE);
    
 }
+/*************************************************************************************
+	*
+	*Function Name: static void LCD_DisplayNumber_OneTwo_Icon_Handler(void)
+	*Function : set up temperature value by blink 
+	*
+	*
+	*
+	*
+*************************************************************************************/
+static void LCD_DisplayNumber_OneTwo_Icon_Handler(void)
+{
+     static uint8_t number_blink_times;
+     if(run_t.gDry ==1){
+	 if(run_t.gTimer_numbers_one_two_blink < 6  ){ //disp number
+		 TM1723_Write_Display_Data(0xC2,((0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol)+lcdNumber1_High[lcd_t.number1_high]) & 0xff);//display digital "temp
+         TM1723_Write_Display_Data(0xC3,(lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high]) & 0xff);//display  "AI icon
+         TM1723_Write_Display_Data(0xC4,(0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high])&0xff);//display "t,c"
+		 
+		 
+	 	 }
+		 else if(run_t.gTimer_numbers_one_two_blink > 5  && run_t.gTimer_numbers_one_two_blink <11){ //don't display 
+			TM1723_Write_Display_Data(0xC2,(((0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol)+lcdNumber1_High[lcd_t.number1_high]) & 0x0F));
+         	TM1723_Write_Display_Data(0xC3,((lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high])& 0x01));
+            TM1723_Write_Display_Data(0xC4,(0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high])&0xF1);//display "t,c"
+        }
+		else {
+             run_t.gTimer_numbers_one_two_blink =0;
+			 number_blink_times++;
+		     if(number_blink_times > 3){
+                 number_blink_times =0;
+				 run_t.wifi_set_temp_flag =0;
+			     run_t.temperature_set_flag = 1;
+				 run_t.gTimer_temp_delay =0;
+				 run_t.gTemperature = run_t.wifi_set_temperature;
+				 
+			 }
+
+		}
+     }
+	 else{
+		 if(run_t.gTimer_numbers_one_two_blink < 6  ){ //disp number
+		 TM1723_Write_Display_Data(0xC2,((0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol)+lcdNumber1_High[lcd_t.number1_high]) & 0xFD);//display digital "temp
+         TM1723_Write_Display_Data(0xC3,(lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high]) & 0xff);//display  "AI icon
+         TM1723_Write_Display_Data(0xC4,(0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high])&0xff);//display "t,c"
+		 
+		 
+	 	 }
+		 else if(run_t.gTimer_numbers_one_two_blink > 5  && run_t.gTimer_numbers_one_two_blink <11){ //don't display 
+			TM1723_Write_Display_Data(0xC2,(((0X01+DRY_Symbol+KILL_Symbol+BUG_Symbol)+lcdNumber1_High[lcd_t.number1_high]) & 0x0D));
+         	TM1723_Write_Display_Data(0xC3,((lcdNumber1_Low[lcd_t.number1_low]+AI_Symbol+lcdNumber2_High[lcd_t.number2_high])& 0x01));
+            TM1723_Write_Display_Data(0xC4,(0x01+lcdNumber2_Low[lcd_t.number2_low]+lcdNumber3_High[lcd_t.number3_high])&0xF1);//display "t,c"
+        }
+		else {
+             run_t.gTimer_numbers_one_two_blink =0;
+			 number_blink_times++;
+		     if(number_blink_times > 3){
+                 number_blink_times =0;
+				 run_t.wifi_set_temp_flag =0;
+			     run_t.temperature_set_flag = 1;
+				 run_t.gTimer_temp_delay =0;
+				 run_t.gTemperature = run_t.wifi_set_temperature;
+				 
+			 }
+
+		}
+
+
+	 }
+
+
+
+}
+/*************************************************************************************
+	*
+	*Function Name: static void LCD_DisplayNumber_OneTwo_Icon_Handler(void)
+	*
+	*
+	*
+	*
+	*
+*************************************************************************************/
 
 void LCD_Display_Wind_Icon_Handler(void)
 {
