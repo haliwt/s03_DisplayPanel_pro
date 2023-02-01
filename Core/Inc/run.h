@@ -30,6 +30,7 @@ typedef struct __RUN{
    uint8_t gTemperature_timer_flag;
    uint8_t gPower_On;
    uint8_t gRun_flag;
+   uint8_t power_times;
    
    uint8_t keyAdd_continue;
    uint8_t keyDec_continue;

@@ -73,7 +73,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  
+ 
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -112,9 +112,15 @@ int main(void)
     /* USER CODE END WHILE */
            
     /* USER CODE BEGIN 3 */
-  
-      Scan_KeyModel();
-      RunPocess_Command_Handler();
+      if(run_t.power_times == 0){
+          run_t.power_times=1;
+		  HAL_Delay(1000);
+	      run_t.gPower_On=0;
+	  }
+	  else{
+	      Scan_KeyModel();
+	      RunPocess_Command_Handler();
+	  }
       
    
   }
