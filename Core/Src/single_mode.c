@@ -371,8 +371,6 @@ void RunPocess_Command_Handler(void)
        Decode_Function();
     }
 
-   
-    
    if(run_t.gPower_On ==0 || run_t.gPower_On == 0xff ){
 	 	
 	      Breath_Led();
