@@ -74,7 +74,7 @@ typedef struct __RUN{
    uint8_t wifi_set_wind_speed;
    uint8_t wifi_set_temp_flag ;
    uint8_t wifi_special_key;
-   uint8_t wifi_detect_key ;
+   uint8_t wifi_led_fast_blink_flag ;
    uint8_t wifi_power_flag;
 
  

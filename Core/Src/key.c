@@ -203,39 +203,6 @@ uint8_t KEY_Scan(void)
     
 	
 }
-#if 0
-void Wifi_Detected_KeyScan(void)
-{
-	if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.gPower_On==1){
-      
-		 while(POWER_KEY_VALUE()  ==KEY_DOWN){
-             wifi_key_counter++;
 
-		 };
-
-		 if(wifi_key_counter > 0x1a6bd){ //0x1a6bdf
-             wifi_key_counter=0;
-			 run_t.wifi_connect_flag =0;
-			 run_t.wifi_detect_key =1;
-		 
-             run_t.wifi_special_key=0;
-          //   SendData_Set_Wifi(0x01);
-			
-
-		 }
-		 else{
-            run_t.wifi_special_key=0;
-            wifi_key_counter=0;
-		 	Power_Off_Fun();
-		  
-        }
-		
-    }
-	
-
-}
-
-
-#endif 
 
 

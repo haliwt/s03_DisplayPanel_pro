@@ -45,36 +45,40 @@ static void Power_On_Fun(void);
 *******************************************************************************/
 void Scan_KeyModel(void)
 {
-  static uint8_t model_temp;
+  static uint8_t model_temp ,keypressed_long_flag;
 
 	
-   if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_detect_key ==0 ){
+   if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_led_fast_blink_flag==0){
       
-		 while(POWER_KEY_VALUE()  ==KEY_DOWN){
+		 while(POWER_KEY_VALUE()  ==KEY_DOWN && run_t.wifi_led_fast_blink_flag==0){
              wifi_key_counter++;
-
-		 };
+         
+		
 
 		 if(wifi_key_counter > 0x1a0bdf){ //1a6bdf//0x1e6bdf
              wifi_key_counter=0;
-             run_t.wifi_special_key=0;
-             run_t.wifi_connect_flag =0;
-			 run_t.wifi_detect_key =1;
-			 run_t.gTimer_wifi_connect_counter=0;
-             SendData_Set_Wifi(0x01);
+		     keypressed_long_flag=1;
+			 run_t.wifi_led_fast_blink_flag=1;
+			 break;
+           }
 
 		 }
-		 else{
-            wifi_key_counter=0;
+	     if(wifi_key_counter  < 0x1a0bdf && run_t.wifi_led_fast_blink_flag==0){
+	        wifi_key_counter=0;
 		 	Power_Off_Fun();
 
-
-         }
-	
+		 }
 
 	}
    
-      
+    if(run_t.wifi_led_fast_blink_flag==1 && keypressed_long_flag==0){
+		keypressed_long_flag++;
+         wifi_key_counter=0;
+	     run_t.wifi_led_fast_blink_flag=1; //fast blink led 
+         run_t.wifi_connect_flag =0;
+		run_t.gTimer_wifi_connect_counter=0;
+	    SendData_Set_Wifi(0x01);
+     }
 	
     if(run_t.wifi_special_key ==0){
 	      if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
@@ -200,7 +204,7 @@ void Scan_KeyModel(void)
 		run_t.gDry =0;
 		run_t.gBug =0;
 		run_t.wifi_special_key = 0;
-		run_t.wifi_detect_key =0;
+		run_t.wifi_led_fast_blink_flag=0;
       
 
 		run_t.gTiming_label=0;
@@ -236,12 +240,12 @@ static void Power_On_Fun(void)
 	run_t.wifi_special_key = 1;
 	run_t.temperature_set_flag = 0; //WT.EDIT 2023.01.31
     run_t.wifi_set_temp_flag=0; // //WT.EDIT 2023.01.31
-
+    run_t.disp_wind_speed_grade =3;
 	run_t.gTiming_label=  time_normal;
 	run_t.gTimer_minute_Counter =0;
 	if(power_on_off_flag==0){
 	     run_t.dispTime_hours=12;
-		 run_t.disp_wind_speed_grade =3;
+		 
 	}
 
 	 lcd_t.number5_low=(run_t.dispTime_hours ) /10;
@@ -249,6 +253,8 @@ static void Power_On_Fun(void)
 
 	 lcd_t.number6_low = (run_t.dispTime_hours ) %10;;
 	 lcd_t.number6_high = (run_t.dispTime_hours ) %10;
+	
+	 
 
 
 }
