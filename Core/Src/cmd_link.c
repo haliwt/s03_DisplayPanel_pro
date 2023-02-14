@@ -75,10 +75,10 @@ void SendData_Set_Command(uint8_t hdata)
 }
 void SendData_Set_Wifi(uint8_t hdata)
 {
-	    outputBuf[0]='T'; //4D
+	    outputBuf[0]='T'; //
 		outputBuf[1]='K'; //58
-		outputBuf[2]='W'; //4C	// 'T'->temperature
-		outputBuf[3]=hdata; //53	//
+		outputBuf[2]='W'; //W ->WIFI
+		outputBuf[3]=hdata; 
 		
 		transferSize=4;
 		if(transferSize)
@@ -88,6 +88,24 @@ void SendData_Set_Wifi(uint8_t hdata)
 			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
 		}
 	
+}
+
+void SendData_Temp_Data(uint8_t tdata)
+{
+
+        outputBuf[0]='T'; //4D
+		outputBuf[1]='K'; //58
+		outputBuf[2]='T'; //"T"->temperature
+		outputBuf[3]=tdata; //53	//
+		
+		transferSize=4;
+		if(transferSize)
+		{
+			while(transOngoingFlag);
+			transOngoingFlag=1;
+			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
+		}
+
 }
 /********************************************************************************
 	**

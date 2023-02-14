@@ -45,7 +45,7 @@ static void Power_On_Fun(void);
 *******************************************************************************/
 void Scan_KeyModel(void)
 {
-  static uint8_t model_temp ,keypressed_long_flag;
+  static uint8_t model_temp ;
 
 	
    if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_led_fast_blink_flag==0){
@@ -57,8 +57,8 @@ void Scan_KeyModel(void)
 
 		 if(wifi_key_counter > 0x1a0bdf){ //1a6bdf//0x1e6bdf
              wifi_key_counter=0;
-		     keypressed_long_flag=1;
-			 run_t.wifi_led_fast_blink_flag=1;
+		     run_t.link_wifi_key_flag = 1;
+		     run_t.wifi_led_fast_blink_flag=1;
 			 break;
            }
 
@@ -71,14 +71,21 @@ void Scan_KeyModel(void)
 
 	}
    
-    if(run_t.wifi_led_fast_blink_flag==1 && keypressed_long_flag==0){
-		keypressed_long_flag++;
-         wifi_key_counter=0;
-	     run_t.wifi_led_fast_blink_flag=1; //fast blink led 
-         run_t.wifi_connect_flag =0;
-		run_t.gTimer_wifi_connect_counter=0;
+    if(run_t.link_wifi_key_flag==1){
+		run_t.link_wifi_key_flag++;
+        run_t.wifi_connect_flag =0;
+	    run_t.gTimer_wifi_connect_counter=0;
 	    SendData_Set_Wifi(0x01);
-     }
+		HAL_Delay(100);
+    }
+
+    if(run_t.link_wifi_key_flag==3){
+       if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
+	         HAL_Delay(20);
+	    while(POWER_KEY_VALUE()  ==KEY_DOWN);
+		Power_Off_Fun();
+        }
+    }
 	
     if(run_t.wifi_special_key ==0){
 	      if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
@@ -86,7 +93,8 @@ void Scan_KeyModel(void)
 			 while(POWER_KEY_VALUE()  ==KEY_DOWN);
 	             
 				  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
-				  	 
+				  	  
+             
 					  Power_On_Fun();
 					  
 					  SendData_PowerOff(1);
@@ -141,12 +149,12 @@ void Scan_KeyModel(void)
 			single_buzzer_fun();
 	
 		//setup temperature of value,minimum 20,maximum 40
-		run_t.gTemperature --;
-		if(run_t.gTemperature<20) run_t.gTemperature=40;
-        if(run_t.gTemperature >40)run_t.gTemperature=40;
+		run_t.wifi_set_temperature--;
+		if(run_t.wifi_set_temperature<20) run_t.wifi_set_temperature=40;
+        if(run_t.wifi_set_temperature >40)run_t.wifi_set_temperature=40;
 
-        decade_temp =  run_t.gTemperature / 10 %10;
-		unit_temp =  run_t.gTemperature % 10; //
+        decade_temp =  run_t.wifi_set_temperature / 10 %10;
+		unit_temp =  run_t.wifi_set_temperature % 10; //
 
 		lcd_t.number1_low=decade_temp;
 		lcd_t.number1_high =decade_temp;
@@ -165,15 +173,15 @@ void Scan_KeyModel(void)
 		  if(run_t.gPower_On ==1){
 			single_buzzer_fun();
 
-			run_t.gTemperature ++;
-            if(run_t.gTemperature < 20){
-			    run_t.gTemperature=20;
+			run_t.wifi_set_temperature ++;
+            if(run_t.wifi_set_temperature < 20){
+			    run_t.wifi_set_temperature=20;
 			}
 			
-			if(run_t.gTemperature > 40)run_t.gTemperature= 20;
+			if(run_t.wifi_set_temperature > 40)run_t.wifi_set_temperature= 20;
 			
-		    decade_temp =  run_t.gTemperature / 10 %10;
-			unit_temp =  run_t.gTemperature % 10; //
+		    decade_temp =  run_t.wifi_set_temperature / 10 %10;
+			unit_temp =  run_t.wifi_set_temperature % 10; //
 
 			lcd_t.number1_low=decade_temp;
 			lcd_t.number1_high =decade_temp;
@@ -217,6 +225,7 @@ void Scan_KeyModel(void)
 		power_on_off_flag=1;
 		run_t.temperature_set_flag = 0; //WT.EDIT 2023.01.31
 		run_t.wifi_set_temp_flag=0;
+        run_t.link_wifi_key_flag=0;
 	    if(run_t.wifi_power_flag == WIFI_POWER_OFF_ITEM){
 			run_t.wifi_power_flag = WIFI_POWER_NULL;
 	    }	
@@ -350,7 +359,7 @@ void RunPocess_Command_Handler(void)
                run_t.gTimer_temp_delay =0;
 		 
 		  
-		  if(run_t.gTemperature <= run_t.gReal_humtemp[1] || run_t.gReal_humtemp[1] >39){//envirment temperature
+		  if(run_t.wifi_set_temperature <= run_t.gReal_humtemp[1] || run_t.gReal_humtemp[1] >39){//envirment temperature
 	  
 				run_t.gDry = 0;
 
@@ -359,7 +368,7 @@ void RunPocess_Command_Handler(void)
 			    
                 
 		  }
-		  else if((run_t.gTemperature -3) > run_t.gReal_humtemp[1] ||  run_t.gReal_humtemp[1] < 37){
+		  else if((run_t.wifi_set_temperature -3) > run_t.gReal_humtemp[1] ||  run_t.gReal_humtemp[1] < 37){
 	  
 		     run_t.gDry = 1;
 	         SendData_Set_Command(0x12); //PTC turn On
@@ -394,6 +403,11 @@ void RunPocess_Command_Handler(void)
 		   }
 
          }
+    }
+
+    if(run_t.gTimer_set_temp_times > 0){ // 1 minute
+	     run_t.gTimer_set_temp_times=0;
+         SendData_Temp_Data(run_t.wifi_set_temperature);
     }
  
 }

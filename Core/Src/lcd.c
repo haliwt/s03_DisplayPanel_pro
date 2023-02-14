@@ -280,10 +280,15 @@ void DisplayPanel_Ref_Handler(void)
 			 }
 		     else{
 		        lcd_t.gTimer_wifi_500ms =0;
+				
 		     }
+			 if(run_t.gTimer_wifi_connect_counter > 3 && run_t.gTimer_wifi_connect_counter < 136){
+                  run_t.link_wifi_key_flag= 3;
+             }
              if(run_t.gTimer_wifi_connect_counter > 134){
                   run_t.gTimer_wifi_connect_counter=0;
-                  run_t.wifi_led_fast_blink_flag=0; 
+                  run_t.wifi_led_fast_blink_flag=0;
+			      run_t.link_wifi_key_flag= 0;
 
 			 }
 
@@ -561,7 +566,7 @@ static void LCD_DisplayNumber_OneTwo_Icon_Handler(void)
 				 run_t.wifi_set_temp_flag =0;
 			     run_t.temperature_set_flag = 1;
 				 run_t.gTimer_temp_delay =0;
-				 run_t.gTemperature = run_t.wifi_set_temperature;
+				 run_t.wifi_set_temperature = run_t.wifi_set_temperature;
 				 
 			 }
 
@@ -588,7 +593,7 @@ static void LCD_DisplayNumber_OneTwo_Icon_Handler(void)
 				 run_t.wifi_set_temp_flag =0;
 			     run_t.temperature_set_flag = 1;
 				 run_t.gTimer_temp_delay =0;
-				 run_t.gTemperature = run_t.wifi_set_temperature;
+				 run_t.wifi_set_temperature = run_t.wifi_set_temperature;
 				 
 			 }
 

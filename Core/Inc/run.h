@@ -76,7 +76,7 @@ typedef struct __RUN{
    uint8_t wifi_special_key;
    uint8_t wifi_led_fast_blink_flag ;
    uint8_t wifi_power_flag;
-
+   uint8_t link_wifi_key_flag;
  
    
    uint8_t Timer_mode_flag;
@@ -88,6 +88,8 @@ typedef struct __RUN{
    uint8_t wifiCmd[2];
    uint8_t gTimer_wifi_connect_counter;
    uint8_t panel_key_setup_timer_flag;
+   uint8_t gTimer_temp_delay;
+   uint8_t gTimer_set_temp_times;
   
 
     int8_t dispTime_hours;
@@ -96,7 +98,7 @@ typedef struct __RUN{
 
 	
     int8_t 	gTime_hours;
-	uint8_t gTimer_temp_delay;
+	
 	
      uint16_t gTimer_numbers_one_two_blink;
 
