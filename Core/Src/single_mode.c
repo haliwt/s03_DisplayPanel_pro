@@ -76,7 +76,7 @@ void Scan_KeyModel(void)
         run_t.wifi_connect_flag =0;
 	    run_t.gTimer_wifi_connect_counter=0;
 	    SendData_Set_Wifi(0x01);
-		HAL_Delay(100);
+		HAL_Delay(300);
     }
 
     if(run_t.link_wifi_key_flag==3){
@@ -405,7 +405,7 @@ void RunPocess_Command_Handler(void)
          }
     }
 
-    if(run_t.gTimer_set_temp_times > 0){ // 1 minute
+    if(run_t.gTimer_set_temp_times >9){ // 4s
 	     run_t.gTimer_set_temp_times=0;
          SendData_Temp_Data(run_t.wifi_set_temperature);
     }
