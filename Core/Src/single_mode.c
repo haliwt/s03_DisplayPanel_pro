@@ -18,7 +18,6 @@ uint8_t decade_second;
 uint8_t unit_second;
 uint8_t unit_temp ;
 uint8_t power_on_off_flag;
-uint32_t wifi_key_counter;
 uint8_t keyvalue;
 
 
@@ -51,20 +50,21 @@ void Scan_KeyModel(void)
    if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_led_fast_blink_flag==0){
       
 		 while(POWER_KEY_VALUE()  ==KEY_DOWN && run_t.wifi_led_fast_blink_flag==0){
-             wifi_key_counter++;
+             run_t.wifi_key_counter++;
          
 		
 
-		 if(wifi_key_counter > 0x1a0bdf){ //1a6bdf//0x1e6bdf
-             wifi_key_counter=0;
+		 if(run_t.wifi_key_counter > 0x10000f){ //1a6bdf//0x1e6bdf
+             run_t.wifi_key_counter=0;
 		     run_t.link_wifi_key_flag = 1;
 		     run_t.wifi_led_fast_blink_flag=1;
 			 break;
-           }
+          }
+          
 
 		 }
-	     if(wifi_key_counter  < 0x1a0bdf && run_t.wifi_led_fast_blink_flag==0){
-	        wifi_key_counter=0;
+	     if(run_t.wifi_key_counter  < 0x10000f && run_t.wifi_led_fast_blink_flag==0){
+	        run_t.wifi_key_counter=0;
 		 	Power_Off_Fun();
 
 		 }
@@ -76,32 +76,33 @@ void Scan_KeyModel(void)
         run_t.wifi_connect_flag =0;
 	    run_t.gTimer_wifi_connect_counter=0;
 	    SendData_Set_Wifi(0x01);
-		HAL_Delay(300);
+		HAL_Delay(200);
     }
 
     if(run_t.link_wifi_key_flag==3){
        if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
-	         HAL_Delay(20);
-	    while(POWER_KEY_VALUE()  ==KEY_DOWN);
+	         HAL_Delay(10);
+	    while(POWER_KEY_VALUE() ==KEY_DOWN);
+
 		Power_Off_Fun();
         }
     }
 	
     if(run_t.wifi_special_key ==0){
 	      if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
-	          HAL_Delay(20);
+	          HAL_Delay(10);
 			 while(POWER_KEY_VALUE()  ==KEY_DOWN);
 	             
 				  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
 				  	  
-             
+                      run_t.wifi_key_counter=0;
 					  Power_On_Fun();
 					  
 					  SendData_PowerOff(1);
 		           
 				  }
 				  else{
-
+        			run_t.wifi_key_counter=0;
 				    Power_Off_Fun();
 					
 			           

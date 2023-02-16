@@ -101,6 +101,7 @@ typedef struct __RUN{
 	
 	
      uint16_t gTimer_numbers_one_two_blink;
+     uint32_t wifi_key_counter;
 
    
  }RUN_T;
