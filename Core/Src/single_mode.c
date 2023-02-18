@@ -76,15 +76,16 @@ void Scan_KeyModel(void)
         run_t.wifi_connect_flag =0;
 	    run_t.gTimer_wifi_connect_counter=0;
 	    SendData_Set_Wifi(0x01);
-		HAL_Delay(200);
+		HAL_Delay(1000);
     }
 
-    if(run_t.link_wifi_key_flag==3){
+    if(run_t.link_wifi_key_flag==2){
        if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
 	         HAL_Delay(10);
 	    while(POWER_KEY_VALUE() ==KEY_DOWN);
-
-		Power_Off_Fun();
+            run_t.link_wifi_key_flag=0;
+           run_t.wifi_key_counter=0;
+		Wifi_Power_Off_Fun();
         }
     }
 	
@@ -96,12 +97,15 @@ void Scan_KeyModel(void)
 				  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
 				  	  
                       run_t.wifi_key_counter=0;
+                       run_t.link_wifi_key_flag=0;
 					  Power_On_Fun();
 					  
 					  SendData_PowerOff(1);
 		           
 				  }
 				  else{
+                    run_t.link_wifi_key_flag=0;
+          
         			run_t.wifi_key_counter=0;
 				    Power_Off_Fun();
 					
@@ -234,6 +238,33 @@ void Scan_KeyModel(void)
 	   	   SendData_PowerOff(0);
   
 } 
+
+void Wifi_Power_Off_Fun(void)
+{
+		SendData_PowerOff(0);
+		run_t.gModel =0; //WT.EDIT 2022.09.01
+		run_t.gPlasma=0;
+		run_t.gDry =0;
+		run_t.gBug =0;
+		run_t.wifi_special_key = 0;
+		run_t.wifi_led_fast_blink_flag=0;
+      
+
+		run_t.gTiming_label=0;
+		run_t.wifi_connect_flag =0;
+		run_t.power_key =2;
+		run_t.gFan_RunContinue=1;
+		run_t.disp_wind_speed_grade =1;	
+		run_t.gPower_On=0;
+		run_t.fan_off_60s =0;
+		power_on_off_flag=1;
+		run_t.temperature_set_flag = 0; //WT.EDIT 2023.01.31
+		run_t.wifi_set_temp_flag=0;
+        run_t.link_wifi_key_flag=0;
+	    
+  
+} 
+
 
 static void Power_On_Fun(void)
 {
