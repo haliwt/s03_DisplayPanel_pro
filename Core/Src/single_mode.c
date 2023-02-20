@@ -85,7 +85,7 @@ void Scan_KeyModel(void)
 	    while(POWER_KEY_VALUE() ==KEY_DOWN);
             run_t.link_wifi_key_flag=0;
            run_t.wifi_key_counter=0;
-		Wifi_Power_Off_Fun();
+            Power_Off_Fun();
         }
     }
 	
@@ -97,7 +97,8 @@ void Scan_KeyModel(void)
 				  if(run_t.gPower_On == 0 || run_t.gPower_On == 0xff){
 				  	  
                       run_t.wifi_key_counter=0;
-                       run_t.link_wifi_key_flag=0;
+                      run_t.link_wifi_key_flag=0;
+         
 					  Power_On_Fun();
 					  
 					  SendData_PowerOff(1);
@@ -107,6 +108,7 @@ void Scan_KeyModel(void)
                     run_t.link_wifi_key_flag=0;
           
         			run_t.wifi_key_counter=0;
+                   
 				    Power_Off_Fun();
 					
 			           
@@ -212,30 +214,33 @@ void Scan_KeyModel(void)
 ************************************************************************/
  void Power_Off_Fun(void)
 {
-		run_t.gModel =0; //WT.EDIT 2022.09.01
+	
+        run_t.gModel =0; //WT.EDIT 2022.09.01
 		run_t.gPlasma=0;
 		run_t.gDry =0;
 		run_t.gBug =0;
-		run_t.wifi_special_key = 0;
+		
 		run_t.wifi_led_fast_blink_flag=0;
       
 
 		run_t.gTiming_label=0;
-		run_t.wifi_connect_flag =0;
+	//	run_t.wifi_connect_flag =0;
 		run_t.power_key =2;
 		run_t.gFan_RunContinue=1;
 		run_t.disp_wind_speed_grade =1;	
 		run_t.gPower_On=0;
 		run_t.fan_off_60s =0;
 		power_on_off_flag=1;
-		run_t.temperature_set_flag = 0; //WT.EDIT 2023.01.31
-		run_t.wifi_set_temp_flag=0;
+	//	run_t.temperature_set_flag = 0; //WT.EDIT 2023.01.31
+	//	run_t.wifi_set_temp_flag=0;
         run_t.link_wifi_key_flag=0;
-	    if(run_t.wifi_power_flag == WIFI_POWER_OFF_ITEM){
-			run_t.wifi_power_flag = WIFI_POWER_NULL;
-	    }	
-		else
-	   	   SendData_PowerOff(0);
+        run_t.wifi_special_key = 0;
+		if(run_t.wifi_power_flag != WIFI_POWER_OFF_ITEM){
+                SendData_PowerOff(0);
+
+        }
+		
+
   
 } 
 
@@ -284,6 +289,7 @@ static void Power_On_Fun(void)
     run_t.disp_wind_speed_grade =3;
 	run_t.gTiming_label=  time_normal;
 	run_t.gTimer_minute_Counter =0;
+	run_t.wifi_power_flag=0xff;
 	if(power_on_off_flag==0){
 	     run_t.dispTime_hours=12;
 		 
@@ -367,7 +373,7 @@ void RunPocess_Command_Handler(void)
 		   key_set_temp_flag =1;
 		   run_t.wifi_set_temp_flag=1;
 		   run_t.gTimer_numbers_one_two_blink=0;
-	      
+	     
 		  
 	   }
 	   if(run_t.wifi_set_temp_flag ==0 && key_set_temp_flag ==1){
@@ -413,10 +419,6 @@ void RunPocess_Command_Handler(void)
 	   
    }
    //receive from mainboard data 
-   if(run_t.decodeFlag ==1){
-       run_t.decodeFlag =0;
-       Decode_Function();
-    }
 
    if(run_t.gPower_On ==0 || run_t.gPower_On == 0xff ){
 	 	
@@ -501,11 +503,6 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 	 case WIFI_CMD:
 	 	 
 	 	 Receive_Wifi_Cmd(run_t.wifiCmd[0]);
-	 
-	     cmd = 0xff;
-	     run_t.single_data =0xff;
-	     
-   
 	 break;
 
 	 case  WIFI_WIND_SPEED:
@@ -530,8 +527,8 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 
 
 		}
-       cmd = 0xff;
-	   run_t.single_data =0xff;
+    
+	  
 	 break;
 
 	 case WIFI_TEMP: //set temperature value
@@ -553,8 +550,7 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 			
 			run_t.gTimer_numbers_one_two_blink=0;
 	      }
-		cmd = 0xff;
-	    run_t.single_data =0xff;
+
 	 break;
 
 	 case PANEL_DATA:
@@ -583,8 +579,7 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 
 		 DisplayPanel_Ref_Handler();
         }
-		cmd = 0xff;
-	    run_t.single_data =0xff;
+
       break;
 
        case WIFI_BEIJING_TIME: 
@@ -606,8 +601,7 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 	        DisplayPanel_Ref_Handler();
 		    
         } 
-        cmd = 0xff;
-	    run_t.single_data =0xff;
+ 
       break;
 
 	}
