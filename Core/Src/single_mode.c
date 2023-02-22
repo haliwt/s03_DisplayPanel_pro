@@ -130,12 +130,13 @@ void Scan_KeyModel(void)
 				set_timer_timing_flag=1;//run_t.gModel =2;
 				single_buzzer_fun();
 				//SendData_Set_Wifi(0x14);
-				
+				run_t.gTimer_key_timing=0;
 				
 		    }
             else{ //temperature of function adjust ref .
                run_t.Timer_mode_flag=0;// run_t.gModel =1;
 			   single_buzzer_fun();
+			   run_t.gTimer_key_timing=0;
 			   //SendData_Set_Wifi(0x04);
 			  
             }
@@ -280,6 +281,7 @@ void Scan_KeyModel(void)
      }
 
      if(run_t.gTimer_key_timing > 4 && set_timer_timing_flag ==1){
+     	     run_t.gTimer_digital5678_ms=0;
              run_t.Timer_mode_flag = 1;
             set_timer_timing_flag=0;
             run_t.gTimer_key_timing =0;
