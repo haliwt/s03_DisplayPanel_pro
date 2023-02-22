@@ -112,22 +112,20 @@ int main(void)
     /* USER CODE END WHILE */
            
     /* USER CODE BEGIN 3 */
-      if(run_t.power_times == 0){
+    if(run_t.power_times == 0){
           run_t.power_times=1;
 		    HAL_Delay(1000);
 	      run_t.gPower_On=0;
 	  }
 	  else{
-	  	  if(run_t.wifi_connect_flag ==0)
-	          Scan_KeyModel();
+	  	if(run_t.wifi_connect_flag ==0)Scan_KeyModel();
 		  
 		  if(run_t.decodeFlag ==1){
 			  run_t.decodeFlag =0;
 			  Decode_Function();
 		  }
 		  else{
-		  	   if(run_t.wifi_connect_flag ==1)
-		  	        Scan_KeyModel();
+		  	   if(run_t.wifi_connect_flag ==1)Scan_KeyModel();
 	           RunPocess_Command_Handler();
 
 		  	}

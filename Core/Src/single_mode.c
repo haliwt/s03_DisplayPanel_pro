@@ -44,7 +44,7 @@ static void Power_On_Fun(void);
 *******************************************************************************/
 void Scan_KeyModel(void)
 {
-  static uint8_t model_temp ;
+  static uint8_t model_temp ,temp_bit_1_hours,temp_bit_2_hours,temp_bit_1_minute,temp_bit_2_minute;
 
 	
    if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_led_fast_blink_flag==0){
@@ -130,15 +130,16 @@ void Scan_KeyModel(void)
 
 			if(model_temp == 1){ //timing of function.
                 
-				run_t.gModel =2;
-				SendData_Set_Wifi(0x14);
+				run_t.Timer_mode_flag=1;//run_t.gModel =2;
+				single_buzzer_fun();
+				//SendData_Set_Wifi(0x14);
 				
 				
 		    }
             else{ //temperature of function adjust ref .
-             
-			   run_t.gModel =1;
-			   SendData_Set_Wifi(0x04);
+               run_t.Timer_mode_flag=0;// run_t.gModel =1;
+			   single_buzzer_fun();
+			   //SendData_Set_Wifi(0x04);
 			  
             }
 		
@@ -154,22 +155,61 @@ void Scan_KeyModel(void)
 		
 		if(run_t.gPower_On ==1){
 			single_buzzer_fun();
-	
-		//setup temperature of value,minimum 20,maximum 40
-		run_t.wifi_set_temperature--;
-		if(run_t.wifi_set_temperature<20) run_t.wifi_set_temperature=40;
-        if(run_t.wifi_set_temperature >40)run_t.wifi_set_temperature=40;
+	     if(run_t.Timer_mode_flag==0){ //Temperature value adjust 
+			//setup temperature of value,minimum 20,maximum 40
+			run_t.wifi_set_temperature--;
+			if(run_t.wifi_set_temperature<20) run_t.wifi_set_temperature=40;
+	        if(run_t.wifi_set_temperature >40)run_t.wifi_set_temperature=40;
 
-        decade_temp =  run_t.wifi_set_temperature / 10 %10;
-		unit_temp =  run_t.wifi_set_temperature % 10; //
+	        decade_temp =  run_t.wifi_set_temperature / 10 %10;
+			unit_temp =  run_t.wifi_set_temperature % 10; //
 
-		lcd_t.number1_low=decade_temp;
-		lcd_t.number1_high =decade_temp;
+			lcd_t.number1_low=decade_temp;
+			lcd_t.number1_high =decade_temp;
 
-		lcd_t.number2_low = unit_temp;
-		lcd_t.number2_high = unit_temp;
-		
-		run_t.panel_key_setup_timer_flag = 1;
+			lcd_t.number2_low = unit_temp;
+			lcd_t.number2_high = unit_temp;
+			
+			run_t.panel_key_setup_timer_flag = 1;
+	    	}
+	    	else{ //Timer timing value adjust
+					
+				run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
+				if(run_t.dispTime_minutes < 0){
+
+				    run_t.dispTime_hours --;
+					if(run_t.dispTime_hours < 0){
+						run_t.dispTime_hours=23;
+				        run_t.dispTime_minutes =60;
+					   run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
+					}
+					else{
+					  run_t.dispTime_minutes =60;
+					  run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
+					}
+					
+				}
+				    temp_bit_2_minute = run_t.dispTime_minutes /10 %10;
+					temp_bit_1_minute = run_t.dispTime_minutes %10;
+
+					temp_bit_2_hours = run_t.dispTime_hours /10 %10;
+					temp_bit_1_hours = run_t.dispTime_hours  %10;
+
+					lcd_t.number5_low=temp_bit_2_hours;
+					lcd_t.number5_high =temp_bit_2_hours;
+
+					lcd_t.number6_low = temp_bit_1_hours;
+					lcd_t.number6_high = temp_bit_1_hours;
+
+					lcd_t.number7_low=temp_bit_2_minute;
+					lcd_t.number7_high =temp_bit_2_minute;
+
+					lcd_t.number8_low = temp_bit_1_minute;
+					lcd_t.number8_high = temp_bit_1_minute;
+
+
+
+	    	}
 		}
 	}	
 	else if(ADD_KEY_VALUE()==KEY_DOWN){ //"+" KEY
@@ -180,25 +220,61 @@ void Scan_KeyModel(void)
 		  if(run_t.gPower_On ==1){
 			single_buzzer_fun();
 
-			run_t.wifi_set_temperature ++;
-            if(run_t.wifi_set_temperature < 20){
-			    run_t.wifi_set_temperature=20;
-			}
-			
-			if(run_t.wifi_set_temperature > 40)run_t.wifi_set_temperature= 20;
-			
-		    decade_temp =  run_t.wifi_set_temperature / 10 %10;
-			unit_temp =  run_t.wifi_set_temperature % 10; //
+			if(run_t.Timer_mode_flag==0){ //temperature value adjust 
 
-			lcd_t.number1_low=decade_temp;
-			lcd_t.number1_high =decade_temp;
+				run_t.wifi_set_temperature ++;
+	            if(run_t.wifi_set_temperature < 20){
+				    run_t.wifi_set_temperature=20;
+				}
+				
+				if(run_t.wifi_set_temperature > 40)run_t.wifi_set_temperature= 20;
+				
+			    decade_temp =  run_t.wifi_set_temperature / 10 %10;
+				unit_temp =  run_t.wifi_set_temperature % 10; //
 
-			lcd_t.number2_low = unit_temp;
-			lcd_t.number2_high = unit_temp;
+				lcd_t.number1_low=decade_temp;
+				lcd_t.number1_high =decade_temp;
 
-			run_t.panel_key_setup_timer_flag = 1;
+				lcd_t.number2_low = unit_temp;
+				lcd_t.number2_high = unit_temp;
+
+				run_t.panel_key_setup_timer_flag = 1;
 					
-					
+				}
+				else{ //Timer timing value adjust
+					 run_t.dispTime_minutes = run_t.dispTime_minutes + 30;
+				    if(run_t.dispTime_minutes > 59){
+
+		                 run_t.dispTime_hours ++;
+		                 run_t.dispTime_minutes=0;
+
+						 if(run_t.dispTime_hours > 23){
+							 
+						      run_t.dispTime_hours=0;
+							    
+							}
+					}
+					temp_bit_2_minute = run_t.dispTime_minutes /10 %10;
+					temp_bit_1_minute = run_t.dispTime_minutes %10;
+
+					temp_bit_2_hours = run_t.dispTime_hours /10 %10;
+					temp_bit_1_hours = run_t.dispTime_hours  %10;
+
+					lcd_t.number5_low=temp_bit_2_hours;
+					lcd_t.number5_high =temp_bit_2_hours;
+
+					lcd_t.number6_low = temp_bit_1_hours;
+					lcd_t.number6_high = temp_bit_1_hours;
+
+					lcd_t.number7_low=temp_bit_2_minute;
+					lcd_t.number7_high =temp_bit_2_minute;
+
+					lcd_t.number8_low = temp_bit_1_minute;
+					lcd_t.number8_high = temp_bit_1_minute;
+
+
+
+				}	
 			}
 				
      }
@@ -316,45 +392,36 @@ static void Power_On_Fun(void)
 ************************************************************************/  
 static void Timing_Handler(void)
 {
-  
-		 
-		 if(run_t.gTimer_minute_Counter >0){ //minute
+    if(run_t.gTimer_minute_Counter >0){ //minute
 
-			  run_t.gTimer_minute_Counter=0;
+		run_t.gTimer_minute_Counter=0;
 
-			  run_t.dispTime_minutes ++;//run_t.dispTime_minute++;
-			  if(run_t.dispTime_minutes > 59){
-				  run_t.dispTime_minutes=0;
-                  run_t.dispTime_hours ++;
-				  if(run_t.dispTime_hours >23){
-					run_t.dispTime_hours=0;
+		run_t.dispTime_minutes ++;//run_t.dispTime_minute++;
+		if(run_t.dispTime_minutes > 59){
+			run_t.dispTime_minutes=0;
+			run_t.dispTime_hours ++;
+			if(run_t.dispTime_hours >23){
+				run_t.dispTime_hours=0;
 
-				  }
+				}
 
-			  }
+		}
 
-			 lcd_t.number5_low=(run_t.dispTime_hours ) /10;
-             lcd_t.number5_high =(run_t.dispTime_hours) /10;
+		lcd_t.number5_low=(run_t.dispTime_hours ) /10;
+		lcd_t.number5_high =(run_t.dispTime_hours) /10;
 
-			 lcd_t.number6_low = (run_t.dispTime_hours ) %10;;
-			 lcd_t.number6_high = (run_t.dispTime_hours ) %10;
-	   
+		lcd_t.number6_low = (run_t.dispTime_hours ) %10;;
+		lcd_t.number6_high = (run_t.dispTime_hours ) %10;
 
+		lcd_t.number7_low = (run_t.dispTime_minutes )/10;
+		lcd_t.number7_high = (run_t.dispTime_minutes )/10;
 
-			lcd_t.number7_low = (run_t.dispTime_minutes )/10;
-			lcd_t.number7_high = (run_t.dispTime_minutes )/10;
-
-			lcd_t.number8_low = (run_t.dispTime_minutes )%10;
-			lcd_t.number8_high = (run_t.dispTime_minutes )%10;
+		lcd_t.number8_low = (run_t.dispTime_minutes )%10;
+		lcd_t.number8_high = (run_t.dispTime_minutes )%10;
 					 
-          }
+    }
 		
 }
-
-
-
-
-
 /******************************************************************************
 *
 *Function Name:void RunPocess_Command_Handler(void)

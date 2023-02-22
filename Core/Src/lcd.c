@@ -298,11 +298,33 @@ void DisplayPanel_Ref_Handler(void)
          //  TIM1723_Write_Cmd(LUM_VALUE);
 	 }
 	 /*T2 end*/
-     //Humidity Icon "0xC9"-numbers "4-B,G,C","5-A,F,E,D"
-     TM1723_Write_Display_Data(0xC9,(0x01+lcdNumber4_Low[lcd_t.number4_low]+lcdNumber5_High[lcd_t.number5_high]) & 0xff);//display digital '4,5'
-    // TIM1723_Write_Cmd(LUM_VALUE);
-	 
-	 //T15,"0xCA"Numbers"5-B,G,C","6-A,F,E,D" -> "T15,T13,T11-ON-OFF"
+     //Humidity Icon "0xC9"-numbers "4-4B,4G,4C","5-5A,5F,5E,5D"
+     if(run_t.Timer_mode_flag == 1){ //digital -> 5,6,7,8 blink .
+
+     	 if(run_t.gTimer_digital5678_ms < 4){
+             TM1723_Write_Display_Data(0xC9,(0x01+lcdNumber4_Low[lcd_t.number4_low]+lcdNumber5_High[lcd_t.number5_high]) & 0xff);//display digital '4,5'
+          	 TM1723_Write_Display_Data(0xCA,(T15+lcdNumber5_Low[lcd_t.number5_low]+lcdNumber6_High[lcd_t.number6_high]) & 0xff);
+          	 TM1723_Write_Display_Data(0xCB,(0x01+lcdNumber6_Low[lcd_t.number6_low]+lcdNumber7_High[lcd_t.number7_high]) & 0xff);
+          	 TM1723_Write_Display_Data(0xCC,(T14+lcdNumber7_Low[lcd_t.number7_low]+lcdNumber8_High[lcd_t.number8_high]) & 0xff);
+          	 TM1723_Write_Display_Data(0xCE,(T13+lcdNumber8_Low[lcd_t.number8_low]+0xE0) & 0xff);
+
+          }
+	     else if(run_t.gTimer_digital5678_ms > 3 && run_t.gTimer_digital5678_ms < 7){
+	     	 TM1723_Write_Display_Data(0xC9,(0x01+lcdNumber4_Low[lcd_t.number4_low]+lcdNumber5_High[lcd_t.number5_high]) & 0x0f);//display digital '4,5'
+          	 TM1723_Write_Display_Data(0xCA,(T15+lcdNumber5_Low[lcd_t.number5_low]+lcdNumber6_High[lcd_t.number6_high]) & 0x01);
+          	 TM1723_Write_Display_Data(0xCB,(0x01+lcdNumber6_Low[lcd_t.number6_low]+lcdNumber7_High[lcd_t.number7_high]) & 0x01);
+          	 TM1723_Write_Display_Data(0xCC,(T14+lcdNumber7_Low[lcd_t.number7_low]+lcdNumber8_High[lcd_t.number8_high]) & 0x01);
+          	 TM1723_Write_Display_Data(0xCE,(T13+lcdNumber8_Low[lcd_t.number8_low]+0xE0) & 0xE1);
+	     }
+	     else{
+            run_t.gTimer_digital5678_ms=0;
+	     }
+     }
+     else{
+     	TM1723_Write_Display_Data(0xC9,(0x01+lcdNumber4_Low[lcd_t.number4_low]+lcdNumber5_High[lcd_t.number5_high]) & 0xff);//display digital '4,5'
+     }
+  	 
+	 //T15,"0xCA"Numbers'5'->"5B,5G,5C",'6'->"6A,6F,6E,6D" -> "T15,T13,T11-ON-OFF"
 	 if(run_t.disp_wind_speed_grade ==3){
 	      if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<20){
 	         TM1723_Write_Display_Data(0xCA,T15+lcdNumber5_Low[lcd_t.number5_low]+lcdNumber6_High[lcd_t.number6_high]);//display digital '5,6'
@@ -337,14 +359,14 @@ void DisplayPanel_Ref_Handler(void)
 		  }
 	  }
 	  /*********************END T15***********************/
-     //address"0xCB" ->numbers .T9":","6-B,G,C","7-A,F,E,D"
+     //address"0xCB" ->numbers .T9":","6->6B,6G,6C","7->7A,7F,7E,7D"
      if(lcd_t.gTimer_colon_ms < 6)
 	   TM1723_Write_Display_Data(0xCB,0x01+lcdNumber6_Low[lcd_t.number6_low]+lcdNumber7_High[lcd_t.number7_high]);//display "6,7"
      else if(lcd_t.gTimer_colon_ms > 5 && lcd_t.gTimer_colon_ms < 11)
 	 	TM1723_Write_Display_Data(0xCB,lcdNumber6_Low[lcd_t.number6_low]+lcdNumber7_High[lcd_t.number7_high]);//display "6,7"
 	 else  lcd_t.gTimer_colon_ms = 0;
         
-	 //T14,wind_speed ->numbers .high 4 bits -T14,"7-B,G,C",low 4 bits "8-A,F,E,D"
+	 //T14,wind_speed ->numbers .high 4 bits -T14,"7->7B,7G,7C",low 4 bits "8->8A,8F,8E,8D"
      if(run_t.disp_wind_speed_grade ==3){
 		 if(lcd_t.gTimer_fan_10ms >9 && lcd_t.gTimer_fan_10ms<20){
 		      TM1723_Write_Display_Data(0xCC,lcdNumber7_Low[lcd_t.number7_low]+lcdNumber8_High[lcd_t.number8_high]);//display "7,8'
@@ -386,7 +408,7 @@ void DisplayPanel_Ref_Handler(void)
 
 
      /**********T14 WIND SPEED**********/
-    //T13,address "0xCE",numbers."8-B,G,C","null,T19,T18,T17" ->"T13,T11,T15 ON-OFF"
+    //T13,address "0xCE",numbers."8->8B,8G,8C","null,T19,T18,T17" ->"T13,T11,T15 ON-OFF"
      if(run_t.disp_wind_speed_grade ==3){
 		 if(lcd_t.gTimer_fan_10ms>9 && lcd_t.gTimer_fan_10ms<20){
 					TM1723_Write_Display_Data(0xCE,T13+lcdNumber8_Low[lcd_t.number8_low]+0xE0);//display "t,c"
