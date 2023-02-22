@@ -135,7 +135,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				state=0; 
 			break;
 		case 2://#2
-			if(inputBuf[0]=='D' || inputBuf[0]=='W'   || inputBuf[0]=='P' ||inputBuf[0] =='C' || inputBuf[0] == 'B' ||inputBuf[0] == 'S') //'D'->data , 'W' ->wifi
+			if(inputBuf[0]=='D' || inputBuf[0]=='W'   || inputBuf[0]=='P' ||inputBuf[0] =='C' || inputBuf[0] == 'B' \
+			 ||inputBuf[0] == 'S' || inputBuf[0]=='T') //'D'->data , 'W' ->wifi
 			{
 				
 				if(inputBuf[0]=='D') run_t.single_data=PANEL_DATA; //receive data is single data
@@ -144,6 +145,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				else if(inputBuf[0]=='C') run_t.single_data = WIFI_CMD; //command 
 				else if(inputBuf[0]=='B') run_t.single_data = WIFI_BEIJING_TIME;
 				else if(inputBuf[0]=='S') run_t.single_data = WIFI_WIND_SPEED;
+				else if(inputBuf[0]=='T') run_t.single_data = WIFI_SET_TIMING;
 			    state=3;
 			}
 			else
@@ -151,11 +153,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			break;
             
         case 3:
-            if(run_t.single_data==PANEL_DATA){
+
+            switch(run_t.single_data){
+             case PANEL_DATA:
                  run_t.gReal_humtemp[0]=inputBuf[0]; //Humidity value 
                  state = 4;  
-            }
-            else if(run_t.single_data == WIFI_INFO){
+            break;
+            case WIFI_INFO :
                   if(inputBuf[0]==0x01)
                      run_t.wifi_connect_flag =1;
                    else 
@@ -164,28 +168,41 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                     state=0;
                     run_t.decodeFlag=1;
              
-             }
-            else if(run_t.single_data == WIFI_TEMP){ //wifi modify temperature of value
+            break;
+
+            case WIFI_TEMP : //wifi modify temperature of value
                  run_t.wifi_set_temperature=inputBuf[0]; 
                  state=0;
                  run_t.decodeFlag=1;
-            }
-            else if(run_t.single_data == WIFI_CMD){
+            break;
+
+            case WIFI_CMD:
                  run_t.wifiCmd[0] =inputBuf[0];
                  state=0;
                  run_t.decodeFlag=1; 
-             }
-             else if(run_t.single_data == WIFI_WIND_SPEED){
+            break;
+
+            case WIFI_WIND_SPEED:
                  run_t.wifi_set_wind_speed=inputBuf[0];
                  state=0;
                  run_t.decodeFlag=1; 
 
-             }
-			 else if(run_t.single_data == WIFI_BEIJING_TIME){
+             break;
+			 case WIFI_BEIJING_TIME:
 			 	if(run_t.timer_timing_define_flag == timing_not_definition && run_t.temp_set_timer_timing_flag==0)
 			  	    run_t.dispTime_hours  = inputBuf[0];
                  state = 4; 
-             }
+             break;
+
+             case WIFI_SET_TIMING:
+             		run_t.dispTime_hours  = inputBuf[0];
+             		 state=0;
+                    run_t.decodeFlag=1; 
+
+             break;
+
+         	}
+
             
         break;
         
