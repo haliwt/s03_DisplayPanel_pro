@@ -44,7 +44,7 @@ static void Power_On_Fun(void);
 *******************************************************************************/
 void Scan_KeyModel(void)
 {
-  static uint8_t model_temp ,temp_bit_1_hours,temp_bit_2_hours,temp_bit_1_minute,temp_bit_2_minute;
+  static uint8_t set_timer_timing_flag,temp_bit_1_hours,temp_bit_2_hours,temp_bit_1_minute,temp_bit_2_minute;
 
 	
    if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_led_fast_blink_flag==0){
@@ -124,13 +124,10 @@ void Scan_KeyModel(void)
 			
 	 	  
 			if(run_t.gPower_On ==1){
-				
-		
-			model_temp = model_temp ^ 0x01;
 
-			if(model_temp == 1){ //timing of function.
+			if(set_timer_timing_flag==0){ //timing of function.
                 
-				run_t.Timer_mode_flag=1;//run_t.gModel =2;
+				set_timer_timing_flag=1;//run_t.gModel =2;
 				single_buzzer_fun();
 				//SendData_Set_Wifi(0x14);
 				
@@ -155,7 +152,7 @@ void Scan_KeyModel(void)
 		
 		if(run_t.gPower_On ==1){
 			single_buzzer_fun();
-	     if(run_t.Timer_mode_flag==0){ //Temperature value adjust 
+	     if(set_timer_timing_flag==0){ //Temperature value adjust 
 			//setup temperature of value,minimum 20,maximum 40
 			run_t.wifi_set_temperature--;
 			if(run_t.wifi_set_temperature<20) run_t.wifi_set_temperature=40;
@@ -173,7 +170,8 @@ void Scan_KeyModel(void)
 			run_t.panel_key_setup_timer_flag = 1;
 	    	}
 	    	else{ //Timer timing value adjust
-					
+			
+				run_t.gTimer_key_timing =0;
 				run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
 				if(run_t.dispTime_minutes < 0){
 
@@ -220,7 +218,7 @@ void Scan_KeyModel(void)
 		  if(run_t.gPower_On ==1){
 			single_buzzer_fun();
 
-			if(run_t.Timer_mode_flag==0){ //temperature value adjust 
+			if(set_timer_timing_flag==0){//if(run_t.Timer_mode_flag==0){ //temperature value adjust 
 
 				run_t.wifi_set_temperature ++;
 	            if(run_t.wifi_set_temperature < 20){
@@ -242,6 +240,8 @@ void Scan_KeyModel(void)
 					
 				}
 				else{ //Timer timing value adjust
+					
+					 run_t.gTimer_key_timing =0;
 					 run_t.dispTime_minutes = run_t.dispTime_minutes + 30;
 				    if(run_t.dispTime_minutes > 59){
 
@@ -278,6 +278,15 @@ void Scan_KeyModel(void)
 			}
 				
      }
+
+     if(run_t.gTimer_key_timing > 4 && set_timer_timing_flag ==1){
+             run_t.Timer_mode_flag = 1;
+            set_timer_timing_flag=0;
+            run_t.gTimer_key_timing =0;
+
+       }
+
+     
 }	
 
 /************************************************************************

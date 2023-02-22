@@ -24,7 +24,7 @@ typedef enum WIFI_STATE_T{
 
 typedef struct __RUN{
 
-   uint8_t keyValue;
+  
    uint8_t readKeyValue;
    uint8_t power_key;
    uint8_t gTemperature_timer_flag;
@@ -32,12 +32,7 @@ typedef struct __RUN{
    uint8_t gRun_flag;
    uint8_t power_times;
    
-   uint8_t keyAdd_continue;
-   uint8_t keyDec_continue;
-  
-
-
-   uint8_t gTemperature;
+    uint8_t gTemperature;
  
    uint8_t gTimer_minute_Counter;
    
@@ -93,13 +88,16 @@ typedef struct __RUN{
    uint8_t gTimer_temp_delay;
    uint8_t gTimer_set_temp_times;
    uint8_t gTimer_digital5678_ms;
+   uint8_t gTimer_key_timing;
 
     int8_t dispTime_hours;
 	int8_t dispTime_minutes;
 	int8_t dispTime_seconds;
 
+
 	
     int8_t 	gTime_hours;
+
    
 	
 	
