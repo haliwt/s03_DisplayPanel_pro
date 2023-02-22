@@ -21,18 +21,23 @@ typedef enum WIFI_STATE_T{
 
 }wifi_state_t;
 
+typedef enum TIMING_T{
+
+   timing_not_definition,
+   timing_success 
+}timing_t;
+
 
 typedef struct __RUN{
 
   
-   uint8_t readKeyValue;
    uint8_t power_key;
    uint8_t gTemperature_timer_flag;
    uint8_t gPower_On;
    uint8_t gRun_flag;
    uint8_t power_times;
    
-    uint8_t gTemperature;
+   uint8_t gTemperature;
  
    uint8_t gTimer_minute_Counter;
    
@@ -41,7 +46,8 @@ typedef struct __RUN{
   uint8_t gFan_RunContinue;
 
   uint8_t temperature_flag;
-  uint8_t gTiming_label;
+  
+  uint8_t timer_timing_define_flag;
  
   
    uint8_t usart_flag;
@@ -72,6 +78,7 @@ typedef struct __RUN{
    uint8_t wifi_led_fast_blink_flag ;
    uint8_t wifi_power_flag;
    uint8_t link_wifi_key_flag;
+   uint8_t temp_set_timer_timing_flag;
 
  
    
@@ -89,10 +96,12 @@ typedef struct __RUN{
    uint8_t gTimer_set_temp_times;
    uint8_t gTimer_digital5678_ms;
    uint8_t gTimer_key_timing;
+   uint8_t gTimer_timing;
 
     int8_t dispTime_hours;
 	int8_t dispTime_minutes;
 	int8_t dispTime_seconds;
+
 
 
 	

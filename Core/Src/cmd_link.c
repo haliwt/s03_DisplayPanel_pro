@@ -182,7 +182,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
              }
 			 else if(run_t.single_data == WIFI_BEIJING_TIME){
-			  	 run_t.dispTime_hours  = inputBuf[0];
+			 	if(run_t.timer_timing_define_flag == timing_not_definition && run_t.temp_set_timer_timing_flag==0)
+			  	    run_t.dispTime_hours  = inputBuf[0];
                  state = 4; 
              }
             
@@ -191,7 +192,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		case 4: //
 
 		 if(run_t.single_data == WIFI_BEIJING_TIME){
-				run_t.dispTime_minutes = inputBuf[0];
+		 	  if(run_t.timer_timing_define_flag == timing_not_definition && run_t.temp_set_timer_timing_flag==0)
+				   run_t.dispTime_minutes = inputBuf[0];
 				state =5;
 		 }
 		 else if(run_t.single_data==PANEL_DATA){

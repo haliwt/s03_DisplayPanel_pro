@@ -49,13 +49,13 @@ void Display_Temperature_Humidity_Value(void)
 }
 
 
-/**********************************************************************
+/******************************************************************************
 *
-*Functin Name: void Display_DHT11_Value(void)
-*Function : Timer of key be pressed handle
-*Input Ref:  key of value
-*Return Ref: NO
+*Function Name:static void Setup_Timer_Times(void)
+*Funcion:display setup timer times  //__asm("NOP");//等待1个指令周期，系统主频24M
+*Iinput Ref:NO
+*Return Ref:NO
 *
-**********************************************************************/
+******************************************************************************/
 
 

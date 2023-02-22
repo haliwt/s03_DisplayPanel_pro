@@ -47,7 +47,7 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd);
 
 void Power_Off_Fun(void);
 
-void Wifi_Power_Off_Fun(void);
+
 
 #endif 
 

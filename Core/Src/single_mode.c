@@ -32,6 +32,7 @@ static void RunKeyOrder_Handler(void);
 static void Timing_Handler(void);
 //static void Power_Off_Fun(void);
 static void Power_On_Fun(void);
+static void Setup_Timer_Times(void);
 
 
 /*******************************************************************************
@@ -44,7 +45,7 @@ static void Power_On_Fun(void);
 *******************************************************************************/
 void Scan_KeyModel(void)
 {
-  static uint8_t set_timer_timing_flag,temp_bit_1_hours,temp_bit_2_hours,temp_bit_1_minute,temp_bit_2_minute;
+  static uint8_t set_timer_flag,temp_bit_1_hours,temp_bit_2_hours,temp_bit_1_minute,temp_bit_2_minute;
 
 	
    if(run_t.wifi_special_key ==1 && POWER_KEY_VALUE() ==KEY_DOWN && run_t.wifi_led_fast_blink_flag==0){
@@ -125,16 +126,16 @@ void Scan_KeyModel(void)
 	 	  
 			if(run_t.gPower_On ==1){
 
-			if(set_timer_timing_flag==0){ //timing of function.
+			if(run_t.temp_set_timer_timing_flag==0){ //timing of function.
                 
-				set_timer_timing_flag=1;//run_t.gModel =2;
+				run_t.temp_set_timer_timing_flag=1;//run_t.gModel =2;
 				single_buzzer_fun();
 				//SendData_Set_Wifi(0x14);
 				run_t.gTimer_key_timing=0;
 				
 		    }
             else{ //temperature of function adjust ref .
-               run_t.Timer_mode_flag=0;// run_t.gModel =1;
+              run_t.temp_set_timer_timing_flag=1;//run_t.gModel =2;
 			   single_buzzer_fun();
 			   run_t.gTimer_key_timing=0;
 			   //SendData_Set_Wifi(0x04);
@@ -153,7 +154,7 @@ void Scan_KeyModel(void)
 		
 		if(run_t.gPower_On ==1){
 			single_buzzer_fun();
-	     if(set_timer_timing_flag==0){ //Temperature value adjust 
+	     if(run_t.temp_set_timer_timing_flag==0){ //Temperature value adjust 
 			//setup temperature of value,minimum 20,maximum 40
 			run_t.wifi_set_temperature--;
 			if(run_t.wifi_set_temperature<20) run_t.wifi_set_temperature=40;
@@ -173,6 +174,7 @@ void Scan_KeyModel(void)
 	    	else{ //Timer timing value adjust
 			
 				run_t.gTimer_key_timing =0;
+                set_timer_flag=0;
 				run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
 				if(run_t.dispTime_minutes < 0){
 
@@ -219,7 +221,7 @@ void Scan_KeyModel(void)
 		  if(run_t.gPower_On ==1){
 			single_buzzer_fun();
 
-			if(set_timer_timing_flag==0){//if(run_t.Timer_mode_flag==0){ //temperature value adjust 
+			if(run_t.temp_set_timer_timing_flag==0){//if(run_t.Timer_mode_flag==0){ //temperature value adjust 
 
 				run_t.wifi_set_temperature ++;
 	            if(run_t.wifi_set_temperature < 20){
@@ -243,6 +245,7 @@ void Scan_KeyModel(void)
 				else{ //Timer timing value adjust
 					
 					 run_t.gTimer_key_timing =0;
+                    set_timer_flag=0;
 					 run_t.dispTime_minutes = run_t.dispTime_minutes + 30;
 				    if(run_t.dispTime_minutes > 59){
 
@@ -280,10 +283,10 @@ void Scan_KeyModel(void)
 				
      }
 
-     if(run_t.gTimer_key_timing > 4 && set_timer_timing_flag ==1){
+     if(run_t.gTimer_key_timing > 4 && run_t.temp_set_timer_timing_flag==1 && set_timer_flag ==0){
      	     run_t.gTimer_digital5678_ms=0;
              run_t.Timer_mode_flag = 1;
-            set_timer_timing_flag=0;
+           set_timer_flag++;
             run_t.gTimer_key_timing =0;
 
        }
@@ -309,17 +312,17 @@ void Scan_KeyModel(void)
 		
 		run_t.wifi_led_fast_blink_flag=0;
       
+		run_t.timer_timing_define_flag = timing_not_definition;
 
-		run_t.gTiming_label=0;
-	//	run_t.wifi_connect_flag =0;
+		
+	
 		run_t.power_key =2;
 		run_t.gFan_RunContinue=1;
 		run_t.disp_wind_speed_grade =1;	
 		run_t.gPower_On=0;
 		run_t.fan_off_60s =0;
 		power_on_off_flag=1;
-	//	run_t.temperature_set_flag = 0; //WT.EDIT 2023.01.31
-	//	run_t.wifi_set_temp_flag=0;
+
         run_t.link_wifi_key_flag=0;
         run_t.wifi_special_key = 0;
 		if(run_t.wifi_power_flag != WIFI_POWER_OFF_ITEM){
@@ -331,31 +334,7 @@ void Scan_KeyModel(void)
   
 } 
 
-void Wifi_Power_Off_Fun(void)
-{
-		SendData_PowerOff(0);
-		run_t.gModel =0; //WT.EDIT 2022.09.01
-		run_t.gPlasma=0;
-		run_t.gDry =0;
-		run_t.gBug =0;
-		run_t.wifi_special_key = 0;
-		run_t.wifi_led_fast_blink_flag=0;
-      
 
-		run_t.gTiming_label=0;
-		run_t.wifi_connect_flag =0;
-		run_t.power_key =2;
-		run_t.gFan_RunContinue=1;
-		run_t.disp_wind_speed_grade =1;	
-		run_t.gPower_On=0;
-		run_t.fan_off_60s =0;
-		power_on_off_flag=1;
-		run_t.temperature_set_flag = 0; //WT.EDIT 2023.01.31
-		run_t.wifi_set_temp_flag=0;
-        run_t.link_wifi_key_flag=0;
-	    
-  
-} 
 
 
 static void Power_On_Fun(void)
@@ -374,7 +353,7 @@ static void Power_On_Fun(void)
 	run_t.temperature_set_flag = 0; //WT.EDIT 2023.01.31
     run_t.wifi_set_temp_flag=0; // //WT.EDIT 2023.01.31
     run_t.disp_wind_speed_grade =3;
-	run_t.gTiming_label=  time_normal;
+	
 	run_t.gTimer_minute_Counter =0;
 	run_t.wifi_power_flag=0xff;
 	if(power_on_off_flag==0){
@@ -403,35 +382,90 @@ static void Power_On_Fun(void)
 ************************************************************************/  
 static void Timing_Handler(void)
 {
-    if(run_t.gTimer_minute_Counter >0){ //minute
+    
 
-		run_t.gTimer_minute_Counter=0;
+    if(run_t.timer_timing_define_flag == timing_not_definition){
+	    if(run_t.gTimer_minute_Counter >0){ //minute
 
-		run_t.dispTime_minutes ++;//run_t.dispTime_minute++;
-		if(run_t.dispTime_minutes > 59){
-			run_t.dispTime_minutes=0;
-			run_t.dispTime_hours ++;
-			if(run_t.dispTime_hours >23){
-				run_t.dispTime_hours=0;
+			run_t.gTimer_minute_Counter=0;
 
-				}
+			run_t.dispTime_minutes ++;//run_t.dispTime_minute++;
+			if(run_t.dispTime_minutes > 59){
+				run_t.dispTime_minutes=0;
+				run_t.dispTime_hours ++;
+				if(run_t.dispTime_hours >23){
+					run_t.dispTime_hours=0;
 
-		}
+					}
 
-		lcd_t.number5_low=(run_t.dispTime_hours ) /10;
-		lcd_t.number5_high =(run_t.dispTime_hours) /10;
+			}
 
-		lcd_t.number6_low = (run_t.dispTime_hours ) %10;;
-		lcd_t.number6_high = (run_t.dispTime_hours ) %10;
+			lcd_t.number5_low=(run_t.dispTime_hours ) /10;
+			lcd_t.number5_high =(run_t.dispTime_hours) /10;
 
-		lcd_t.number7_low = (run_t.dispTime_minutes )/10;
-		lcd_t.number7_high = (run_t.dispTime_minutes )/10;
+			lcd_t.number6_low = (run_t.dispTime_hours ) %10;;
+			lcd_t.number6_high = (run_t.dispTime_hours ) %10;
 
-		lcd_t.number8_low = (run_t.dispTime_minutes )%10;
-		lcd_t.number8_high = (run_t.dispTime_minutes )%10;
-					 
-    }
+			lcd_t.number7_low = (run_t.dispTime_minutes )/10;
+			lcd_t.number7_high = (run_t.dispTime_minutes )/10;
+
+			lcd_t.number8_low = (run_t.dispTime_minutes )%10;
+			lcd_t.number8_high = (run_t.dispTime_minutes )%10;
+						 
+	    }
+	}
+	else{
+		Setup_Timer_Times();
+	}
 		
+}
+
+static void Setup_Timer_Times(void)
+{
+    
+
+		
+        
+       if(run_t.gTimer_timing > 59){ //
+
+	     run_t.gTimer_timing =0;
+		run_t.dispTime_minutes -- ;
+	    if(run_t.dispTime_minutes < 0){
+		     run_t.dispTime_hours -- ;
+			 run_t.dispTime_minutes =59;
+
+			if(run_t.dispTime_hours < 0 ){
+
+	            run_t.dispTime_hours=0;
+			
+				run_t.dispTime_minutes=0;
+				run_t.wifi_power_flag++;
+				Power_Off_Fun();
+
+			
+				run_t.gPower_On =0 ;
+			    run_t.gFan_RunContinue=1;
+				run_t.fan_off_60s = 0;
+				SendData_PowerOff(0);//shut down 
+				
+		     }
+
+	     }
+		lcd_t.number5_low=(run_t.dispTime_hours ) /10;
+			lcd_t.number5_high =(run_t.dispTime_hours) /10;
+
+			lcd_t.number6_low = (run_t.dispTime_hours ) %10;;
+			lcd_t.number6_high = (run_t.dispTime_hours ) %10;
+
+			lcd_t.number7_low = (run_t.dispTime_minutes )/10;
+			lcd_t.number7_high = (run_t.dispTime_minutes )/10;
+
+			lcd_t.number8_low = (run_t.dispTime_minutes )%10;
+			lcd_t.number8_high = (run_t.dispTime_minutes )%10;
+			
+	  
+	  
+	   }
 }
 /******************************************************************************
 *
@@ -521,6 +555,13 @@ void RunPocess_Command_Handler(void)
 	     run_t.gTimer_set_temp_times=0;
          SendData_Temp_Data(run_t.wifi_set_temperature);
     }
+
+   if(run_t.timer_timing_define_flag == timing_success){
+
+       
+
+
+   }
  
 }
 /******************************************************************************
@@ -662,6 +703,9 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 
        case WIFI_BEIJING_TIME: 
          if(run_t.wifi_connect_flag ==1 && run_t.gPower_On==1){
+
+          if(run_t.temp_set_timer_timing_flag==0){
+			if(run_t.timer_timing_define_flag==timing_not_definition){
 			 lcd_t.number5_low=(run_t.dispTime_hours ) /10;
 	         lcd_t.number5_high =(run_t.dispTime_hours) /10;
 
@@ -677,6 +721,8 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd)
 			lcd_t.number8_high = (run_t.dispTime_minutes )%10;
 
 	        DisplayPanel_Ref_Handler();
+	      }
+          }
 		    
         } 
  
