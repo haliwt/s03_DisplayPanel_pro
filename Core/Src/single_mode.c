@@ -166,18 +166,18 @@ void Scan_KeyModel(void)
 			
 				run_t.gTimer_key_timing =0;
                 set_timer_flag=0;
-				run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
+				run_t.dispTime_minutes = run_t.dispTime_minutes - 1;
 				if(run_t.dispTime_minutes < 0){
 
 				    run_t.dispTime_hours --;
 					if(run_t.dispTime_hours < 0){
 						run_t.dispTime_hours=23;
-				        run_t.dispTime_minutes =60;
-					   run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
+				        run_t.dispTime_minutes =0;
+					  // run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
 					}
 					else{
-					  run_t.dispTime_minutes =60;
-					  run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
+					  run_t.dispTime_minutes =0;
+					  //run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
 					}
 					
 				}
@@ -237,7 +237,7 @@ void Scan_KeyModel(void)
 					
 					 run_t.gTimer_key_timing =0;
                     set_timer_flag=0;
-					 run_t.dispTime_minutes = run_t.dispTime_minutes + 30;
+					 run_t.dispTime_minutes = run_t.dispTime_minutes + 60;
 				    if(run_t.dispTime_minutes > 59){
 
 		                 run_t.dispTime_hours ++;
@@ -286,7 +286,7 @@ void Scan_KeyModel(void)
 			}
 			else{
 			    run_t.Timer_mode_flag = 1;
-
+                 SendData_Time_Data(run_t.dispTime_hours);
 
 			}
 

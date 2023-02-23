@@ -89,8 +89,36 @@ void SendData_Set_Wifi(uint8_t hdata)
 		}
 	
 }
-
+/*********************************************************
+ * 
+ * Function Name:void SendData_Temp_Data(uint8_t tdata)
+ * Function:send temperature value 
+ * 
+*********************************************************/
 void SendData_Temp_Data(uint8_t tdata)
+{
+
+        outputBuf[0]='T'; //4D
+		outputBuf[1]='K'; //58
+		outputBuf[2]='M'; //"T"->temperature
+		outputBuf[3]=tdata; //53	//
+		
+		transferSize=4;
+		if(transferSize)
+		{
+			while(transOngoingFlag);
+			transOngoingFlag=1;
+			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
+		}
+
+}
+/*********************************************************
+ * 
+ * Function Name:void SendData_Time_Data(uint8_t tdata)
+ * Function:send to set  timer timing value
+ * 
+*********************************************************/
+void SendData_Time_Data(uint8_t tdata)
 {
 
         outputBuf[0]='T'; //4D
