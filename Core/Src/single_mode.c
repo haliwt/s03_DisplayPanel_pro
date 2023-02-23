@@ -171,7 +171,7 @@ void Scan_KeyModel(void)
 
 				    run_t.dispTime_hours --;
 					if(run_t.dispTime_hours < 0){
-						run_t.dispTime_hours=23;
+						run_t.dispTime_hours=24 ;
 				        run_t.dispTime_minutes =0;
 					  // run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
 					}
