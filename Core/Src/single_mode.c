@@ -158,47 +158,45 @@ void Process_Key_Handler(uint8_t keylabel)
 	  break;
 
 	  case dec_key:
-	  	if(run_t.gPower_On ==1){
+	   if(run_t.gPower_On ==1){
 			single_buzzer_fun();
+	     if(run_t.temp_set_timer_timing_flag==0){ //Temperature value adjust 
+			//setup temperature of value,minimum 20,maximum 40
+			run_t.wifi_set_temperature--;
+			if(run_t.wifi_set_temperature<20) run_t.wifi_set_temperature=40;
+	        if(run_t.wifi_set_temperature >40)run_t.wifi_set_temperature=40;
 
-			if(run_t.temp_set_timer_timing_flag==0){//if(run_t.Timer_mode_flag==0){ //temperature value adjust 
+	        decade_temp =  run_t.wifi_set_temperature / 10 %10;
+			unit_temp =  run_t.wifi_set_temperature % 10; //
 
-				run_t.wifi_set_temperature ++;
-	            if(run_t.wifi_set_temperature < 20){
-				    run_t.wifi_set_temperature=20;
-				}
-				
-				if(run_t.wifi_set_temperature > 40)run_t.wifi_set_temperature= 20;
-				
-			    decade_temp =  run_t.wifi_set_temperature / 10 %10;
-				unit_temp =  run_t.wifi_set_temperature % 10; //
+			lcd_t.number1_low=decade_temp;
+			lcd_t.number1_high =decade_temp;
 
-				lcd_t.number1_low=decade_temp;
-				lcd_t.number1_high =decade_temp;
+			lcd_t.number2_low = unit_temp;
+			lcd_t.number2_high = unit_temp;
+			
+			run_t.panel_key_setup_timer_flag = 1;
+	    	}
+	    	else{ //Timer timing value adjust
+			
+				run_t.gTimer_key_timing =0;
+                set_timer_flag=0;
+				run_t.dispTime_minutes = run_t.dispTime_minutes - 1;
+				if(run_t.dispTime_minutes < 0){
 
-				lcd_t.number2_low = unit_temp;
-				lcd_t.number2_high = unit_temp;
-
-				run_t.panel_key_setup_timer_flag = 1;
-					
-				}
-				else{ //Timer timing value adjust
-					
-					 run_t.gTimer_key_timing =0;
-                    set_timer_flag=0;
-					 run_t.dispTime_minutes = run_t.dispTime_minutes + 60;
-				    if(run_t.dispTime_minutes > 59){
-
-		                 run_t.dispTime_hours ++;
-		                 run_t.dispTime_minutes=0;
-
-						 if(run_t.dispTime_hours > 23){
-							 
-						      run_t.dispTime_hours=0;
-							    
-							}
+				    run_t.dispTime_hours --;
+					if(run_t.dispTime_hours < 0){
+						run_t.dispTime_hours=24 ;
+				        run_t.dispTime_minutes =0;
+					  // run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
 					}
-					temp_bit_2_minute = run_t.dispTime_minutes /10 %10;
+					else{
+					  run_t.dispTime_minutes =0;
+					  //run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
+					}
+					
+				}
+				    temp_bit_2_minute = run_t.dispTime_minutes /10 %10;
 					temp_bit_1_minute = run_t.dispTime_minutes %10;
 
 					temp_bit_2_hours = run_t.dispTime_hours /10 %10;
@@ -218,8 +216,8 @@ void Process_Key_Handler(uint8_t keylabel)
 
 
 
-				}	
-			}
+	    	}
+		}
 
 	  break;
 
