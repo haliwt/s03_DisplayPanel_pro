@@ -34,269 +34,6 @@ static void Timing_Handler(void);
 static void Power_On_Fun(void);
 static void Setup_Timer_Times(void);
 
-
-/*******************************************************************************
-	 * 
-	 * Function Name :void Single_RunMode(void)
-	 * Function :main in single run process
-	 * Input Reference:No
-	 * Return Reference :NO
-	 *
-*******************************************************************************/
-void Scan_KeyModel(void)
-{
-  static uint8_t set_timer_flag,temp_bit_1_hours,temp_bit_2_hours,temp_bit_1_minute,temp_bit_2_minute;
-  static uint8_t ipower_on,key;
-
-	if(POWER_KEY_VALUE() ==KEY_DOWN ){ //power on KEY
-	          
-	      if(run_t.gPower_On ==1){   
-          while(POWER_KEY_VALUE() ==KEY_DOWN && ipower_on==0){
-                         run_t.wifi_key_counter++;
-                   if(run_t.wifi_key_counter > 0x10000f){ //1a6bdf//0x1e6bdf
-                             run_t.wifi_key_counter=0;
-                             ipower_on ++ ;
-                             run_t.wifi_special_key = 1;
-                          run_t.wifi_key_counter=0;
-                         run_t.wifi_led_fast_blink_flag=1;
-                         run_t.wifi_connect_flag =0;
-                       run_t.gTimer_wifi_connect_counter=0;
-                        SendData_Set_Wifi(0x01);
-                        goto tencent;   
-                             
-                       
-                       }
-                     }
-                 
-              if(run_t.wifi_key_counter  < 0x10000f && ipower_on==0){
-                        run_t.wifi_key_counter =0;
-                        key++ ;
-            
-		       }
-             
-          }
-          else{
-              HAL_Delay(10);
-            while(POWER_KEY_VALUE() ==KEY_DOWN);
-               key++ ;
-          
-          }
-                 
-          
-           switch(key){
-          
-                   case 1:
-                      ipower_on=0;
-                      SendData_PowerOff(1);
-                      run_t.wifi_key_counter=0;
-                      run_t.link_wifi_key_flag=0;
-				      Power_On_Fun();
-					  
-				 break; 
-		           
-			 
-                  case 2:
-                    ipower_on=0;
-                    run_t.wifi_special_key = 0;
-                    run_t.link_wifi_key_flag=0;
-                    run_t.wifi_power_flag=0xff ; //send oreder that buzzer sound 
-        			run_t.wifi_key_counter=0;
-                    key=0;
-				    Power_Off_Fun();
-					
-			           
-	             break;
-                  
-                case 3:
-                    tencent:             run_t.wifi_special_key = 1;
-                          run_t.wifi_key_counter=0;
-                    run_t.wifi_led_fast_blink_flag=1;
-                   run_t.wifi_connect_flag =0;
-                    run_t.gTimer_wifi_connect_counter=0;
-                    SendData_Set_Wifi(0x01);
-                    
-                  
-                  break;
-	           
-      
-	           }
-      }
-     else if(MODE_KEY_VALUE()==KEY_DOWN){ //Mode key 
-	 	    
-	     	 HAL_Delay(20);
-	         while(MODE_KEY_VALUE()==KEY_DOWN);
-			
-	 	  
-			if(run_t.gPower_On ==1){
-
-			
-                
-				run_t.temp_set_timer_timing_flag=1;//run_t.gModel =2;
-				single_buzzer_fun();
-				//SendData_Set_Wifi(0x14);
-				run_t.gTimer_key_timing=0;
-				set_timer_flag=0;
-				
-		  	}
-		
-		  
-     }
-     else if(DEC_KEY_VALUE()==KEY_DOWN){ //"-" KEY
-	 	
-		  HAL_Delay(20);
-        while(DEC_KEY_VALUE()==KEY_DOWN);
-		
-		if(run_t.gPower_On ==1){
-			single_buzzer_fun();
-	     if(run_t.temp_set_timer_timing_flag==0){ //Temperature value adjust 
-			//setup temperature of value,minimum 20,maximum 40
-			run_t.wifi_set_temperature--;
-			if(run_t.wifi_set_temperature<20) run_t.wifi_set_temperature=40;
-	        if(run_t.wifi_set_temperature >40)run_t.wifi_set_temperature=40;
-
-	        decade_temp =  run_t.wifi_set_temperature / 10 %10;
-			unit_temp =  run_t.wifi_set_temperature % 10; //
-
-			lcd_t.number1_low=decade_temp;
-			lcd_t.number1_high =decade_temp;
-
-			lcd_t.number2_low = unit_temp;
-			lcd_t.number2_high = unit_temp;
-			
-			run_t.panel_key_setup_timer_flag = 1;
-	    	}
-	    	else{ //Timer timing value adjust
-			
-				run_t.gTimer_key_timing =0;
-                set_timer_flag=0;
-				run_t.dispTime_minutes = run_t.dispTime_minutes - 1;
-				if(run_t.dispTime_minutes < 0){
-
-				    run_t.dispTime_hours --;
-					if(run_t.dispTime_hours < 0){
-						run_t.dispTime_hours=24 ;
-				        run_t.dispTime_minutes =0;
-					  // run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
-					}
-					else{
-					  run_t.dispTime_minutes =0;
-					  //run_t.dispTime_minutes = run_t.dispTime_minutes - 30;
-					}
-					
-				}
-				    temp_bit_2_minute = run_t.dispTime_minutes /10 %10;
-					temp_bit_1_minute = run_t.dispTime_minutes %10;
-
-					temp_bit_2_hours = run_t.dispTime_hours /10 %10;
-					temp_bit_1_hours = run_t.dispTime_hours  %10;
-
-					lcd_t.number5_low=temp_bit_2_hours;
-					lcd_t.number5_high =temp_bit_2_hours;
-
-					lcd_t.number6_low = temp_bit_1_hours;
-					lcd_t.number6_high = temp_bit_1_hours;
-
-					lcd_t.number7_low=temp_bit_2_minute;
-					lcd_t.number7_high =temp_bit_2_minute;
-
-					lcd_t.number8_low = temp_bit_1_minute;
-					lcd_t.number8_high = temp_bit_1_minute;
-
-
-
-	    	}
-		}
-	}	
-	else if(ADD_KEY_VALUE()==KEY_DOWN){ //"+" KEY
-	 	 HAL_Delay(20);
-
-		  while(ADD_KEY_VALUE()==KEY_DOWN);
-		 
-		  if(run_t.gPower_On ==1){
-			single_buzzer_fun();
-
-			if(run_t.temp_set_timer_timing_flag==0){//if(run_t.Timer_mode_flag==0){ //temperature value adjust 
-
-				run_t.wifi_set_temperature ++;
-	            if(run_t.wifi_set_temperature < 20){
-				    run_t.wifi_set_temperature=20;
-				}
-				
-				if(run_t.wifi_set_temperature > 40)run_t.wifi_set_temperature= 20;
-				
-			    decade_temp =  run_t.wifi_set_temperature / 10 %10;
-				unit_temp =  run_t.wifi_set_temperature % 10; //
-
-				lcd_t.number1_low=decade_temp;
-				lcd_t.number1_high =decade_temp;
-
-				lcd_t.number2_low = unit_temp;
-				lcd_t.number2_high = unit_temp;
-
-				run_t.panel_key_setup_timer_flag = 1;
-					
-				}
-				else{ //Timer timing value adjust
-					
-					 run_t.gTimer_key_timing =0;
-                    set_timer_flag=0;
-					 run_t.dispTime_minutes = run_t.dispTime_minutes + 60;
-				    if(run_t.dispTime_minutes > 59){
-
-		                 run_t.dispTime_hours ++;
-		                 run_t.dispTime_minutes=0;
-
-						 if(run_t.dispTime_hours > 23){
-							 
-						      run_t.dispTime_hours=0;
-							    
-							}
-					}
-					temp_bit_2_minute = run_t.dispTime_minutes /10 %10;
-					temp_bit_1_minute = run_t.dispTime_minutes %10;
-
-					temp_bit_2_hours = run_t.dispTime_hours /10 %10;
-					temp_bit_1_hours = run_t.dispTime_hours  %10;
-
-					lcd_t.number5_low=temp_bit_2_hours;
-					lcd_t.number5_high =temp_bit_2_hours;
-
-					lcd_t.number6_low = temp_bit_1_hours;
-					lcd_t.number6_high = temp_bit_1_hours;
-
-					lcd_t.number7_low=temp_bit_2_minute;
-					lcd_t.number7_high =temp_bit_2_minute;
-
-					lcd_t.number8_low = temp_bit_1_minute;
-					lcd_t.number8_high = temp_bit_1_minute;
-
-
-
-				}	
-			}
-				
-     }
-
-     if(run_t.gTimer_key_timing > 4 && run_t.temp_set_timer_timing_flag==1 && set_timer_flag ==0){
-     	     run_t.gTimer_digital5678_ms=0;
-            
-             set_timer_flag++;
-            run_t.gTimer_key_timing =0;
-			if(run_t.dispTime_hours ==0 && run_t.dispTime_minutes==0){
-				run_t.Timer_mode_flag = 0;
-			    run_t.temp_set_timer_timing_flag=0;
-
-			}
-			else{
-			    run_t.Timer_mode_flag = 1;
-                 SendData_Time_Data(run_t.dispTime_hours);
-
-			}
-
-       }
-
-     
-}	
 /************************************************************************
 	*
 	*Function Name: void Process_Key_Handler(uint8_t keylabel)
@@ -308,23 +45,21 @@ void Scan_KeyModel(void)
 void Process_Key_Handler(uint8_t keylabel)
 {
    static uint8_t set_timer_flag,temp_bit_1_hours,temp_bit_2_hours,temp_bit_1_minute,temp_bit_2_minute;
-   static uint8_t power_flag;
+  
     switch(keylabel){
 
       case power_key:
-	  	 power_flag = power_flag ^ 0x01;
-	     if(power_flag == 1){
+	    if(run_t.gPower_On==0 || run_t.gPower_On ==0xFF){
+ 			run_t.gTimer_set_temp_times=0; //conflict with send temperatur value 
 		 	  SendData_PowerOff(1);
-              run_t.wifi_key_counter=0;
-              run_t.link_wifi_key_flag=0;
+       
 		      Power_On_Fun();
 
 		 }
 		 else{
-		
-            run_t.wifi_power_flag=0xff ; //send oreder that buzzer sound 
-			run_t.wifi_key_counter=0;
-          
+		    run_t.gTimer_set_temp_times=0; //conflict with send temperatur value 
+            run_t.wifi_led_fast_blink_flag=0;
+            run_t.Timer_mode_flag = 0;
 		    Power_Off_Fun();
 
 
@@ -334,10 +69,12 @@ void Process_Key_Handler(uint8_t keylabel)
 	  break;
 
 	  case link_cloud_key:
+         run_t.gTimer_set_temp_times=0; //conflict with send temperatur value 
+         SendData_Set_Wifi(0x01);
 		run_t.wifi_led_fast_blink_flag=1;
 		run_t.wifi_connect_flag =0;
 		run_t.gTimer_wifi_connect_counter=0;
-		SendData_Set_Wifi(0x01);
+		
 
 	  break;
 
@@ -492,7 +229,7 @@ void Process_Key_Handler(uint8_t keylabel)
 
 	}
 	
-	if(run_t.gTimer_key_timing > 4 && run_t.temp_set_timer_timing_flag==1 && set_timer_flag ==0){
+	if(run_t.gTimer_key_timing > 4 && run_t.temp_set_timer_timing_flag==1 && set_timer_flag ==0 && run_t.gPower_On==1){
 				run_t.gTimer_digital5678_ms=0;
 			   
 				set_timer_flag++;
@@ -542,9 +279,8 @@ void Process_Key_Handler(uint8_t keylabel)
 		run_t.fan_off_60s =0;
 		power_on_off_flag=1;
 
-        run_t.link_wifi_key_flag=0;
-        run_t.wifi_special_key = 0;
-		if(run_t.wifi_power_flag != WIFI_POWER_OFF_ITEM){
+   
+		if(run_t.wifi_send_buzzer_sound != WIFI_POWER_OFF_ITEM){
                 SendData_PowerOff(0);
 
         }
@@ -568,13 +304,13 @@ static void Power_On_Fun(void)
 	run_t.gPlasma=1;
 	run_t.gDry =1;
 	run_t.gBug =1;
-	run_t.wifi_special_key = 1;
+	
 	run_t.temperature_set_flag = 0; //WT.EDIT 2023.01.31
     run_t.wifi_set_temp_flag=0; // //WT.EDIT 2023.01.31
     run_t.disp_wind_speed_grade =3;
 	
 	run_t.gTimer_minute_Counter =0;
-	run_t.wifi_power_flag=0xff;
+	run_t.wifi_send_buzzer_sound=0xff;
 	if(power_on_off_flag==0){
 	     run_t.dispTime_hours=12;
 		 
@@ -658,7 +394,7 @@ static void Setup_Timer_Times(void)
 	            run_t.dispTime_hours=0;
 			
 				run_t.dispTime_minutes=0;
-				run_t.wifi_power_flag=0xff;
+				run_t.wifi_send_buzzer_sound=0xff;
 				Power_Off_Fun();
 
 			
@@ -770,17 +506,12 @@ void RunPocess_Command_Handler(void)
          }
     }
 
-    if(run_t.gTimer_set_temp_times >9){ // 4s
+    if(run_t.gTimer_set_temp_times >9 && run_t.gPower_On==1){ // 4s
 	     run_t.gTimer_set_temp_times=0;
          SendData_Temp_Data(run_t.wifi_set_temperature);
     }
 
-   if(run_t.timer_timing_define_flag == timing_success){
-
-       
-
-
-   }
+  
  
 }
 /******************************************************************************
@@ -989,7 +720,7 @@ void Receive_Wifi_Cmd(uint8_t cmd)
 		   case WIFI_POWER_ON: //turn on 
 		 	
             //  single_buzzer_fun();
-              run_t.wifi_power_flag = WIFI_POWER_ON_ITEM;
+              run_t.wifi_send_buzzer_sound = WIFI_POWER_ON_ITEM;
               Power_On_Fun();
 			  cmd=0xff;
 
@@ -998,7 +729,7 @@ void Receive_Wifi_Cmd(uint8_t cmd)
 			 case WIFI_POWER_OFF: //turn off 
                 
 			    //single_buzzer_fun();
-			   run_t.wifi_power_flag = WIFI_POWER_OFF_ITEM;
+			   run_t.wifi_send_buzzer_sound = WIFI_POWER_OFF_ITEM;
 				
 			    Power_Off_Fun();
 				

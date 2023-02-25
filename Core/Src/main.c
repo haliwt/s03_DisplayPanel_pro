@@ -119,26 +119,24 @@ int main(void)
 		  
 	  }
 	  else{
-	  	if(run_t.wifi_connect_flag ==0) {
-			
-			key_value_flag = KEY_Scan();//Scan_KeyModel();
-			Process_Key_Handler(key_value_flag);
-	  	   }
-		  
+          
+          key_value_flag  = KEY_Scan();
+          Process_Key_Handler(key_value_flag);
+	  
 		  if(run_t.decodeFlag ==1){
 			  run_t.decodeFlag =0;
 			  Decode_Function();
 		  }
 		  else{
-		  	   if(run_t.wifi_connect_flag ==1){
-			   	
-			   	key_value_flag  = KEY_Scan();//Scan_KeyModel();
-				Process_Key_Handler(key_value_flag);
-
-		  	   	}
+              
+                
+               
+		  	   
 	           RunPocess_Command_Handler();
 
-		  	}
+		  }
+		  
+		  
 	  }
       
    

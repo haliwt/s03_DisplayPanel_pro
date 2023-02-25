@@ -74,10 +74,10 @@ typedef struct __RUN{
    uint8_t wifi_set_timing;
    uint8_t wifi_set_wind_speed;
    uint8_t wifi_set_temp_flag ;
-   uint8_t wifi_special_key;
+   uint8_t wifi_send_buzzer_sound;
+
    uint8_t wifi_led_fast_blink_flag ;
-   uint8_t wifi_power_flag;
-   uint8_t link_wifi_key_flag;
+ 
    uint8_t temp_set_timer_timing_flag;
 
  

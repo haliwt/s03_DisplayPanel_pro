@@ -222,7 +222,7 @@ static void TM1723_Write_Display_Data(uint8_t addr,uint8_t dat)
 void DisplayPanel_Ref_Handler(void)
 {
     
-     static uint8_t timer_timg_flag,key_end;
+     static uint8_t timer_timg_flag;
 	 TIM1723_Write_Cmd(0x00);
 	// TIM1723_Write_Cmd(0x40);
 	 TIM1723_Write_Cmd(0x44);
@@ -250,8 +250,8 @@ void DisplayPanel_Ref_Handler(void)
 	 }
 	 /**********************************end temperature*****************************************/
      //T2->WIFI icon -> 0xC5
-     if(run_t.wifi_connect_flag ==0){ //hasn't wifi
-         if(run_t.wifi_led_fast_blink_flag==0 ){
+     if(run_t.wifi_connect_flag ==0 && run_t.gPower_On==1){ //hasn't wifi
+         if(run_t.wifi_led_fast_blink_flag==0){
 			 if(lcd_t.gTimer_wifi_500ms >99 && lcd_t.gTimer_wifi_500ms<200){
 		          
 		           TM1723_Write_Display_Data(0xC5,(WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi
@@ -280,13 +280,8 @@ void DisplayPanel_Ref_Handler(void)
 			 }
 		     else{
 		        lcd_t.gTimer_wifi_500ms =0;
-                key_end ++;
-                if(key_end > 4 && run_t.link_wifi_key_flag==0){
-                     key_end=0;
-                    run_t.link_wifi_key_flag= 0;
-                }
-				
-		     }
+               
+			 }
              if(run_t.gTimer_wifi_connect_counter > 134){
                   run_t.gTimer_wifi_connect_counter=0;
                   run_t.wifi_led_fast_blink_flag=0;
@@ -304,7 +299,7 @@ void DisplayPanel_Ref_Handler(void)
 	 }
 	 /*T2 end*/
      //Humidity Icon "0xC9"-numbers "4-4B,4G,4C","5-5A,5F,5E,5D"
-     if(run_t.Timer_mode_flag == 1){ //digital -> 5,6,7,8 blink .
+     if(run_t.Timer_mode_flag == 1 && run_t.gPower_On == 1){ //digital -> 5,6,7,8 blink .
 
      	 if(run_t.gTimer_digital5678_ms < 3){
              TM1723_Write_Display_Data(0xC9,(0x01+lcdNumber4_Low[lcd_t.number4_low]+lcdNumber5_High[lcd_t.number5_high]) & 0xff);//display digital '4,5'
@@ -324,7 +319,7 @@ void DisplayPanel_Ref_Handler(void)
 
 	      if(run_t.gTimer_digital5678_ms > 4){
             run_t.gTimer_digital5678_ms=0;
-            timer_timg_flag++;
+             timer_timg_flag++;
             
             if(timer_timg_flag > 3){
             	run_t.Timer_mode_flag = 0;
