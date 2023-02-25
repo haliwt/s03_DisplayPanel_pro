@@ -11,10 +11,12 @@
 key_types key_t;
 
 
+
 uint8_t KEY_Scan(void)
 {
 
    uint8_t  reval = 0;
+ 
   key_t.read = _KEY_ALL_OFF; //0xFF 
   
    if(POWER_KEY_VALUE() ==KEY_DOWN )// high level
@@ -64,6 +66,7 @@ uint8_t KEY_Scan(void)
 					key_t.on_time = 0;                        //key .value = 0xEF ^ 0XFF = 0X10
                    
 					key_t.state   = second;
+				
 					
                    
                  }
@@ -88,7 +91,7 @@ uint8_t KEY_Scan(void)
 		{
 			if(key_t.read == key_t.buffer) //again adjust key if be pressed down 
 			{
-				if(++key_t.on_time> 0x37 && run_t.power_times==2)// 500 long key be down
+				if(++key_t.on_time> 0x37 && run_t.gPower_On==1)// 500 long key be down
 				{
 					
 					key_t.value = key_t.value|0x80; //key.value = 0x01 | 0x80  =0x81  
