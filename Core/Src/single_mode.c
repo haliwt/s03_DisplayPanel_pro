@@ -506,6 +506,7 @@ void RunPocess_Command_Handler(void)
 
     if(run_t.gTimer_set_temp_times >9 && run_t.gPower_On==1){ // 4s
 	     run_t.gTimer_set_temp_times=0;
+		 if(run_t.wifi_set_temperature==0)run_t.wifi_set_temperature=20;
          SendData_Temp_Data(run_t.wifi_set_temperature);
     }
 
