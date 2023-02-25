@@ -2,6 +2,14 @@
 #define __SINGLE_MODE_
 #include "main.h"
 
+typedef enum{
+
+   power_key = 0x01,
+   link_cloud_key = 0x81,
+   model_key=0x02,
+   add_key=0x08,
+   dec_key=0x04
+}key_item_t;
 
 typedef enum _time_t{
 
@@ -47,6 +55,7 @@ void Receive_MainBoard_Data_Handler(uint8_t cmd);
 
 void Power_Off_Fun(void);
 
+void Process_Key_Handler(uint8_t keylabel);
 
 
 #endif 

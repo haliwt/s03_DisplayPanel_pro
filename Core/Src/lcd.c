@@ -222,7 +222,7 @@ static void TM1723_Write_Display_Data(uint8_t addr,uint8_t dat)
 void DisplayPanel_Ref_Handler(void)
 {
     
-     static uint8_t timer_timg_flag;
+     static uint8_t timer_timg_flag,key_end;
 	 TIM1723_Write_Cmd(0x00);
 	// TIM1723_Write_Cmd(0x40);
 	 TIM1723_Write_Cmd(0x44);
@@ -268,7 +268,7 @@ void DisplayPanel_Ref_Handler(void)
          }
 		 else{ //be detected of wifi signal fast blink wiif icon
 
-             if(lcd_t.gTimer_wifi_500ms >19 && lcd_t.gTimer_wifi_500ms<40){
+             if(lcd_t.gTimer_wifi_500ms >19 && lcd_t.gTimer_wifi_500ms<40){ //400ms
 		          
 		           TM1723_Write_Display_Data(0xC5,(WIFI_Symbol+lcdNumber3_Low[lcd_t.number3_low] + lcdNumber4_High[lcd_t.number4_high]) & 0xff); //Wifi
 					
@@ -280,12 +280,17 @@ void DisplayPanel_Ref_Handler(void)
 			 }
 		     else{
 		        lcd_t.gTimer_wifi_500ms =0;
+                key_end ++;
+                if(key_end > 4 && run_t.link_wifi_key_flag==0){
+                     key_end=0;
+                    run_t.link_wifi_key_flag= 0;
+                }
 				
 		     }
              if(run_t.gTimer_wifi_connect_counter > 134){
                   run_t.gTimer_wifi_connect_counter=0;
                   run_t.wifi_led_fast_blink_flag=0;
-			      run_t.link_wifi_key_flag= 0;
+			      
 
 			 }
 
