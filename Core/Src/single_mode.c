@@ -491,6 +491,24 @@ void Process_Key_Handler(uint8_t keylabel)
 	  break;
 
 	}
+	
+	if(run_t.gTimer_key_timing > 4 && run_t.temp_set_timer_timing_flag==1 && set_timer_flag ==0){
+				run_t.gTimer_digital5678_ms=0;
+			   
+				set_timer_flag++;
+			   run_t.gTimer_key_timing =0;
+			   if(run_t.dispTime_hours ==0 && run_t.dispTime_minutes==0){
+				   run_t.Timer_mode_flag = 0;
+				   run_t.temp_set_timer_timing_flag=0;
+	
+			   }
+			   else{
+				   run_t.Timer_mode_flag = 1;
+					SendData_Time_Data(run_t.dispTime_hours);
+	
+			   }
+	
+		}
 
 }
 
